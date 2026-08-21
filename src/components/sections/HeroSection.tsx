@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 
 // ---------------------------------------------------------------------------
@@ -82,6 +85,16 @@ function Badge({ text }: { text: string }) {
 // HeroSection — main export
 // ---------------------------------------------------------------------------
 export default function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((err) => {
+        console.log("Autoplay was prevented:", err);
+      });
+    }
+  }, []);
+
   return (
     <section
       className="relative w-full overflow-hidden bg-[#00AEEF] z-0"
@@ -89,11 +102,14 @@ export default function HeroSection() {
     >
       {/* Background Video */}
       <video
+        ref={videoRef}
         src="/images/hero-vid.mp4"
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
+        poster="/images/about-img.png"
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
