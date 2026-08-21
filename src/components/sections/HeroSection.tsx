@@ -109,7 +109,6 @@ export default function HeroSection() {
         muted
         playsInline
         preload="auto"
-        poster="/images/about-img.png"
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
 
