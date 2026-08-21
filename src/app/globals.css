@@ -1,26 +1,38 @@
 @import "tailwindcss";
 
+/* ── Design tokens ──────────────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a2e44;
+
+  /* Brand colours */
+  --color-brand-primary: #00aeef;
+  --color-brand-dark:    #1a2e44;
+  --color-brand-accent:  #f5c518;
 }
 
+/* ── Tailwind v4 theme registration ─────────────────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Poppins is loaded via next/font in layout.tsx and exposed as --font-poppins */
+  --font-sans: var(--font-poppins, "Poppins", ui-sans-serif, system-ui, sans-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base styles ────────────────────────────────────────────────────────── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
