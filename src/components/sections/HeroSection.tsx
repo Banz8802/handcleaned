@@ -126,7 +126,7 @@ export default function HeroSection() {
 
           {/* Badge */}
           <div className="mb-6">
-            <Badge text="We Provide, Sydney New South Wales, and Australia" />
+            <Badge text="We Provide, Sydney, New South Wales, and Australia" />
           </div>
 
           {/* Main heading */}

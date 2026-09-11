@@ -41,11 +41,11 @@ export interface ServiceCardData {
 
 export default function ServiceCard({ title, price, image, href = "#contact" }: ServiceCardData) {
   return (
-    <article className="group flex flex-col bg-white rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.11)] transition-shadow overflow-hidden">
+    <article className="group flex flex-col bg-white rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.14)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 overflow-hidden">
 
       {/* ── Image slot ─────────────────────────────────────────────── */}
       <div className="relative w-full aspect-[4/3] overflow-hidden bg-sky-50 flex-shrink-0">
-        <Image src={image} fill alt={title} className="object-cover" />
+        <Image src={image} fill alt={title} className="object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
 
       {/* ── Card body ──────────────────────────────────────────────── */}

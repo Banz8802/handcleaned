@@ -15,7 +15,7 @@ const TESTIMONIALS: Testimonial[] = [
     id: 1,
     name: "Emily Davis",
     role: "CLIENT",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecena ssuspendisse ultrices gravida.",
+    text: "Hand Cleaned has been a complete game-changer for our busy household. Their professional team is punctual, reliable, and leaves every corner of our home spotless and refreshed. I couldn't be happier with their outstanding service!",
   },
   {
     id: 2,

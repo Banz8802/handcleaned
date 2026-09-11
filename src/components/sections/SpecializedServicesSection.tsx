@@ -153,7 +153,7 @@ interface BenefitCardProps {
 
 function BenefitCard({ icon, title, description }: BenefitCardProps) {
   return (
-    <div className="relative flex flex-col bg-white rounded-3xl p-6 lg:p-7 shadow-[0_4px_25px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 h-full border border-gray-100/50 overflow-hidden">
+    <div className="group relative flex flex-col bg-white rounded-3xl p-6 lg:p-7 shadow-[0_4px_25px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_35px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 h-full border border-gray-100/50 overflow-hidden">
       
       {/* Water splash decoration in top-right */}
       <div className="absolute top-0 right-0 w-28 h-28 pointer-events-none opacity-30 select-none overflow-hidden rounded-tr-3xl">
