@@ -22,6 +22,14 @@ export const metadata: Metadata = {
   title: "Hand Cleaned | Professional Cleaning Services Sydney",
   description:
     "Hand Cleaned offers professional home, Airbnb, end-of-lease and commercial cleaning services across Sydney, Australia.",
+  icons: {
+    icon: [
+      {
+        url: "/favicon.png",
+        type: "image/x-icon",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
