@@ -34,12 +34,13 @@ function StarRating() {
 export interface ServiceCardData {
   id: string;
   title: string;
-  price: string;
+  description?: string;
+  price?: string;
   image: string;       // path for future <Image src={image} />
   href?: string;
 }
 
-export default function ServiceCard({ title, price, image, href = "#contact" }: ServiceCardData) {
+export default function ServiceCard({ title, description, price, image, href = "#contact" }: ServiceCardData) {
   return (
     <article className="group flex flex-col bg-white rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.14)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 overflow-hidden">
 
@@ -56,8 +57,14 @@ export default function ServiceCard({ title, price, image, href = "#contact" }: 
           {title}
         </h3>
 
-        {/* Price */}
-        <p className="text-base font-bold text-[#1A2E44]">{price}</p>
+        {/* Description or Price */}
+        {description ? (
+          <p className="text-xs text-gray-500 leading-relaxed min-h-[36px] line-clamp-2">
+            {description}
+          </p>
+        ) : price ? (
+          <p className="text-base font-bold text-[#1A2E44]">{price}</p>
+        ) : null}
 
         {/* Star rating */}
         <StarRating />

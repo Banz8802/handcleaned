@@ -131,7 +131,7 @@ export default function Footer() {
                 <span className="w-7 h-7 rounded-full bg-[#EBF6FB] text-[#00AEEF] group-hover:bg-[#00AEEF] group-hover:text-white flex items-center justify-center flex-shrink-0 transition-colors">
                   <PhoneIcon />
                 </span>
-                <span>+61 41128 9877</span>
+                <span>+61 411 289 877</span>
               </a>
             </div>
           </div>

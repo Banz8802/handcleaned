@@ -6,31 +6,31 @@ import ServiceCard, { type ServiceCardData } from "@/components/ui/ServiceCard";
 // ---------------------------------------------------------------------------
 const SERVICES: ServiceCardData[] = [
   {
-    id: "deep-cleaning",
-    title: "Deep Cleaning",
-    price: "$258",
-    image: "/images/Deep Cleaning.webp",
-    href: "#contact",
-  },
-  {
-    id: "end-of-lease",
-    title: "End of Lease Cleaning",
-    price: "$395",
-    image: "/images/End of Lease Cleaning.webp",
-    href: "#contact",
-  },
-  {
     id: "airbnb-cleaning",
-    title: "Initial / Deep Cleaning Airbnb",
-    price: "$258",
-    image: "/images/Deep Cleaning Airbnb.webp",
+    title: "Airbnb Cleaning",
+    description: "Fast turnaround turnover cleaning and guest-ready preparation for your short-term rental.",
+    image: "/images/airbnb-cleaning.webp",
+    href: "#contact",
+  },
+  {
+    id: "residential-cleaning",
+    title: "Residential Cleaning",
+    description: "Comprehensive home cleaning tailored to maintain a clean, hygienic, and welcoming space.",
+    image: "/images/Deep Cleaning.webp",
     href: "#contact",
   },
   {
     id: "commercial-cleaning",
     title: "Commercial Cleaning",
-    price: "$258",
+    description: "Reliable office and workspace cleaning to keep your workplace healthy and productive.",
     image: "/images/Commercial Cleaning.webp",
+    href: "#contact",
+  },
+  {
+    id: "linen-hire",
+    title: "Linen Hire",
+    description: "Fresh, premium hotel-quality bed sheets, towels, and linen supply for your properties.",
+    image: "/images/Linen Hire.webp",
     href: "#contact",
   },
 ];
@@ -51,8 +51,8 @@ function BgBubble({
     <div
       aria-hidden="true"
       className={`absolute rounded-full pointer-events-none ${size} ${className} ${variant === "outline"
-          ? "border border-sky-200 opacity-30"
-          : "bg-pink-100 opacity-20"
+        ? "border border-sky-200 opacity-30"
+        : "bg-pink-100 opacity-20"
         }`}
     />
   );

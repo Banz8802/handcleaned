@@ -240,19 +240,19 @@ const SERVICES_DATA: ServiceData[] = [
   {
     id: "deeper-cleaning",
     title: "Deeper and More Efficient Cleaning Results",
-    description: "Professional companies use trained staff...",
+    description: "Professional companies use trained staff, advanced equipment, and specialized products to achieve a deeper clean.",
     icon: <VacuumIcon />,
   },
   {
     id: "saves-time",
     title: "Saves Time and Effort",
-    description: "Professional cleaning services allow individuals",
+    description: "Professional cleaning services allow individuals to free up valuable time and focus on what matters most.",
     icon: <HouseIcon />,
   },
   {
     id: "well-being",
     title: "Improved Well-being and Comfort at Home",
-    description: "Living in a clean, organized, and germ-free environment",
+    description: "Living in a clean, organized, and germ-free environment promotes peace of mind and overall well-being.",
     icon: <KitchenIcon />,
   },
   {

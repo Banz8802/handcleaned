@@ -71,9 +71,12 @@ export default function CtaBannerSection({
           
           {/* Main Headline */}
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight tracking-tight mb-8 max-w-[800px]">
-            {title}{" "}
+            {title}
             {accentTitle && (
-              <span className="text-[#2CBAE8] font-extrabold">{accentTitle}</span>
+              <>
+                <br />
+                <span className="text-[#2CBAE8] font-extrabold">{accentTitle}</span>
+              </>
             )}
           </h2>
 
