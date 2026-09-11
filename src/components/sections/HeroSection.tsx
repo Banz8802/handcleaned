@@ -103,7 +103,7 @@ export default function HeroSection() {
       {/* Background Video */}
       <video
         ref={videoRef}
-        src="/images/hero-video.mp4"
+        src="/videos/hero-bg-final.webm"
         autoPlay
         loop
         muted
