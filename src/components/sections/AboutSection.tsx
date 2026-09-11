@@ -37,7 +37,7 @@ function SectionLabel({ text }: { text: string }) {
 export default function AboutSection() {
   return (
     <section
-      className="relative w-full bg-white overflow-hidden"
+      className="relative w-full bg-white overflow-hidden py-20 lg:py-28"
       aria-labelledby="about-heading"
     >
       {/* ── Section-level floating bubbles (right side per mockup) ─── */}
@@ -47,7 +47,7 @@ export default function AboutSection() {
       <div aria-hidden="true" className="absolute bottom-8  right-24 w-5  h-5  rounded-full bg-sky-100 opacity-30 pointer-events-none" />
 
       {/* ── Inner container ──────────────────────────────────────────── */}
-      <div className="max-w-[1200px] mx-auto px-6 lg:px-8 py-20 lg:py-28">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-16 xl:gap-20">
 
           {/* ── Left: image collage ──────────────────────────────────── */}

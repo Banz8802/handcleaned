@@ -38,7 +38,7 @@ function SectionLabel({ text }: { text: string }) {
 export default function LocationSection() {
   return (
     <section
-      className="relative w-full bg-[#F7FBFF] overflow-hidden"
+      className="relative w-full bg-[#F7FBFF] overflow-hidden py-20 lg:py-28"
       aria-labelledby="location-heading"
     >
       {/* ── Subtle background bubbles ──────────────────────────────── */}
@@ -47,7 +47,7 @@ export default function LocationSection() {
       <div aria-hidden="true" className="absolute bottom-6 right-6 w-14 h-14 rounded-full border border-sky-200 opacity-20 pointer-events-none" />
 
       {/* ── Inner container ───────────────────────────────────────── */}
-      <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 py-20 lg:py-28">
+      <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
 
         {/* ── Section header ────────────────────────────────────────── */}
         <div className="mb-8 lg:mb-10">

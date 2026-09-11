@@ -56,7 +56,7 @@ function FooterWaveDivider() {
         viewBox="0 0 1440 60"
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
-        className="w-full h-full"
+        className="min-w-[1440px] w-full h-full relative left-1/2 -translate-x-1/2"
       >
         <path
           d="M0,60 C120,40 240,20 360,30 C480,40 600,60 720,50 C840,40 960,20 1080,30 C1200,40 1320,50 1440,40 L1440,60 L0,60 Z"

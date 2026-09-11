@@ -75,7 +75,7 @@ function SectionLabel({ text }: { text: string }) {
 export default function ServicesSection() {
   return (
     <section
-      className="relative w-full bg-[#F7FBFF] overflow-hidden"
+      className="relative w-full bg-[#F7FBFF] overflow-hidden py-20 lg:py-28"
       aria-labelledby="services-heading"
     >
       {/* ── Background decorative bubbles ─────────────────────────── */}
@@ -93,18 +93,15 @@ export default function ServicesSection() {
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
         className="absolute top-0 left-0 w-full h-14 opacity-[0.04] pointer-events-none"
-        aria-hidden="true"
+        fill="none"
+        stroke="#00AEEF"
+        strokeWidth="2"
       >
-        <path
-          d="M0,30 Q360,60 720,30 Q1080,0 1440,30"
-          fill="none"
-          stroke="#00AEEF"
-          strokeWidth="80"
-        />
+        <path d="M0,30 Q360,60 720,30 Q1080,0 1440,30" />
       </svg>
 
       {/* ── Inner container ───────────────────────────────────────── */}
-      <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8 py-20 lg:py-28">
+      <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
 
         {/* ── Section header — centered ──────────────────────────── */}
         <div className="text-center mb-12 lg:mb-16">
