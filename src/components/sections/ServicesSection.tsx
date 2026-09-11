@@ -9,28 +9,28 @@ const SERVICES: ServiceCardData[] = [
     id: "deep-cleaning",
     title: "Deep Cleaning",
     price: "$258",
-    image: "/images/service-img.png",
+    image: "/images/Deep Cleaning.webp",
     href: "#contact",
   },
   {
     id: "end-of-lease",
     title: "End of Lease Cleaning",
     price: "$395",
-    image: "/images/service-img.png",
+    image: "/images/End of Lease Cleaning.webp",
     href: "#contact",
   },
   {
     id: "airbnb-cleaning",
     title: "Initial / Deep Cleaning Airbnb",
     price: "$258",
-    image: "/images/service-img.png",
+    image: "/images/Deep Cleaning Airbnb.webp",
     href: "#contact",
   },
   {
     id: "commercial-cleaning",
     title: "Commercial Cleaning",
     price: "$258",
-    image: "/images/service-img.png",
+    image: "/images/Commercial Cleaning.webp",
     href: "#contact",
   },
 ];
@@ -50,11 +50,10 @@ function BgBubble({
   return (
     <div
       aria-hidden="true"
-      className={`absolute rounded-full pointer-events-none ${size} ${className} ${
-        variant === "outline"
+      className={`absolute rounded-full pointer-events-none ${size} ${className} ${variant === "outline"
           ? "border border-sky-200 opacity-30"
           : "bg-pink-100 opacity-20"
-      }`}
+        }`}
     />
   );
 }
@@ -80,13 +79,13 @@ export default function ServicesSection() {
       aria-labelledby="services-heading"
     >
       {/* ── Background decorative bubbles ─────────────────────────── */}
-      <BgBubble size="w-20 h-20" className="top-8  left-4"  />
+      <BgBubble size="w-20 h-20" className="top-8  left-4" />
       <BgBubble size="w-10 h-10" className="top-20 left-24" variant="fill" />
       <BgBubble size="w-14 h-14" className="top-6  right-8" />
-      <BgBubble size="w-8  h-8"  className="top-28 right-20" variant="fill" />
+      <BgBubble size="w-8  h-8" className="top-28 right-20" variant="fill" />
       <BgBubble size="w-16 h-16" className="bottom-10 left-10" variant="fill" />
       <BgBubble size="w-12 h-12" className="bottom-8  right-6" />
-      <BgBubble size="w-6  h-6"  className="bottom-24 right-28" variant="fill" />
+      <BgBubble size="w-6  h-6" className="bottom-24 right-28" variant="fill" />
 
       {/* ── Subtle curved line watermark (top) ────────────────────── */}
       <svg

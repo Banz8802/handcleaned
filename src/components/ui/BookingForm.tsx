@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, type FormEvent } from "react";
 
@@ -182,7 +182,7 @@ export default function BookingForm() {
 
       <button
         type="submit"
-        className="mt-2 w-full bg-[#00AEEF] hover:bg-[#0099CC] text-white font-semibold text-sm py-3 rounded-lg transition-colors tracking-wide"
+        className="mt-2 w-full bg-[#2CBAE8] hover:bg-[#17739C] text-white font-semibold text-sm py-3 rounded-full transition-colors tracking-wide"
       >
         Book Now
       </button>

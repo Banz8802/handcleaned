@@ -180,7 +180,7 @@ function BenefitCard({ icon, title, description }: BenefitCardProps) {
       {/* View Service button */}
       <Link
         href="#contact"
-        className="mt-auto inline-flex items-center justify-center text-xs font-semibold text-[#00AEEF] bg-[#EBF6FB] hover:bg-[#00AEEF] hover:text-white px-5 py-2.5 rounded-xl transition-colors w-full md:w-auto relative z-10"
+        className="mt-auto inline-flex items-center justify-center text-xs font-semibold text-white bg-[#2CBAE8] hover:bg-[#17739C] px-5 py-2.5 rounded-full transition-colors w-full md:w-auto relative z-10"
       >
         View Service
       </Link>
@@ -363,7 +363,7 @@ export default function SpecializedServicesSection() {
             {/* CTA Button */}
             <Link
               href="#services"
-              className="inline-flex items-center justify-center px-7 py-3 rounded-md bg-[#1A2E44] text-white font-semibold text-sm hover:bg-[#00AEEF] transition-colors"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm hover:bg-[#17739C] transition-colors"
             >
               All Services
             </Link>

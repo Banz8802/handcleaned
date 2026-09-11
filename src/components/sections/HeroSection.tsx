@@ -145,7 +145,7 @@ export default function HeroSection() {
           {/* CTA button */}
           <Link
             href="#contact"
-            className="inline-flex items-center justify-center px-8 py-3.5 rounded-md bg-[#1A2E44] text-white font-semibold text-sm tracking-widest uppercase hover:bg-[#243d58] transition-colors"
+            className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm tracking-widest uppercase hover:bg-[#17739C] transition-colors"
           >
             Contact Us
           </Link>

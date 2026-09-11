@@ -29,31 +29,14 @@ function Bubble({ className, size, variant = "outline" }: {
   return (
     <div
       aria-hidden="true"
-      className={`absolute rounded-full pointer-events-none ${size} ${className} ${
-        variant === "outline"
-          ? "border-2 border-sky-200 opacity-30"
-          : "bg-pink-100 opacity-25"
-      }`}
+      className={`absolute rounded-full pointer-events-none ${size} ${className} ${variant === "outline"
+        ? "border-2 border-sky-200 opacity-30"
+        : "bg-pink-100 opacity-25"
+        }`}
     />
   );
 }
 
-// ---------------------------------------------------------------------------
-// Booking illustration image
-// ---------------------------------------------------------------------------
-function BookingIllustration() {
-  return (
-    <div className="relative w-full max-w-[450px] aspect-[715/651] overflow-hidden">
-      <Image
-        src="/images/contact-img.png"
-        alt="Book a cleaning service"
-        fill
-        className="object-contain"
-        sizes="(max-width: 1024px) 100vw, 450px"
-      />
-    </div>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // BookingSection — main export
@@ -67,18 +50,18 @@ export default function BookingSection() {
       {/* ── Section-level decorative elements ─────────────────────── */}
 
       {/* Sparkle stars */}
-      <Sparkle className="top-12 left-6"   size="w-6 h-6" />
-      <Sparkle className="top-6  left-16"  size="w-4 h-4" />
+      <Sparkle className="top-12 left-6" size="w-6 h-6" />
+      <Sparkle className="top-6  left-16" size="w-4 h-4" />
       <Sparkle className="bottom-16 left-8" size="w-5 h-5" />
-      <Sparkle className="top-10 right-6"  size="w-4 h-4" />
+      <Sparkle className="top-10 right-6" size="w-4 h-4" />
       <Sparkle className="bottom-10 right-12" size="w-6 h-6" />
 
       {/* Background bubbles */}
-      <Bubble size="w-24 h-24" className="top-6   left-0"   />
-      <Bubble size="w-10 h-10" className="top-28  left-12"  variant="fill" />
-      <Bubble size="w-16 h-16" className="bottom-8 left-6"  variant="fill" />
-      <Bubble size="w-20 h-20" className="top-4   right-2"  />
-      <Bubble size="w-8  h-8"  className="top-32  right-16" variant="fill" />
+      <Bubble size="w-24 h-24" className="top-6   left-0" />
+      <Bubble size="w-10 h-10" className="top-28  left-12" variant="fill" />
+      <Bubble size="w-16 h-16" className="bottom-8 left-6" variant="fill" />
+      <Bubble size="w-20 h-20" className="top-4   right-2" />
+      <Bubble size="w-8  h-8" className="top-32  right-16" variant="fill" />
       <Bubble size="w-12 h-12" className="bottom-6 right-4" />
 
       {/* ── White outer card container ────────────────────────────── */}
@@ -98,27 +81,15 @@ export default function BookingSection() {
               </div>
             </div>
 
-            {/* ── Right: illustration ────────────────────────────── */}
-            <div className="flex-1 bg-[#EBF6FB] flex items-center justify-center px-6 py-10 lg:py-0 min-h-[360px] lg:min-h-0 relative">
-              {/* Decorative dots grid pattern */}
-              <svg
-                viewBox="0 0 200 200"
-                className="absolute top-4 right-4 w-24 h-24 opacity-[0.08] pointer-events-none"
-                aria-hidden="true"
-              >
-                {Array.from({ length: 5 }).map((_, row) =>
-                  Array.from({ length: 5 }).map((_, col) => (
-                    <circle
-                      key={`${row}-${col}`}
-                      cx={20 + col * 40}
-                      cy={20 + row * 40}
-                      r="5"
-                      fill="#00AEEF"
-                    />
-                  ))
-                )}
-              </svg>
-              <BookingIllustration />
+            {/* ── Right: full-bleed image background ──────────────── */}
+            <div className="flex-1 relative min-h-[360px] lg:min-h-0 overflow-hidden">
+              <Image
+                src="/images/contact-img.webp"
+                alt="Book a cleaning service"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 1024px) 100vw, 62vw"
+              />
             </div>
 
           </div>

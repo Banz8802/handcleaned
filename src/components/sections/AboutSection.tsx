@@ -9,11 +9,11 @@ function ImageCollage() {
   return (
     <div className="relative flex-shrink-0 w-full max-w-[500px] aspect-[580/556] overflow-hidden rounded-3xl mx-auto lg:mx-0">
       <Image
-        src="/images/about-img.png"
+        src="/images/cleaners.webp"
         alt="About Hand Cleaned"
         fill
         className="object-cover"
-        sizes="(max-width: 1024px) 100vw, 500px"
+        sizes="(max-width: 580px) 100vw, 580px"
         priority
       />
     </div>
@@ -79,7 +79,7 @@ export default function AboutSection() {
             <div className="flex justify-center lg:justify-start">
               <Link
                 href="#services"
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-md border-2 border-[#00AEEF] text-[#00AEEF] font-semibold text-sm hover:bg-[#00AEEF] hover:text-white transition-colors"
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm hover:bg-[#17739C] transition-colors"
               >
                 Read more
                 <svg

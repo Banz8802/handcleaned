@@ -66,9 +66,9 @@ export default function ServiceCard({ title, price, image, href = "#contact" }: 
         <div className="mt-auto pt-2">
           <Link
             href={href}
-            className="inline-flex items-center gap-1.5 bg-[#00AEEF] text-white text-xs font-semibold px-3.5 py-1.5 rounded-md hover:bg-[#0099CC] transition-colors"
+            className="inline-flex items-center gap-1.5 bg-[#2CBAE8] text-white text-xs font-semibold px-3.5 py-1.5 rounded-full hover:bg-[#17739C] transition-colors"
           >
-            Read more
+            Reserve Now
             {/* Small circular arrow */}
             <span className="flex items-center justify-center w-4 h-4 rounded-full border border-white/50">
               <svg

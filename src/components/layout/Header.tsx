@@ -100,7 +100,7 @@ export default function Header() {
 
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#00AEEF] text-white font-bold text-sm hover:bg-[#0099CC] transition-all duration-200 whitespace-nowrap shadow-md shadow-[#00AEEF]/20 hover:shadow-lg hover:shadow-[#00AEEF]/30"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#2CBAE8] text-white font-bold text-sm hover:bg-[#17739C] transition-all duration-200 whitespace-nowrap shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30"
             >
               Contact Us
             </Link>
@@ -140,7 +140,7 @@ export default function Header() {
 
           <Link
             href="#contact"
-            className="inline-flex items-center justify-center py-3 rounded-full bg-[#00AEEF] text-white font-bold text-sm hover:bg-[#0099CC] transition-all duration-200 shadow-md shadow-[#00AEEF]/20 hover:shadow-lg hover:shadow-[#00AEEF]/30"
+            className="inline-flex items-center justify-center py-3 rounded-full bg-[#2CBAE8] text-white font-bold text-sm hover:bg-[#17739C] transition-all duration-200 shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30"
             onClick={() => setMobileMenuOpen(false)}
           >
             Contact Us
