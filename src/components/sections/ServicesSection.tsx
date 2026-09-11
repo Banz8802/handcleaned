@@ -1,4 +1,5 @@
 import ServiceCard, { type ServiceCardData } from "@/components/ui/ServiceCard";
+import BubbleDecoration from "@/components/ui/BubbleDecoration";
 
 // ---------------------------------------------------------------------------
 // Service data — update title, price, and image path when real assets arrive.
@@ -36,29 +37,6 @@ const SERVICES: ServiceCardData[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Subtle background bubble — decorative only, no interaction
-// ---------------------------------------------------------------------------
-function BgBubble({
-  className,
-  size,
-  variant = "outline",
-}: {
-  className: string;
-  size: string;
-  variant?: "outline" | "fill";
-}) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`absolute rounded-full pointer-events-none ${size} ${className} ${variant === "outline"
-        ? "border border-sky-200 opacity-30"
-        : "bg-pink-100 opacity-20"
-        }`}
-    />
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Section label — shared pattern across all sections
 // ---------------------------------------------------------------------------
 function SectionLabel({ text }: { text: string }) {
@@ -78,30 +56,63 @@ export default function ServicesSection() {
       className="relative w-full bg-[#F7FBFF] overflow-hidden py-20 lg:py-28"
       aria-labelledby="services-heading"
     >
-      {/* ── Background decorative bubbles ─────────────────────────── */}
-      <BgBubble size="w-20 h-20" className="top-8  left-4" />
-      <BgBubble size="w-10 h-10" className="top-20 left-24" variant="fill" />
-      <BgBubble size="w-14 h-14" className="top-6  right-8" />
-      <BgBubble size="w-8  h-8" className="top-28 right-20" variant="fill" />
-      <BgBubble size="w-16 h-16" className="bottom-10 left-10" variant="fill" />
-      <BgBubble size="w-12 h-12" className="bottom-8  right-6" />
-      <BgBubble size="w-6  h-6" className="bottom-24 right-28" variant="fill" />
-
-      {/* ── Subtle curved line watermark (top) ────────────────────── */}
-      <svg
-        viewBox="0 0 1440 60"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        className="absolute top-0 left-0 w-full h-14 opacity-[0.04] pointer-events-none"
-        fill="none"
-        stroke="#00AEEF"
-        strokeWidth="2"
-      >
-        <path d="M0,30 Q360,60 720,30 Q1080,0 1440,30" />
-      </svg>
-
       {/* ── Inner container ───────────────────────────────────────── */}
       <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
+
+        {/* ── Background floating bubble PNG images (centered framing) ── */}
+        {/* Top Left Cluster — framing header on left */}
+        <BubbleDecoration
+          imageIndex={1}
+          size={110}
+          className="-top-2 left-[2%] sm:left-[6%] lg:left-[10%] opacity-90"
+          animationIndex={1}
+        />
+        <BubbleDecoration
+          imageIndex={2}
+          size={45}
+          className="top-12 left-[14%] sm:left-[18%] lg:left-[21%] opacity-80"
+          animationIndex={2}
+        />
+        <BubbleDecoration
+          imageIndex={3}
+          size={55}
+          className="top-20 left-[7%] sm:left-[11%] lg:left-[14%] opacity-85"
+          animationIndex={3}
+        />
+
+        {/* Top Right Cluster — framing header on right */}
+        <BubbleDecoration
+          imageIndex={2}
+          size={90}
+          className="-top-3 right-[2%] sm:right-[6%] lg:right-[10%] opacity-85"
+          animationIndex={4}
+        />
+        <BubbleDecoration
+          imageIndex={3}
+          size={45}
+          className="top-12 right-[12%] sm:right-[16%] lg:right-[19%] opacity-80"
+          animationIndex={1}
+        />
+        <BubbleDecoration
+          imageIndex={1}
+          size={40}
+          className="top-24 right-[5%] sm:right-[9%] lg:right-[13%] opacity-75"
+          animationIndex={2}
+        />
+
+        {/* Lower Left & Right — framing cards */}
+        <BubbleDecoration
+          imageIndex={3}
+          size={85}
+          className="bottom-4 left-[1%] sm:left-[4%] opacity-80"
+          animationIndex={3}
+        />
+        <BubbleDecoration
+          imageIndex={1}
+          size={95}
+          className="bottom-2 right-[1%] sm:right-[4%] opacity-85"
+          animationIndex={4}
+        />
 
         {/* ── Section header — centered ──────────────────────────── */}
         <div className="text-center mb-12 lg:mb-16">

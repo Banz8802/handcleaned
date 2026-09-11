@@ -47,25 +47,29 @@ export default function BookingSection() {
       className="relative w-full bg-[#EBF6FB] overflow-hidden py-20 lg:py-28"
       aria-labelledby="booking-heading"
     >
-      {/* ── Section-level decorative elements ─────────────────────── */}
-
-      {/* Sparkle stars */}
-      <Sparkle className="top-12 left-6" size="w-6 h-6" />
-      <Sparkle className="top-6  left-16" size="w-4 h-4" />
-      <Sparkle className="bottom-16 left-8" size="w-5 h-5" />
-      <Sparkle className="top-10 right-6" size="w-4 h-4" />
-      <Sparkle className="bottom-10 right-12" size="w-6 h-6" />
-
-      {/* Background bubbles */}
-      <Bubble size="w-24 h-24" className="top-6   left-0" />
-      <Bubble size="w-10 h-10" className="top-28  left-12" variant="fill" />
-      <Bubble size="w-16 h-16" className="bottom-8 left-6" variant="fill" />
-      <Bubble size="w-20 h-20" className="top-4   right-2" />
-      <Bubble size="w-8  h-8" className="top-32  right-16" variant="fill" />
-      <Bubble size="w-12 h-12" className="bottom-6 right-4" />
-
       {/* ── White outer card container ────────────────────────────── */}
       <div className="relative max-w-[1200px] mx-auto px-6 lg:px-8">
+
+        {/* Decorative sparkles & bubbles (framed close to center card) */}
+        {/* Top Left Cluster */}
+        <Sparkle className="-top-6 left-[2%] sm:left-[4%]" size="w-6 h-6" />
+        <Sparkle className="-top-10 left-[10%] sm:left-[14%]" size="w-4 h-4" />
+        <Bubble size="w-24 h-24" className="-top-8 left-[1%] sm:left-[4%]" />
+        <Bubble size="w-10 h-10" className="top-12 left-[8%] sm:left-[12%]" variant="fill" />
+
+        {/* Bottom Left Cluster */}
+        <Sparkle className="-bottom-8 left-[3%] sm:left-[6%]" size="w-5 h-5" />
+        <Bubble size="w-16 h-16" className="-bottom-6 left-[2%] sm:left-[5%]" variant="fill" />
+
+        {/* Top Right Cluster */}
+        <Sparkle className="-top-8 right-[2%] sm:right-[5%]" size="w-4 h-4" />
+        <Bubble size="w-20 h-20" className="-top-10 right-[1%] sm:right-[4%]" />
+        <Bubble size="w-8 h-8" className="top-12 right-[8%] sm:right-[12%]" variant="fill" />
+
+        {/* Bottom Right Cluster */}
+        <Sparkle className="-bottom-6 right-[4%] sm:right-[8%]" size="w-6 h-6" />
+        <Bubble size="w-12 h-12" className="-bottom-4 right-[2%] sm:right-[5%]" />
+
         <div className="bg-white rounded-3xl shadow-[0_4px_40px_rgba(0,0,0,0.08)] overflow-hidden">
 
           {/* Inner grid: form left, illustration right */}
