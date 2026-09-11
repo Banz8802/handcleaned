@@ -82,18 +82,25 @@ export default function Header() {
 
           <div className="hidden md:flex items-center gap-5">
             <a
-              href="tel:+61341089922"
-              className="flex items-center gap-2 text-[#1A2E44] font-medium text-sm hover:text-[#00AEEF] transition-colors"
+              href="tel:+61411289877"
+              className="inline-flex items-center gap-3 bg-[#FFE67B] hover:bg-[#FFDE59] text-[#1A2E44] font-bold text-sm pl-2 pr-5 py-1.5 rounded-full transition-all duration-200 shadow-md shadow-black/5"
             >
-              <span className="w-7 h-7 rounded-full bg-[#FFF3CD] flex items-center justify-center text-[#F5C518] flex-shrink-0">
-                <PhoneIcon />
+              <span className="w-8 h-8 rounded-full bg-[#E5A000] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 005.429 5.43l.774-1.548a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
               </span>
-              <span className="tracking-wide">+61 3 4108 9922</span>
+              <span className="tracking-wide">+61 41128 9877</span>
             </a>
 
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-md bg-[#00AEEF] text-white font-semibold text-sm hover:bg-[#0099CC] transition-colors whitespace-nowrap"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#00AEEF] text-white font-bold text-sm hover:bg-[#0099CC] transition-all duration-200 whitespace-nowrap shadow-md shadow-[#00AEEF]/20 hover:shadow-lg hover:shadow-[#00AEEF]/30"
             >
               Contact Us
             </Link>
@@ -114,19 +121,26 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-4">
           <a
-            href="tel:+61341089922"
-            className="flex items-center gap-3 text-[#1A2E44] font-medium text-sm"
+            href="tel:+61411289877"
+            className="inline-flex items-center justify-center gap-3 bg-[#FFE67B] hover:bg-[#FFDE59] text-[#1A2E44] font-bold text-sm py-2.5 rounded-full transition-all duration-200 shadow-md shadow-black/5"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <span className="w-7 h-7 rounded-full bg-[#FFF3CD] flex items-center justify-center text-[#F5C518] flex-shrink-0">
-              <PhoneIcon />
+            <span className="w-8 h-8 rounded-full bg-[#E5A000] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <svg
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-4 h-4"
+                aria-hidden="true"
+              >
+                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 005.429 5.43l.774-1.548a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+              </svg>
             </span>
-            <span>+61 3 4108 9922</span>
+            <span>+61 41128 9877</span>
           </a>
 
           <Link
             href="#contact"
-            className="inline-flex items-center justify-center px-5 py-2.5 rounded-md bg-[#00AEEF] text-white font-semibold text-sm hover:bg-[#0099CC] transition-colors"
+            className="inline-flex items-center justify-center py-3 rounded-full bg-[#00AEEF] text-white font-bold text-sm hover:bg-[#0099CC] transition-all duration-200 shadow-md shadow-[#00AEEF]/20 hover:shadow-lg hover:shadow-[#00AEEF]/30"
             onClick={() => setMobileMenuOpen(false)}
           >
             Contact Us
