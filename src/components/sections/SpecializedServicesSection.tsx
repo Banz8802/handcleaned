@@ -209,7 +209,7 @@ function ArrowButton({
         ${
           disabled
             ? "border-gray-200 text-gray-300 cursor-not-allowed bg-white"
-            : "border-[#00AEEF] text-[#00AEEF] hover:bg-[#00AEEF] hover:text-white bg-white cursor-pointer shadow-sm"
+            : "border-[#17739C] text-[#17739C] hover:bg-[#17739C] hover:text-white bg-white cursor-pointer shadow-sm"
         }
       `}
     >
@@ -374,7 +374,7 @@ export default function SpecializedServicesSection() {
               <ArrowButton direction="left" onClick={goLeft} disabled={!canGoLeft} />
 
               {/* Blue container surrounding the cards */}
-              <div className="flex-1 bg-[#00AEEF] rounded-3xl p-6 lg:p-8 overflow-hidden relative">
+              <div className="flex-1 bg-[#17739C] rounded-3xl p-6 lg:p-8 overflow-hidden relative">
                 {/* Viewport: clips overflow */}
                 <div className="overflow-hidden" ref={containerRef}>
                   {/* Track: slides horizontally */}
@@ -420,7 +420,7 @@ export default function SpecializedServicesSection() {
                   onClick={() => setCurrentIndex(i)}
                   className={`rounded-full transition-all duration-200 ${
                     currentIndex === i
-                      ? "w-5 h-2 bg-[#00AEEF]"
+                      ? "w-5 h-2 bg-[#17739C]"
                       : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
                   }`}
                 />
