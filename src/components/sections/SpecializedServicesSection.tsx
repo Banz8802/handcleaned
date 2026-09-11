@@ -349,9 +349,7 @@ export default function SpecializedServicesSection() {
               id="specialized-heading"
               className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1A2E44] leading-tight tracking-tight mb-5"
             >
-              Do you require
-              <br />
-              specialized advice?
+              Why Choose Us?
             </h2>
 
             {/* Supporting description */}
