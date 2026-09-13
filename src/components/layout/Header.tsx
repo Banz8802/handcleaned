@@ -4,11 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-
-// ---------------------------------------------------------------------------
-// Logo placeholder - swap src prop for the real logo image when available.
-// Reserved dimensions match the mockup logo aspect ratio (~140x40px area).
-// ---------------------------------------------------------------------------
 function LogoPlaceholder() {
   return (
     <div className="flex items-center select-none" aria-label="Hand Cleaned home">
@@ -20,23 +15,6 @@ function LogoPlaceholder() {
         priority
       />
     </div>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="w-4 h-4"
-      aria-hidden="true"
-    >
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.73a16 16 0 0 0 5.54 5.54l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z" />
-    </svg>
   );
 }
 
@@ -68,19 +46,85 @@ function HamburgerIcon({ open }: { open: boolean }) {
   );
 }
 
+const SERVICES_NAV = [
+  { label: "Airbnb Cleaning", href: "/airbnb-cleaning", desc: "Turnover, midstay & setup cleans" },
+  { label: "Residential Cleaning", href: "/residential-cleaning", desc: "Regular & deep home care" },
+  { label: "Commercial Cleaning", href: "/commercial-cleaning", desc: "Office & workspace sanitization" },
+  { label: "Linen Hire", href: "/linen-hire", desc: "Hotel quality linen supply" },
+];
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(true);
 
   return (
-    <header className="w-full bg-white shadow-sm sticky top-0 z-50">
+    <header className="w-full bg-white shadow-xs sticky top-0 z-50">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-[72px]">
 
+          {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <LogoPlaceholder />
           </Link>
 
-          <div className="hidden md:flex items-center gap-5">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-7">
+            <Link
+              href="/"
+              className="text-[#1A2E44] font-semibold text-sm hover:text-[#2CBAE8] transition-colors"
+            >
+              Home
+            </Link>
+
+            {/* Services Dropdown */}
+            <div
+              className="relative py-4"
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
+            >
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 text-[#1A2E44] font-semibold text-sm hover:text-[#2CBAE8] transition-colors cursor-pointer"
+                onClick={() => setDropdownOpen((prev) => !prev)}
+                aria-expanded={dropdownOpen}
+              >
+                <span>Services</span>
+                <svg
+                  className={`w-4 h-4 text-[#2CBAE8] transition-transform duration-200 ${
+                    dropdownOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Dropdown Menu Box */}
+              {dropdownOpen && (
+                <div className="absolute top-full left-0 w-64 bg-white rounded-2xl p-2 shadow-xl border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-150 z-50">
+                  {SERVICES_NAV.map((service) => (
+                    <Link
+                      key={service.href}
+                      href={service.href}
+                      className="block px-4 py-2.5 rounded-xl hover:bg-[#EBF6FB] transition-colors group"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <span className="block text-xs font-bold text-[#1A2E44] group-hover:text-[#2CBAE8] transition-colors">
+                        {service.label}
+                      </span>
+                      <span className="block text-[11px] text-gray-400 mt-0.5">
+                        {service.desc}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Phone Button */}
             <a
               href="tel:+61411289877"
               className="inline-flex items-center gap-3 bg-[#FFE67B] hover:bg-[#FFDE59] text-[#1A2E44] font-bold text-sm pl-2 pr-5 py-1.5 rounded-full transition-all duration-200 shadow-md shadow-black/5"
@@ -98,14 +142,16 @@ export default function Header() {
               <span className="tracking-wide">+61 411 289 877</span>
             </a>
 
+            {/* Contact Us */}
             <Link
-              href="#contact"
+              href="/#contact"
               className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#2CBAE8] text-white font-bold text-sm hover:bg-[#17739C] transition-all duration-200 whitespace-nowrap shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30"
             >
               Contact Us
             </Link>
           </div>
 
+          {/* Mobile Hamburger Button */}
           <button
             type="button"
             className="md:hidden flex items-center justify-center w-10 h-10 rounded-md text-[#1A2E44] hover:bg-gray-100 transition-colors"
@@ -118,11 +164,57 @@ export default function Header() {
         </div>
       </div>
 
+      {/* Mobile Navigation Panel */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-4">
+        <div className="md:hidden border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-3">
+          <Link
+            href="/"
+            className="text-[#1A2E44] font-semibold text-base py-1.5"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
+
+          {/* Mobile Services Accordion */}
+          <div className="border-y border-gray-100 py-2">
+            <button
+              type="button"
+              onClick={() => setMobileServicesOpen((prev) => !prev)}
+              className="w-full flex items-center justify-between text-[#1A2E44] font-bold text-base py-1"
+            >
+              <span>Services</span>
+              <svg
+                className={`w-4 h-4 text-[#2CBAE8] transition-transform ${
+                  mobileServicesOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {mobileServicesOpen && (
+              <div className="flex flex-col gap-2 pl-3 pt-2">
+                {SERVICES_NAV.map((service) => (
+                  <Link
+                    key={service.href}
+                    href={service.href}
+                    className="text-gray-600 hover:text-[#2CBAE8] text-sm font-semibold py-1 flex items-center gap-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#2CBAE8]" />
+                    <span>{service.label}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           <a
             href="tel:+61411289877"
-            className="inline-flex items-center justify-center gap-3 bg-[#FFE67B] hover:bg-[#FFDE59] text-[#1A2E44] font-bold text-sm py-2.5 rounded-full transition-all duration-200 shadow-md shadow-black/5"
+            className="inline-flex items-center justify-center gap-3 bg-[#FFE67B] hover:bg-[#FFDE59] text-[#1A2E44] font-bold text-sm py-2.5 rounded-full transition-all duration-200 shadow-md shadow-black/5 mt-1"
             onClick={() => setMobileMenuOpen(false)}
           >
             <span className="w-8 h-8 rounded-full bg-[#E5A000] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -139,7 +231,7 @@ export default function Header() {
           </a>
 
           <Link
-            href="#contact"
+            href="/#contact"
             className="inline-flex items-center justify-center py-3 rounded-full bg-[#2CBAE8] text-white font-bold text-sm hover:bg-[#17739C] transition-all duration-200 shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30"
             onClick={() => setMobileMenuOpen(false)}
           >

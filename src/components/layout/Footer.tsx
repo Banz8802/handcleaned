@@ -88,9 +88,9 @@ const INFO_LINKS = [
 ];
 
 const CATEGORIES_LINKS = [
-  { label: "House Cleaning", href: "#services" },
-  { label: "Airbnb Cleaning", href: "#services" },
-  { label: "Commercial Cleaning", href: "#services" },
+  { label: "House Cleaning", href: "/residential-cleaning" },
+  { label: "Airbnb Cleaning", href: "/airbnb-cleaning" },
+  { label: "Commercial Cleaning", href: "/commercial-cleaning" },
   { label: "Deep Cleaning", href: "#services" },
   { label: "End of Lease Cleaning", href: "#services" },
 ];

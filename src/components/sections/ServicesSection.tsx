@@ -11,28 +11,28 @@ const SERVICES: ServiceCardData[] = [
     title: "Airbnb Cleaning",
     description: "Fast turnaround turnover cleaning and guest-ready preparation for your short-term rental.",
     image: "/images/airbnb-cleaning.webp",
-    href: "#contact",
+    href: "/airbnb-cleaning",
   },
   {
     id: "residential-cleaning",
     title: "Residential Cleaning",
     description: "Comprehensive home cleaning tailored to maintain a clean, hygienic, and welcoming space.",
     image: "/images/Deep Cleaning.webp",
-    href: "#contact",
+    href: "/residential-cleaning",
   },
   {
     id: "commercial-cleaning",
     title: "Commercial Cleaning",
     description: "Reliable office and workspace cleaning to keep your workplace healthy and productive.",
     image: "/images/Commercial Cleaning.webp",
-    href: "#contact",
+    href: "/commercial-cleaning",
   },
   {
     id: "linen-hire",
     title: "Linen Hire",
     description: "Fresh, premium hotel-quality bed sheets, towels, and linen supply for your properties.",
     image: "/images/Linen Hire.webp",
-    href: "#contact",
+    href: "/linen-hire",
   },
 ];
 
