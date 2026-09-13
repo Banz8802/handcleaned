@@ -81,18 +81,16 @@ function FooterWaveDivider() {
 // Footer Columns Data definition
 // ---------------------------------------------------------------------------
 const INFO_LINKS = [
-  { label: "About Us", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Contact Us", href: "#contact" },
-  { label: "Book Service", href: "#booking" },
+  { label: "About Us", href: "/#about" },
+  { label: "Contact Us", href: "/#contact" },
+  { label: "Book Service", href: "/#contact" },
 ];
 
-const CATEGORIES_LINKS = [
-  { label: "House Cleaning", href: "/residential-cleaning" },
+const SERVICES_LINKS = [
   { label: "Airbnb Cleaning", href: "/airbnb-cleaning" },
+  { label: "Residential Cleaning", href: "/residential-cleaning" },
   { label: "Commercial Cleaning", href: "/commercial-cleaning" },
-  { label: "Deep Cleaning", href: "#services" },
-  { label: "End of Lease Cleaning", href: "#services" },
+  { label: "Linen Hire", href: "/linen-hire" },
 ];
 
 const OPENING_HOURS = [
@@ -155,13 +153,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Categories */}
+          {/* Column 3: Services */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4">
             <h3 className="text-[#1A2E44] font-bold text-sm tracking-wide">
-              Categories
+              Services
             </h3>
             <ul className="flex flex-col items-center md:items-start gap-2.5">
-              {CATEGORIES_LINKS.map((link) => (
+              {SERVICES_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
