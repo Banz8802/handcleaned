@@ -8,6 +8,7 @@ export interface ResidentialPackageConfig {
   badge?: string;
   isPopular?: boolean;
   ratePerCleanerPerHour: number;
+  minHours?: number;
   shortDescription: string;
   inclusions: string[];
 }
@@ -19,6 +20,7 @@ export const DEFAULT_RESIDENTIAL_PACKAGES: ResidentialPackageConfig[] = [
     badge: "Popular for Weekly / Fortnightly Cleans",
     isPopular: true,
     ratePerCleanerPerHour: 60,
+    minHours: 2,
     shortDescription: "Routine home cleaning to keep your living space consistently clean, fresh, and welcoming.",
     inclusions: [
       "Dusting & wiping all reachable surfaces",
@@ -33,6 +35,7 @@ export const DEFAULT_RESIDENTIAL_PACKAGES: ResidentialPackageConfig[] = [
     name: "Deep Cleaning",
     badge: "Recommended for First Time & Seasonal Cleans",
     ratePerCleanerPerHour: 68,
+    minHours: 2,
     shortDescription: "Comprehensive deep sanitization focusing on stubborn grime, high-touch points, and detailed areas.",
     inclusions: [
       "Detailed dusting of high & low surfaces",

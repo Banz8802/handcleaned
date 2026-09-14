@@ -124,9 +124,22 @@ export default function ResidentialPricingSection({ onSelectOption }: Residentia
                       <span className="text-sm font-semibold opacity-80">/ hour</span>
                     </div>
 
-                    <div className="mt-2 pt-2 border-t border-black/10 flex items-center justify-center gap-2 text-xs font-semibold">
+                    <div className="mt-3 pt-2.5 border-t border-black/10 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs font-semibold">
                       <span className={pkg.isPopular ? "text-[#FFE67B]" : "text-[#2CBAE8]"}>
                         {numCleaners} {numCleaners === 1 ? "cleaner" : "cleaners"} × ${pkg.ratePerCleanerPerHour}/hr
+                      </span>
+                      <span className="opacity-40 hidden sm:inline">•</span>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-xs ${
+                          pkg.isPopular
+                            ? "bg-[#FFE67B] text-[#1A2E44]"
+                            : "bg-[#2CBAE8] text-white"
+                        }`}
+                      >
+                        <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Minimum of {pkg.minHours || 2} Hours
                       </span>
                     </div>
                   </div>

@@ -124,7 +124,7 @@ export default function AirbnbHeroSection() {
           <div className="flex flex-wrap items-center gap-4">
             <a
               href="#pricing"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#FFE67B] hover:bg-[#FFDE59] text-[#1A2E44] font-bold text-sm transition-all duration-200 shadow-lg shadow-black/10 hover:scale-[1.02]"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#2CBAE8] hover:bg-[#17739C] text-white font-bold text-sm transition-all duration-200 shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30 hover:scale-[1.02]"
             >
               Explore 4 Pricing Options
             </a>
