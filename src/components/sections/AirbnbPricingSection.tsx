@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   type PropertyType,
   type StoreyType,
   type PricingCardConfig,
   DEFAULT_PROPERTY_TYPES as PROPERTY_TYPES,
-  DEFAULT_STOREY_TYPES as STOREY_TYPES,
   DEFAULT_AIRBNB_PRICING_CARDS as PRICING_CARDS,
 } from "@/lib/data/airbnbPricing";
 
@@ -17,6 +17,7 @@ interface AirbnbPricingSectionProps {
 }
 
 export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSectionProps) {
+  const router = useRouter();
   const [selectedProperty, setSelectedProperty] = useState<PropertyType>("1 Bed + 1 to 1.5 Bath");
   const [selectedStorey, setSelectedStorey] = useState<StoreyType>("Single");
 
@@ -41,16 +42,42 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
     }
   };
 
-  const handleReserve = (cardName: string, calculatedPrice: number) => {
+  const handleReserve = (cardId: string, cardName: string, calculatedPrice: number) => {
     if (onSelectOption) {
       onSelectOption(cardName, calculatedPrice, selectedProperty);
     }
-    const targetSection = document.getElementById("contact") || document.getElementById("services");
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/#contact";
+
+    let bedrooms = "1";
+    let bathrooms = "1";
+    if (selectedProperty === "Studio") {
+      bedrooms = "Studio";
+      bathrooms = "1";
+    } else if (selectedProperty.startsWith("1 Bed")) {
+      bedrooms = "1";
+      bathrooms = "1.5";
+    } else if (selectedProperty.startsWith("2 Bed")) {
+      bedrooms = "2";
+      bathrooms = "2";
+    } else if (selectedProperty.startsWith("3 Bed")) {
+      bedrooms = "3";
+      bathrooms = "2";
+    } else if (selectedProperty.startsWith("4 Bed")) {
+      bedrooms = "4";
+      bathrooms = "2";
+    } else if (selectedProperty.startsWith("5 Bed")) {
+      bedrooms = "5";
+      bathrooms = "2";
     }
+
+    const params = new URLSearchParams({
+      service: "airbnb-cleaning",
+      package: cardId,
+      bedrooms,
+      bathrooms,
+      storey: selectedStorey,
+    });
+
+    router.push(`/booking?${params.toString()}`);
   };
 
   return (
@@ -244,7 +271,7 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
                 <div>
                   <button
                     type="button"
-                    onClick={() => handleReserve(card.name, currentPrice)}
+                    onClick={() => handleReserve(card.id, card.name, currentPrice)}
                     className={`w-full py-3.5 px-4 rounded-full font-bold text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 ${
                       card.isPopular
                         ? "bg-[#FFE67B] text-[#1A2E44] hover:bg-[#FFDE59] shadow-[#FFE67B]/20"

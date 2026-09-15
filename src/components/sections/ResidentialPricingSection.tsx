@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DEFAULT_RESIDENTIAL_PACKAGES } from "@/lib/data/residentialPricing";
 
 interface ResidentialPricingSectionProps {
-  onSelectOption?: (optionName: string, calculatedHourlyRate: number, cleanersCount: number) => void;
+  onSelectOption?: (packageName: string, totalRate: number, numCleaners: number) => void;
 }
 
 export default function ResidentialPricingSection({ onSelectOption }: ResidentialPricingSectionProps) {
+  const router = useRouter();
   const [numCleaners, setNumCleaners] = useState<number>(1);
 
   const handleReserve = (packageName: string, ratePerCleaner: number) => {
@@ -15,12 +17,13 @@ export default function ResidentialPricingSection({ onSelectOption }: Residentia
     if (onSelectOption) {
       onSelectOption(packageName, totalRate, numCleaners);
     }
-    const targetSection = document.getElementById("contact") || document.getElementById("services");
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/#contact";
-    }
+    const pkgId = packageName.toLowerCase().includes("deep") ? "deep-cleaning" : "regular-cleaning";
+    const params = new URLSearchParams({
+      service: "residential-cleaning",
+      package: pkgId,
+      cleaners: numCleaners.toString(),
+    });
+    router.push(`/booking?${params.toString()}`);
   };
 
   return (

@@ -142,12 +142,12 @@ export default function Header() {
               <span className="tracking-wide">+61 411 289 877</span>
             </a>
 
-            {/* Contact Us */}
+            {/* Book Now Button */}
             <Link
-              href="/#contact"
+              href="/booking"
               className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#2CBAE8] text-white font-bold text-sm hover:bg-[#17739C] transition-all duration-200 whitespace-nowrap shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30"
             >
-              Contact Us
+              Book Now
             </Link>
           </div>
 
@@ -231,11 +231,11 @@ export default function Header() {
           </a>
 
           <Link
-            href="/#contact"
+            href="/booking"
             className="inline-flex items-center justify-center py-3 rounded-full bg-[#2CBAE8] text-white font-bold text-sm hover:bg-[#17739C] transition-all duration-200 shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Contact Us
+            Book Now
           </Link>
         </div>
       )}

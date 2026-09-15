@@ -1,15 +1,22 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { DEFAULT_LINEN_HIRE_PACKAGES } from "@/lib/data/commercialPricing";
 
 export default function LinenHireSection() {
-  const handleHireSelect = (packageName: string) => {
-    const targetSection = document.getElementById("contact") || document.getElementById("services");
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/#contact";
+  const router = useRouter();
+  const handleHireSelect = (packageName?: string) => {
+    let pkgId = "";
+    if (packageName) {
+      if (packageName.toLowerCase().includes("king")) pkgId = "king-linen";
+      else if (packageName.toLowerCase().includes("queen")) pkgId = "queen-linen";
+      else if (packageName.toLowerCase().includes("single")) pkgId = "single-linen";
     }
+    const params = new URLSearchParams({
+      service: "linen-hire",
+      ...(pkgId ? { package: pkgId } : {}),
+    });
+    router.push(`/booking?${params.toString()}`);
   };
 
   return (

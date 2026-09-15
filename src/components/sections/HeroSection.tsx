@@ -144,7 +144,7 @@ export default function HeroSection() {
 
           {/* CTA button */}
           <Link
-            href="#contact"
+            href="/booking"
             className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm hover:bg-[#17739C] transition-colors"
           >
             Get a Quote

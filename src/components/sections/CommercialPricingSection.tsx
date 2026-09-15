@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DEFAULT_COMMERCIAL_PACKAGE } from "@/lib/data/commercialPricing";
 
 interface CommercialPricingSectionProps {
@@ -8,7 +9,8 @@ interface CommercialPricingSectionProps {
 }
 
 export default function CommercialPricingSection({ onSelectOption }: CommercialPricingSectionProps) {
-  const [numCleaners, setNumCleaners] = useState<number>(2);
+  const router = useRouter();
+  const [numCleaners, setNumCleaners] = useState<number>(1);
 
   const calculatedTotalRate = numCleaners * DEFAULT_COMMERCIAL_PACKAGE.ratePerCleanerPerHour;
 
@@ -16,12 +18,12 @@ export default function CommercialPricingSection({ onSelectOption }: CommercialP
     if (onSelectOption) {
       onSelectOption(DEFAULT_COMMERCIAL_PACKAGE.name, calculatedTotalRate, numCleaners);
     }
-    const targetSection = document.getElementById("contact") || document.getElementById("services");
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/#contact";
-    }
+    const params = new URLSearchParams({
+      service: "commercial-cleaning",
+      package: DEFAULT_COMMERCIAL_PACKAGE.id,
+      cleaners: numCleaners.toString(),
+    });
+    router.push(`/booking?${params.toString()}`);
   };
 
   return (

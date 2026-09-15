@@ -83,7 +83,7 @@ export default function CtaBannerSection({
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-10 w-full sm:w-auto">
             <Link
-              href="#contact"
+              href="/booking"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm sm:text-base hover:bg-[#17739C] transition-all duration-200 shadow-lg shadow-[#2CBAE8]/20 hover:shadow-xl hover:scale-[1.02]"
             >
               <span>Book Your Clean Now</span>

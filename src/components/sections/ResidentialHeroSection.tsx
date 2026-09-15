@@ -129,7 +129,7 @@ export default function ResidentialHeroSection() {
               Calculate Hourly Rate
             </a>
             <Link
-              href="/#contact"
+              href="/booking"
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-white/15 border border-white/30 text-white font-semibold text-sm hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
             >
               Book Home Clean

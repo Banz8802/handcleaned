@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DEFAULT_EXTRA_SERVICES } from "@/lib/data/commercialPricing";
 
 export default function ExtraServicesSection() {
+  const router = useRouter();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const toggleService = (id: string) => {
@@ -13,12 +15,7 @@ export default function ExtraServicesSection() {
   };
 
   const handleRequestQuote = () => {
-    const targetSection = document.getElementById("contact") || document.getElementById("services");
-    if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/#contact";
-    }
+    router.push("/booking");
   };
 
   return (

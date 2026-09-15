@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useRef, useEffect, useCallback } from "react";
 
@@ -145,15 +145,10 @@ export default function ServiceCarousel({ services }: ServiceCarouselProps) {
     return () => ro.disconnect();
   }, [updateVisibleCount]);
 
-  // Clamp index whenever visibleCount changes
-  useEffect(() => {
-    const maxIndex = Math.max(0, services.length - visibleCount);
-    setCurrentIndex((prev) => Math.min(prev, maxIndex));
-  }, [visibleCount, services.length]);
-
   const maxIndex = Math.max(0, services.length - visibleCount);
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < maxIndex;
+  const effectiveIndex = Math.min(currentIndex, maxIndex);
+  const canGoLeft = effectiveIndex > 0;
+  const canGoRight = effectiveIndex < maxIndex;
 
   function goLeft() {
     setCurrentIndex((i) => Math.max(0, i - 1));

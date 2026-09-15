@@ -40,7 +40,7 @@ export interface ServiceCardData {
   href?: string;
 }
 
-export default function ServiceCard({ title, description, price, image, href = "#contact" }: ServiceCardData) {
+export default function ServiceCard({ title, description, price, image, href = "/booking" }: ServiceCardData) {
   return (
     <article className="group flex flex-col bg-white rounded-2xl shadow-[0_2px_16px_rgba(0,0,0,0.07)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.14)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 overflow-hidden">
 

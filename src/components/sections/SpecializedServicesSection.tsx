@@ -299,15 +299,10 @@ export default function SpecializedServicesSection() {
     return () => ro.disconnect();
   }, [updateVisibleCount]);
 
-  // Clamp index whenever visibleCount changes
-  useEffect(() => {
-    const maxIndex = Math.max(0, SERVICES_DATA.length - visibleCount);
-    setCurrentIndex((prev) => Math.min(prev, maxIndex));
-  }, [visibleCount]);
-
   const maxIndex = Math.max(0, SERVICES_DATA.length - visibleCount);
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < maxIndex;
+  const effectiveIndex = Math.min(currentIndex, maxIndex);
+  const canGoLeft = effectiveIndex > 0;
+  const canGoRight = effectiveIndex < maxIndex;
 
   function goLeft() {
     setCurrentIndex((i) => Math.max(0, i - 1));
