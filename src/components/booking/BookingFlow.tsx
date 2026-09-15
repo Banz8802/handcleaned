@@ -9,8 +9,9 @@ import Step3PropertyDetails from "./Step3PropertyDetails";
 import Step4DateTimeSelection from "./Step4DateTimeSelection";
 import Step5CustomerDetails from "./Step5CustomerDetails";
 import BookingSummary from "./BookingSummary";
-import PaymentModal from "./PaymentModal";
+import { BookingSuccess } from "./BookingSuccess";
 
+import { submitBooking, type SubmitBookingResult } from "@/app/actions/submitBooking";
 import {
   AVAILABLE_SERVICES,
   getPackagesForService,
@@ -24,7 +25,6 @@ import type {
   PropertyDetails,
   ScheduleDetails,
   CustomerDetails,
-  BookingData,
   StoreyType,
 } from "@/lib/types/booking";
 
@@ -93,11 +93,10 @@ export default function BookingFlow() {
     specialInstructions: "",
   });
 
-  // Errors & Modal
+  // Errors & Submission Result State
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [preparedBookingData, setPreparedBookingData] = useState<BookingData | null>(null);
+  const [bookingSuccessResult, setBookingSuccessResult] = useState<SubmitBookingResult | null>(null);
 
   // Handle service selection change
   const handleSelectService = (service: BookingService) => {
@@ -160,8 +159,8 @@ export default function BookingFlow() {
     window.scrollTo({ top: 200, behavior: "smooth" });
   };
 
-  // Payment Abstraction Handler
-  const handleContinueToPayment = () => {
+  // Submission Handler (Server Action Integration)
+  const handleContinueToPayment = async () => {
     const customerErrors: Record<string, string> = {};
     if (!customer.firstName.trim()) customerErrors.firstName = "First name is required.";
     if (!customer.lastName.trim()) customerErrors.lastName = "Last name is required.";
@@ -186,36 +185,65 @@ export default function BookingFlow() {
     setErrors({});
     setIsSubmitting(true);
 
-    // Prepare clean structured booking data payload
-    const refId = `HC-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    try {
+      const result = await submitBooking({
+        serviceId: selectedService.id,
+        serviceName: selectedService.name,
+        packageId: selectedPackage.id,
+        packageName: selectedPackage.name,
+        firstName: customer.firstName.trim(),
+        lastName: customer.lastName.trim(),
+        email: customer.email.trim(),
+        phone: customer.phone.trim(),
+        propertyAddress: property.address.trim(),
+        bedrooms: property.bedrooms,
+        bathrooms: property.bathrooms,
+        cleaners: property.cleanersCount || 1,
+        storey: property.storey,
+        notes: property.notes ? property.notes.trim() : customer.specialInstructions ? customer.specialInstructions.trim() : undefined,
+        bookingDate: schedule.date,
+        bookingTime: schedule.time,
+      });
 
-    const bookingPayload: BookingData = {
-      bookingReference: refId,
-      createdAt: new Date().toISOString(),
-      service: {
-        id: selectedService.id,
-        name: selectedService.name,
-      },
-      package: {
-        id: selectedPackage.id,
-        name: selectedPackage.name,
-        price: calculatedPrice,
-        propertyTypeMapped: selectedService.id === "airbnb-cleaning" ? mappedPropertyType : undefined,
-      },
-      property,
-      schedule,
-      customer,
-      bookingStatus: "pending",
-      paymentStatus: "pending",
-    };
-
-    setTimeout(() => {
+      if (result.success) {
+        markStepCompleted(5);
+        setBookingSuccessResult(result);
+        window.scrollTo({ top: 100, behavior: "smooth" });
+      } else {
+        setErrors({ submit: result.error || "Failed to create booking. Please try again." });
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrors({ submit: `Unexpected submission error: ${msg}` });
+    } finally {
       setIsSubmitting(false);
-      markStepCompleted(5);
-      setPreparedBookingData(bookingPayload);
-      setModalOpen(true);
-    }, 400);
+    }
   };
+
+  const handleReset = () => {
+    setBookingSuccessResult(null);
+    setCurrentStep(1);
+    setCompletedSteps([]);
+    setCustomer({ firstName: "", lastName: "", email: "", phone: "", specialInstructions: "" });
+    setProperty({ address: "", bedrooms: "1", bathrooms: "1", storey: "Single", cleanersCount: 1, notes: "" });
+    setSchedule({ date: "", time: "10:00 AM - 12:00 PM" });
+  };
+
+  if (bookingSuccessResult) {
+    return (
+      <section className="w-full bg-[#EBF6FB]/40 py-12 lg:py-16">
+        <BookingSuccess
+          bookingReference={bookingSuccessResult.bookingReference || "HC-2026-0000"}
+          customerName={bookingSuccessResult.customerName || `${customer.firstName} ${customer.lastName}`}
+          customerEmail={bookingSuccessResult.customerEmail || customer.email}
+          finalPrice={bookingSuccessResult.finalPrice || calculatedPrice}
+          emailSent={bookingSuccessResult.emailSent}
+          emailError={bookingSuccessResult.emailError}
+          onReset={handleReset}
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-[#EBF6FB]/40 py-12 lg:py-16">
@@ -299,15 +327,7 @@ export default function BookingFlow() {
 
         </div>
       </div>
-
-      {/* Payment Gateway Ready Confirmation Modal */}
-      {preparedBookingData && (
-        <PaymentModal
-          bookingData={preparedBookingData}
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-        />
-      )}
     </section>
   );
 }
+
