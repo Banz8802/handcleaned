@@ -18,10 +18,10 @@ interface FormState {
 }
 
 const SERVICES = [
-  "Deep Cleaning",
-  "End of Lease Cleaning",
-  "Initial / Deep Cleaning Airbnb",
+  "Airbnb Cleaning",
+  "Residential Cleaning",
   "Commercial Cleaning",
+  "Linen Hire",
 ];
 
 // ---------------------------------------------------------------------------
