@@ -44,6 +44,7 @@ function Bubble({ className, size, variant = "outline" }: {
 export default function BookingSection() {
   return (
     <section
+      id="contact"
       className="relative w-full bg-[#EBF6FB] overflow-hidden py-20 lg:py-28"
       aria-labelledby="booking-heading"
     >

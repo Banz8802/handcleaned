@@ -145,8 +145,8 @@ export default function Step3PropertyDetails({
           <label className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44] mb-2">
             Number of Cleaners Requested
           </label>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
-            {[1, 2, 3, 4, 5].map((count) => {
+          <div className="grid grid-cols-2 max-w-xs gap-2.5">
+            {[1, 2].map((count) => {
               const isSelected = (property.cleanersCount || 1) === count;
               return (
                 <button

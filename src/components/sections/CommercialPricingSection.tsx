@@ -59,7 +59,7 @@ export default function CommercialPricingSection({ onSelectOption }: CommercialP
               Select Number of Commercial Cleaners:
             </label>
             <div className="flex items-center gap-2">
-              {[1, 2, 3, 4, 5].map((count) => (
+              {[1, 2].map((count) => (
                 <button
                   key={count}
                   type="button"

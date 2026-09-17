@@ -77,7 +77,7 @@ export default function Step4DateTimeSelection({
           <label className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44] mb-2">
             Preferred Arrival Window <span className="text-red-500">*</span>
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 max-w-lg gap-3">
             {TIME_SLOTS.map((slot) => {
               const isSelected = schedule.time === slot;
               return (

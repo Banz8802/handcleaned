@@ -25,7 +25,7 @@ export default function ResidentialServiceDetailsSection() {
         </svg>
       ),
       title: "Flexible Team Sizing",
-      description: "Easily scale your cleaning team from 1 to 5+ cleaners based on your home size, schedule, and speed requirements.",
+      description: "Easily scale your cleaning team from 1 to 2 cleaners based on your home size, schedule, and speed requirements.",
     },
     {
       icon: (

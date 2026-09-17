@@ -83,7 +83,7 @@ function FooterWaveDivider() {
 const INFO_LINKS = [
   { label: "About Us", href: "/#about" },
   { label: "Contact Us", href: "/#contact" },
-  { label: "Book Service", href: "/#contact" },
+  { label: "Book Now", href: "/booking" },
 ];
 
 const SERVICES_LINKS = [

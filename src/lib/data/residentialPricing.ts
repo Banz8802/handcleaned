@@ -56,9 +56,6 @@ export interface CleanerRateOption {
 export const DEFAULT_CLEANER_RATES: CleanerRateOption[] = [
   { cleaners: 1, regularHourlyTotal: 60, deepHourlyTotal: 68 },
   { cleaners: 2, regularHourlyTotal: 120, deepHourlyTotal: 136 },
-  { cleaners: 3, regularHourlyTotal: 180, deepHourlyTotal: 204 },
-  { cleaners: 4, regularHourlyTotal: 240, deepHourlyTotal: 272 },
-  { cleaners: 5, regularHourlyTotal: 300, deepHourlyTotal: 340 },
 ];
 
 export async function getResidentialPricingData() {

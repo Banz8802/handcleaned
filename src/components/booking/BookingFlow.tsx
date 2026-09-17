@@ -72,7 +72,7 @@ export default function BookingFlow() {
     bedrooms: bedroomsParam || "1",
     bathrooms: bathroomsParam || "1",
     storey: (storeyParam as StoreyType) || "Single",
-    cleanersCount: cleanersParam ? parseInt(cleanersParam, 10) : 1,
+    cleanersCount: cleanersParam ? Math.min(2, Math.max(1, parseInt(cleanersParam, 10))) : 1,
     notes: "",
   }));
 
