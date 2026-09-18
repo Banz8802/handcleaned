@@ -12,6 +12,7 @@ import BookingSummary from "./BookingSummary";
 import { BookingSuccess } from "./BookingSuccess";
 
 import { submitBooking, type SubmitBookingResult } from "@/app/actions/submitBooking";
+import { createStripeCheckoutSession } from "@/app/actions/createStripeCheckoutSession";
 import {
   AVAILABLE_SERVICES,
   getPackagesForService,
@@ -92,6 +93,8 @@ export default function BookingFlow() {
     phone: "",
     specialInstructions: "",
   });
+
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'manual'>('stripe');
 
   // Errors & Submission Result State
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -186,6 +189,7 @@ export default function BookingFlow() {
     setIsSubmitting(true);
 
     try {
+      // 1. Create booking in Supabase with payment_status: 'pending'
       const result = await submitBooking({
         serviceId: selectedService.id,
         serviceName: selectedService.name,
@@ -203,18 +207,51 @@ export default function BookingFlow() {
         notes: property.notes ? property.notes.trim() : customer.specialInstructions ? customer.specialInstructions.trim() : undefined,
         bookingDate: schedule.date,
         bookingTime: schedule.time,
+        paymentMethod,
       });
 
-      if (result.success) {
+      if (!result.success || !result.bookingReference) {
+        setErrors({ submit: result.error || "Failed to create booking. Please try again." });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Handle Payment Flow based on selection
+      if (paymentMethod === 'stripe') {
+        const checkoutRes = await createStripeCheckoutSession({
+          bookingReference: result.bookingReference,
+          serviceName: selectedService.name,
+          packageName: selectedPackage.name,
+          finalPrice: result.finalPrice || calculatedPrice,
+          firstName: customer.firstName.trim(),
+          lastName: customer.lastName.trim(),
+          email: customer.email.trim(),
+          phone: customer.phone.trim(),
+          propertyAddress: property.address.trim(),
+          bedrooms: property.bedrooms,
+          bathrooms: property.bathrooms,
+          bookingDate: schedule.date,
+          bookingTime: schedule.time,
+          origin: typeof window !== 'undefined' ? window.location.origin : '',
+        });
+
+        if (checkoutRes.success && checkoutRes.url) {
+          // Redirect customer to Stripe Checkout
+          window.location.href = checkoutRes.url;
+          return;
+        } else {
+          setErrors({ submit: checkoutRes.error || "Failed to initiate Stripe payment session. You can switch to manual payment or try again." });
+          window.scrollTo({ top: 200, behavior: "smooth" });
+        }
+      } else {
         markStepCompleted(5);
         setBookingSuccessResult(result);
         window.scrollTo({ top: 100, behavior: "smooth" });
-      } else {
-        setErrors({ submit: result.error || "Failed to create booking. Please try again." });
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       setErrors({ submit: `Unexpected submission error: ${msg}` });
+      window.scrollTo({ top: 200, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);
     }
@@ -227,6 +264,7 @@ export default function BookingFlow() {
     setCustomer({ firstName: "", lastName: "", email: "", phone: "", specialInstructions: "" });
     setProperty({ address: "", bedrooms: "1", bathrooms: "1", storey: "Single", cleanersCount: 1, notes: "" });
     setSchedule({ date: "", time: "10:00 AM - 12:00 PM" });
+    setPaymentMethod('stripe');
   };
 
   if (bookingSuccessResult) {
@@ -304,6 +342,8 @@ export default function BookingFlow() {
               <Step5CustomerDetails
                 customer={customer}
                 onChange={setCustomer}
+                paymentMethod={paymentMethod}
+                onPaymentMethodChange={setPaymentMethod}
                 onSubmit={handleContinueToPayment}
                 onBack={handleBackStep}
                 errors={errors}

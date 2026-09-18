@@ -15,6 +15,7 @@ export interface BookingEmailData {
   bookingDate: string;
   bookingTime: string;
   createdAt?: string;
+  paymentStatus?: 'pending' | 'paid';
 }
 
 export function generateCustomerReceiptEmail(data: BookingEmailData) {
@@ -25,6 +26,49 @@ export function generateCustomerReceiptEmail(data: BookingEmailData) {
   if (data.bathrooms !== undefined && data.bathrooms > 0) specs.push(`${data.bathrooms} Bath`);
   if (data.cleaners !== undefined && data.cleaners > 0) specs.push(`${data.cleaners} Cleaner${data.cleaners > 1 ? 's' : ''}`);
   const specsStr = specs.length > 0 ? specs.join(' • ') : 'N/A';
+
+  const isPaid = data.paymentStatus === 'paid';
+  const badgeHtml = isPaid
+    ? `<div class="badge" style="background-color: #dcfce7; color: #166534;">Payment Confirmed (Stripe)</div>`
+    : `<div class="badge" style="background-color: #fef3c7; color: #92400e;">Booking Receipt / Invoice</div>`;
+
+  const alertBoxHtml = isPaid
+    ? `<div class="alert-box" style="background-color: #f0fdf4; border-left-color: #22c55e;">
+        <h3 style="color: #15803d;">Payment Successful!</h3>
+        <p style="color: #166534;">Thank you for your payment. Your booking has been confirmed and paid in full via Stripe Checkout.</p>
+       </div>`
+    : `<div class="alert-box">
+        <h3>Booking Request Received</h3>
+        <p>Your booking request has been received. This email serves as your booking receipt/invoice for the requested cleaning service. <strong>Please note: Payment has not yet been processed.</strong></p>
+       </div>`;
+
+  const paymentStatusRowHtml = isPaid
+    ? `<tr>
+        <td class="label">Payment Status</td>
+        <td class="value" style="color: #16a34a; font-weight: 700;">PAID (Stripe Checkout)</td>
+       </tr>`
+    : `<tr>
+        <td class="label">Payment Status</td>
+        <td class="value" style="color: #d97706; font-weight: 700;">PENDING (Manual Payment)</td>
+       </tr>`;
+
+  const paymentInstructionsHtml = isPaid
+    ? `<div class="payment-instructions" style="background-color: #f0fdf4; border-color: #bbf7d0;">
+        <h4 style="color: #166534;">Payment Received</h4>
+        <p style="color: #15803d;">Your payment of <strong>${formattedPrice}</strong> has been successfully received. Our team will arrive at the scheduled time.</p>
+        <ul style="color: #15803d;">
+          <li><strong>Booking Reference:</strong> ${data.bookingReference}</li>
+          <li><strong>Support Email:</strong> contact@handcleaned.com.au</li>
+        </ul>
+       </div>`
+    : `<div class="payment-instructions">
+        <h4>How to Complete Payment</h4>
+        <p>Payment is currently handled manually. Once your payment has been completed, please reply directly to this email or contact HandCleaned with your payment confirmation.</p>
+        <ul>
+          <li><strong>Reference to use:</strong> ${data.bookingReference}</li>
+          <li><strong>Support Email:</strong> contact@handcleaned.com.au</li>
+        </ul>
+       </div>`;
 
   const html = `
 <!DOCTYPE html>
@@ -39,7 +83,7 @@ export function generateCustomerReceiptEmail(data: BookingEmailData) {
     .header { background-color: #0f172a; color: #ffffff; padding: 28px 32px; text-align: center; }
     .header h1 { margin: 0; font-size: 24px; font-weight: 700; tracking: -0.5px; color: #38bdf8; }
     .header p { margin: 6px 0 0 0; font-size: 14px; color: #94a3b8; }
-    .badge { display: inline-block; background-color: #fef3c7; color: #92400e; font-weight: 700; padding: 4px 12px; border-radius: 9999px; font-size: 13px; margin-top: 12px; }
+    .badge { display: inline-block; font-weight: 700; padding: 4px 12px; border-radius: 9999px; font-size: 13px; margin-top: 12px; }
     .content { padding: 32px; }
     .alert-box { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: 6px; margin-bottom: 24px; }
     .alert-box h3 { margin: 0 0 6px 0; color: #1e40af; font-size: 15px; }
@@ -65,14 +109,11 @@ export function generateCustomerReceiptEmail(data: BookingEmailData) {
     <div class="header">
       <h1>HandCleaned</h1>
       <p>Premium Cleaning Services</p>
-      <div class="badge">Booking Receipt / Invoice</div>
+      ${badgeHtml}
     </div>
     
     <div class="content">
-      <div class="alert-box">
-        <h3>Booking Request Received</h3>
-        <p>Your booking request has been received. This email serves as your booking receipt/invoice for the requested cleaning service. <strong>Please note: Payment has not yet been processed.</strong></p>
-      </div>
+      ${alertBoxHtml}
 
       <div class="section-title">Booking Details</div>
       <table class="table-details">
@@ -108,24 +149,14 @@ export function generateCustomerReceiptEmail(data: BookingEmailData) {
           <td class="label">Scheduled Time</td>
           <td class="value">${data.bookingTime}</td>
         </tr>
-        <tr>
-          <td class="label">Payment Status</td>
-          <td class="value" style="color: #d97706; font-weight: 700;">PENDING (Manual Payment)</td>
-        </tr>
+        ${paymentStatusRowHtml}
         <tr class="price-row">
-          <td class="label">Total Amount Due</td>
+          <td class="label">Total Amount ${isPaid ? 'Paid' : 'Due'}</td>
           <td class="value">${formattedPrice}</td>
         </tr>
       </table>
 
-      <div class="payment-instructions">
-        <h4>How to Complete Payment</h4>
-        <p>Payment is currently handled manually. Once your payment has been completed, please reply directly to this email or contact HandCleaned with your payment confirmation.</p>
-        <ul>
-          <li><strong>Reference to use:</strong> ${data.bookingReference}</li>
-          <li><strong>Support Email:</strong> contact@handcleaned.com.au</li>
-        </ul>
-      </div>
+      ${paymentInstructionsHtml}
     </div>
 
     <div class="footer">
@@ -139,7 +170,9 @@ export function generateCustomerReceiptEmail(data: BookingEmailData) {
   `;
 
   return {
-    subject: `Booking Receipt / Invoice — HandCleaned — ${data.bookingReference}`,
+    subject: isPaid
+      ? `Booking Confirmation & Receipt — HandCleaned — ${data.bookingReference}`
+      : `Booking Receipt / Invoice — HandCleaned — ${data.bookingReference}`,
     html,
   };
 }
@@ -153,6 +186,7 @@ export function generateAdminNotificationEmail(data: BookingEmailData) {
   if (data.cleaners !== undefined && data.cleaners > 0) specs.push(`${data.cleaners} Cleaner${data.cleaners > 1 ? 's' : ''}`);
   const specsStr = specs.length > 0 ? specs.join(' • ') : 'N/A';
   const timestamp = data.createdAt || new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' });
+  const isPaid = data.paymentStatus === 'paid';
 
   const html = `
 <!DOCTYPE html>
@@ -168,7 +202,7 @@ export function generateAdminNotificationEmail(data: BookingEmailData) {
     .header h2 { margin: 0; font-size: 20px; font-weight: 700; }
     .header p { margin: 4px 0 0 0; font-size: 13px; opacity: 0.9; }
     .content { padding: 32px; }
-    .status-banner { background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; font-size: 14px; color: #92400e; }
+    .status-banner { background-color: ${isPaid ? '#dcfce7' : '#fef3c7'}; border: 1px solid ${isPaid ? '#bbf7d0' : '#fde68a'}; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; font-size: 14px; color: ${isPaid ? '#166534' : '#92400e'}; }
     .section-title { font-size: 15px; font-weight: 700; color: #334155; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-top: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
     .table-details { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
     .table-details td { padding: 8px 0; border-bottom: 1px solid #f8fafc; font-size: 14px; }
@@ -181,13 +215,13 @@ export function generateAdminNotificationEmail(data: BookingEmailData) {
 <body>
   <div class="container">
     <div class="header">
-      <h2>New Booking Request</h2>
+      <h2>${isPaid ? 'Booking Paid & Confirmed' : 'New Booking Request'}</h2>
       <p>Reference: ${data.bookingReference} | ${timestamp}</p>
     </div>
 
     <div class="content">
       <div class="status-banner">
-        <strong>Payment Status:</strong> PENDING &nbsp;|&nbsp; <strong>Booking Status:</strong> PENDING
+        <strong>Payment Status:</strong> ${isPaid ? 'PAID (Stripe Checkout)' : 'PENDING'} &nbsp;|&nbsp; <strong>Booking Status:</strong> ${isPaid ? 'CONFIRMED' : 'PENDING'}
       </div>
 
       <div class="section-title">Customer Contact</div>
@@ -233,7 +267,7 @@ export function generateAdminNotificationEmail(data: BookingEmailData) {
           <td class="value">${data.bookingTime}</td>
         </tr>
         <tr>
-          <td class="label">Quoted Price</td>
+          <td class="label">Amount ${isPaid ? 'Paid' : 'Quoted'}</td>
           <td class="value" style="color: #0284c7; font-weight: 700; font-size: 16px;">${formattedPrice}</td>
         </tr>
       </table>
@@ -257,7 +291,9 @@ export function generateAdminNotificationEmail(data: BookingEmailData) {
   `;
 
   return {
-    subject: `New Booking — ${data.bookingReference} — ${customerName}`,
+    subject: isPaid
+      ? `[PAID] Booking Confirmed — ${data.bookingReference} — ${customerName}`
+      : `New Booking — ${data.bookingReference} — ${customerName}`,
     html,
   };
 }

@@ -31,6 +31,7 @@ export interface SubmitBookingInput {
   notes?: string;
   bookingDate: string;
   bookingTime: string;
+  paymentMethod?: 'stripe' | 'manual';
 }
 
 export interface SubmitBookingResult {
@@ -146,63 +147,69 @@ export async function submitBooking(
       };
     }
 
-    // 6. Resend Email Dispatch
+    // 6. Resend Email Dispatch (Only send immediately for manual payment; Stripe payment sends after webhook confirmation)
     let emailSent = false;
     let emailErrorMsg: string | undefined;
 
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.BOOKING_FROM_EMAIL || 'HandCleaned Bookings <onboarding@resend.dev>';
-    const notificationEmail = process.env.BOOKING_NOTIFICATION_EMAIL || 'admin@handcleaned.com.au';
-
-    const emailData: BookingEmailData = {
-      bookingReference,
-      service: input.serviceName || selectedPkg.serviceId,
-      packageName: input.packageName || selectedPkg.name,
-      price: finalPrice,
-      firstName: input.firstName,
-      lastName: input.lastName,
-      email: input.email,
-      phone: input.phone,
-      propertyAddress: input.propertyAddress,
-      bedrooms: isNaN(parsedBedrooms) ? 0 : parsedBedrooms,
-      bathrooms: isNaN(parsedBathrooms) ? 0 : parsedBathrooms,
-      cleaners: input.cleaners,
-      notes: input.notes,
-      bookingDate: input.bookingDate,
-      bookingTime: input.bookingTime,
-    };
-
-    if (resendApiKey) {
-      try {
-        const resend = new Resend(resendApiKey);
-
-        // Send Email to Customer
-        const customerTemplate = generateCustomerReceiptEmail(emailData);
-        await resend.emails.send({
-          from: fromEmail,
-          to: input.email,
-          subject: customerTemplate.subject,
-          html: customerTemplate.html,
-        });
-
-        // Send Email to Admin/Client
-        const adminTemplate = generateAdminNotificationEmail(emailData);
-        await resend.emails.send({
-          from: fromEmail,
-          to: notificationEmail,
-          subject: adminTemplate.subject,
-          html: adminTemplate.html,
-        });
-
-        emailSent = true;
-      } catch (err: unknown) {
-        const errDetail = err instanceof Error ? err.message : String(err);
-        console.error('[Resend Email Error]:', errDetail);
-        emailErrorMsg = `Email dispatch notice: ${errDetail}`;
-      }
+    if (input.paymentMethod === 'stripe') {
+      // Defer email dispatch until Stripe webhook confirms payment
+      emailSent = false;
     } else {
-      console.warn('[Resend]: RESEND_API_KEY environment variable is not configured.');
-      emailErrorMsg = 'Email service is not yet configured.';
+      const resendApiKey = process.env.RESEND_API_KEY;
+      const fromEmail = process.env.BOOKING_FROM_EMAIL || 'HandCleaned Bookings <onboarding@resend.dev>';
+      const notificationEmail = process.env.BOOKING_NOTIFICATION_EMAIL || 'admin@handcleaned.com.au';
+
+      const emailData: BookingEmailData = {
+        bookingReference,
+        service: input.serviceName || selectedPkg.serviceId,
+        packageName: input.packageName || selectedPkg.name,
+        price: finalPrice,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        phone: input.phone,
+        propertyAddress: input.propertyAddress,
+        bedrooms: isNaN(parsedBedrooms) ? 0 : parsedBedrooms,
+        bathrooms: isNaN(parsedBathrooms) ? 0 : parsedBathrooms,
+        cleaners: input.cleaners,
+        notes: input.notes,
+        bookingDate: input.bookingDate,
+        bookingTime: input.bookingTime,
+        paymentStatus: 'pending',
+      };
+
+      if (resendApiKey) {
+        try {
+          const resend = new Resend(resendApiKey);
+
+          // Send Email to Customer
+          const customerTemplate = generateCustomerReceiptEmail(emailData);
+          await resend.emails.send({
+            from: fromEmail,
+            to: input.email,
+            subject: customerTemplate.subject,
+            html: customerTemplate.html,
+          });
+
+          // Send Email to Admin/Client
+          const adminTemplate = generateAdminNotificationEmail(emailData);
+          await resend.emails.send({
+            from: fromEmail,
+            to: notificationEmail,
+            subject: adminTemplate.subject,
+            html: adminTemplate.html,
+          });
+
+          emailSent = true;
+        } catch (err: unknown) {
+          const errDetail = err instanceof Error ? err.message : String(err);
+          console.error('[Resend Email Error]:', errDetail);
+          emailErrorMsg = `Email dispatch notice: ${errDetail}`;
+        }
+      } else {
+        console.warn('[Resend]: RESEND_API_KEY environment variable is not configured.');
+        emailErrorMsg = 'Email service is not yet configured.';
+      }
     }
 
     // 7. Return Success Result
