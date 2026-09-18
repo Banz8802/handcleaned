@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getStripeServerClient } from '@/lib/stripe/stripeServer';
-import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { getSupabaseAdminClient } from '@/lib/supabase/server';
 import { Resend } from 'resend';
 import {
   generateCustomerReceiptEmail,
@@ -64,10 +64,17 @@ export async function POST(req: Request) {
           return NextResponse.json({ received: true, warning: 'Missing booking reference' });
         }
 
-        const supabase = getSupabaseServerClient();
+        const supabaseAdmin = getSupabaseAdminClient();
+        if (!supabaseAdmin) {
+          console.error('[Stripe Webhook Error] SUPABASE_SERVICE_ROLE_KEY is not configured. Webhook cannot update database.');
+          return NextResponse.json(
+            { error: 'Supabase admin client configuration error.' },
+            { status: 500 }
+          );
+        }
 
-        // 1. Fetch existing booking to verify state
-        const { data: booking, error: fetchError } = await supabase
+        // 1. Fetch existing booking using privileged service-role client (bypasses RLS)
+        const { data: booking, error: fetchError } = await supabaseAdmin
           .from('bookings')
           .select('*')
           .eq('booking_reference', bookingReference)
@@ -87,8 +94,8 @@ export async function POST(req: Request) {
           return NextResponse.json({ received: true, message: 'Duplicate event ignored' });
         }
 
-        // 3. Update Supabase payment_status to 'paid' & booking_status to 'confirmed'
-        const { error: updateError } = await supabase
+        // 3. Update Supabase payment_status to 'paid' & booking_status to 'confirmed' using service-role client
+        const { error: updateError } = await supabaseAdmin
           .from('bookings')
           .update({
             payment_status: 'paid',
@@ -165,19 +172,21 @@ export async function POST(req: Request) {
         const bookingReference = object.metadata?.bookingReference || object.client_reference_id;
 
         if (bookingReference) {
-          const supabase = getSupabaseServerClient();
-          const { data: booking } = await supabase
-            .from('bookings')
-            .select('payment_status')
-            .eq('booking_reference', bookingReference)
-            .maybeSingle();
-
-          if (booking && booking.payment_status !== 'paid') {
-            await supabase
+          const supabaseAdmin = getSupabaseAdminClient();
+          if (supabaseAdmin) {
+            const { data: booking } = await supabaseAdmin
               .from('bookings')
-              .update({ payment_status: 'failed' })
-              .eq('booking_reference', bookingReference);
-            console.log(`[Stripe Webhook] Booking ${bookingReference} payment marked as failed/expired.`);
+              .select('payment_status')
+              .eq('booking_reference', bookingReference)
+              .maybeSingle();
+
+            if (booking && booking.payment_status !== 'paid') {
+              await supabaseAdmin
+                .from('bookings')
+                .update({ payment_status: 'failed' })
+                .eq('booking_reference', bookingReference);
+              console.log(`[Stripe Webhook] Booking ${bookingReference} payment marked as failed/expired.`);
+            }
           }
         }
         break;
