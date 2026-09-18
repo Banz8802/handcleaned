@@ -78,7 +78,7 @@ export default function AboutSection() {
 
             <div className="flex justify-center lg:justify-start">
               <Link
-                href="#services"
+                href="/about-us"
                 className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm hover:bg-[#17739C] transition-colors"
               >
                 Read more

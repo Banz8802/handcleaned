@@ -77,6 +77,13 @@ export default function Header() {
               Home
             </Link>
 
+            <Link
+              href="/about-us"
+              className="text-[#1A2E44] font-semibold text-sm hover:text-[#2CBAE8] transition-colors"
+            >
+              About Us
+            </Link>
+
             {/* Services Dropdown */}
             <div
               className="relative py-4"
@@ -173,6 +180,14 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(false)}
           >
             Home
+          </Link>
+
+          <Link
+            href="/about-us"
+            className="text-[#1A2E44] font-semibold text-base py-1.5"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About Us
           </Link>
 
           {/* Mobile Services Accordion */}

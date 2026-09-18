@@ -81,9 +81,10 @@ function FooterWaveDivider() {
 // Footer Columns Data definition
 // ---------------------------------------------------------------------------
 const INFO_LINKS = [
-  { label: "About Us", href: "/#about" },
+  { label: "About Us", href: "/about-us" },
   { label: "Contact Us", href: "/#contact" },
   { label: "Book Now", href: "/booking" },
+  { label: "Terms of Service", href: "/terms-of-service" },
 ];
 
 const SERVICES_LINKS = [
@@ -194,6 +195,14 @@ export default function Footer() {
           <p className="text-gray-400 text-xs text-center sm:text-left">
             © 2026 Hand Cleaned. All Rights Reserved.
           </p>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/terms-of-service"
+              className="text-gray-400 hover:text-[#00AEEF] text-xs font-medium transition-colors"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

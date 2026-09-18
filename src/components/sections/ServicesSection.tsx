@@ -53,6 +53,7 @@ function SectionLabel({ text }: { text: string }) {
 export default function ServicesSection() {
   return (
     <section
+      id="services"
       className="relative w-full bg-[#F7FBFF] overflow-hidden py-20 lg:py-28"
       aria-labelledby="services-heading"
     >
