@@ -191,18 +191,10 @@ export default function Footer() {
         </div>
 
         {/* Bottom copyright block */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4">
-          <p className="text-gray-400 text-xs text-center sm:text-left">
+        <div className="pt-6 flex justify-center">
+          <p className="text-gray-400 text-xs text-center">
             © 2026 Hand Cleaned. All Rights Reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/terms-of-service"
-              className="text-gray-400 hover:text-[#00AEEF] text-xs font-medium transition-colors"
-            >
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </div>
     </footer>
