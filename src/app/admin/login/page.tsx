@@ -48,14 +48,14 @@ export default function AdminLoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
         {/* Logo Card */}
         <div className="flex flex-col items-center mb-6">
-          <div className="bg-white px-6 py-3 rounded-2xl shadow-lg border border-white/20 mb-4 inline-block">
+          <div className="bg-white p-4 rounded-2xl shadow-xl border border-white/30 mb-4 inline-flex items-center justify-center">
             <Image
-              src="/images/hand-cleaning-logo.png"
-              alt="Handcleaned"
+              src="/images/admin-logo.png"
+              alt="Handcleaned Admin"
               width={180}
-              height={55}
+              height={154}
               priority
-              className="h-10 w-auto object-contain"
+              className="h-20 w-auto object-contain"
             />
           </div>
           <span className="inline-flex items-center gap-2 bg-[#2CBAE8]/20 border border-[#2CBAE8]/40 text-[#2CBAE8] text-xs font-bold uppercase tracking-[0.18em] px-3.5 py-1 rounded-full mb-2">
