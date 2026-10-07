@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import crypto from 'crypto';
@@ -182,7 +182,10 @@ export async function getAdminSession(): Promise<AdminSession> {
 export async function requireAdminSession(): Promise<AdminUser> {
   const session = await getAdminSession();
   if (!session.authenticated || !session.user) {
-    redirect('/admin/login');
+    const headersList = await headers();
+    const host = headersList.get('host') || '';
+    const isSubdomain = host.startsWith('admin.') || host.includes('admin.handcleaned');
+    redirect(isSubdomain ? '/login' : '/admin/login');
   }
   return session.user;
 }

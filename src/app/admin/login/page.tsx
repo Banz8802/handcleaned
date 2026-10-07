@@ -27,7 +27,11 @@ export default function AdminLoginPage() {
         if (!data.success) {
           setErrorMessage(data.error || 'Authentication failed.');
         } else {
-          window.location.href = '/admin/dashboard';
+          const isSubdomain = typeof window !== 'undefined' && (
+            window.location.hostname.startsWith('admin.') ||
+            !window.location.pathname.startsWith('/admin')
+          );
+          window.location.href = isSubdomain ? '/dashboard' : '/admin/dashboard';
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : 'An unexpected error occurred.';
@@ -172,15 +176,15 @@ export default function AdminLoginPage() {
 
         {/* Back Link */}
         <div className="text-center mt-6">
-          <Link
-            href="/"
+          <a
+            href="https://handcleaned.com.au"
             className="text-xs text-slate-300 hover:text-white transition-colors inline-flex items-center gap-1.5"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Return to public website
-          </Link>
+            Return to public website (handcleaned.com.au)
+          </a>
         </div>
       </div>
     </div>

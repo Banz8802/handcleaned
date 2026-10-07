@@ -4,6 +4,7 @@ import { authenticateAdmin, logoutAdmin, getAdminSession } from '@/services/admi
 import { updateBookingStatus, updatePaymentStatus, type AdminBooking } from '@/services/adminBookingService';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export interface AdminActionResponse {
   success: boolean;
@@ -30,7 +31,11 @@ export async function loginAdminAction(
     return { success: false, error: result.error || 'Authentication failed.' };
   }
 
-  redirect('/admin/dashboard');
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+  const isSubdomain = host.startsWith('admin.') || host.includes('admin.handcleaned');
+
+  redirect(isSubdomain ? '/dashboard' : '/admin/dashboard');
 }
 
 /**
@@ -38,7 +43,11 @@ export async function loginAdminAction(
  */
 export async function logoutAdminAction(): Promise<void> {
   await logoutAdmin();
-  redirect('/admin/login');
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+  const isSubdomain = host.startsWith('admin.') || host.includes('admin.handcleaned');
+
+  redirect(isSubdomain ? '/login' : '/admin/login');
 }
 
 /**
@@ -83,5 +92,8 @@ export async function updatePaymentStatusAction(
   revalidatePath('/admin/bookings');
   revalidatePath('/admin/transactions');
   revalidatePath('/admin/dashboard');
+  revalidatePath('/bookings');
+  revalidatePath('/transactions');
+  revalidatePath('/dashboard');
   return { success: true };
 }

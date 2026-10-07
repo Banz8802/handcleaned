@@ -155,7 +155,12 @@ export function DashboardView({ stats, recentBookings, dbError }: DashboardViewP
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/admin/bookings"
+              href={
+                typeof window !== 'undefined' &&
+                (window.location.hostname.startsWith('admin.') || !window.location.pathname.startsWith('/admin'))
+                  ? '/bookings'
+                  : '/admin/bookings'
+              }
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#00AEEF] bg-[#00AEEF]/10 hover:bg-[#00AEEF]/20 transition-colors"
             >
               <span>View All Bookings</span>
@@ -173,7 +178,7 @@ export function DashboardView({ stats, recentBookings, dbError }: DashboardViewP
             description="When clients submit bookings through the website, their details, dates, and payment states will automatically display here."
             action={{
               label: 'View Live Booking Form',
-              href: '/booking',
+              href: 'https://handcleaned.com.au/booking',
             }}
           />
         ) : (

@@ -16,7 +16,15 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: 'Business Overview',
     subtitle: 'Real-time performance metrics and recent customer bookings',
   },
+  '/dashboard': {
+    title: 'Business Overview',
+    subtitle: 'Real-time performance metrics and recent customer bookings',
+  },
   '/admin/bookings': {
+    title: 'Booking Management',
+    subtitle: 'Filter, search, inspect, and update cleaning service requests',
+  },
+  '/bookings': {
     title: 'Booking Management',
     subtitle: 'Filter, search, inspect, and update cleaning service requests',
   },
@@ -24,7 +32,15 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: 'Transaction History',
     subtitle: 'Financial logs, payment statuses, and revenue breakdown',
   },
+  '/transactions': {
+    title: 'Transaction History',
+    subtitle: 'Financial logs, payment statuses, and revenue breakdown',
+  },
   '/admin/reports': {
+    title: 'Reports & Export',
+    subtitle: 'Export business transactions to CSV for accounting and analytics',
+  },
+  '/reports': {
     title: 'Reports & Export',
     subtitle: 'Export business transactions to CSV for accounting and analytics',
   },
@@ -35,7 +51,7 @@ export function AdminLayoutShell({ children, userEmail, userName }: AdminLayoutS
   const pathname = usePathname();
 
   // If on login page, render clean full-screen view without admin chrome
-  if (pathname === '/admin/login') {
+  if (pathname === '/admin/login' || pathname === '/login') {
     return <>{children}</>;
   }
 

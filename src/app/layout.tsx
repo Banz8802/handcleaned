@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -36,15 +37,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const host = headersList.get("host") || "";
+  const isAdminSubdomain = host.startsWith("admin.") || host.includes("admin.handcleaned");
+
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased">
-        <Header />
+        {!isAdminSubdomain && <Header />}
         {children}
-        <Footer />
-        <ScrollToTopButton />
-        <WhatsAppButton />
+        {!isAdminSubdomain && <Footer />}
+        {!isAdminSubdomain && <ScrollToTopButton />}
+        {!isAdminSubdomain && <WhatsAppButton />}
       </body>
     </html>
   );

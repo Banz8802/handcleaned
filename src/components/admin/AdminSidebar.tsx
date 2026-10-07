@@ -13,45 +13,6 @@ interface AdminSidebarProps {
   setMobileOpen: (open: boolean) => void;
 }
 
-const NAV_ITEMS = [
-  {
-    name: 'Dashboard',
-    href: '/admin/dashboard',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Bookings',
-    href: '/admin/bookings',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Transactions',
-    href: '/admin/transactions',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Reports',
-    href: '/admin/reports',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-  },
-];
-
 export function AdminSidebar({
   userEmail = 'admin@handcleaned.com.au',
   userName = 'Admin Manager',
@@ -59,6 +20,54 @@ export function AdminSidebar({
   setMobileOpen,
 }: AdminSidebarProps) {
   const pathname = usePathname();
+  const isSubdomain = typeof window !== 'undefined' && (
+    window.location.hostname.startsWith('admin.') ||
+    !pathname?.startsWith('/admin')
+  );
+  const base = isSubdomain ? '' : '/admin';
+
+  const navItems = [
+    {
+      name: 'Dashboard',
+      href: `${base}/dashboard`,
+      slug: 'dashboard',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Bookings',
+      href: `${base}/bookings`,
+      slug: 'bookings',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Transactions',
+      href: `${base}/transactions`,
+      slug: 'transactions',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Reports',
+      href: `${base}/reports`,
+      slug: 'reports',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -79,7 +88,7 @@ export function AdminSidebar({
       >
         {/* Top Brand Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-white/10">
-          <Link href="/admin/dashboard" className="flex items-center gap-3">
+          <Link href={isSubdomain ? '/dashboard' : '/admin/dashboard'} className="flex items-center gap-3">
             <div className="bg-white p-1 rounded-xl shadow-xs">
               <Image
                 src="/images/hand-cleaning-logo.png"
@@ -116,8 +125,14 @@ export function AdminSidebar({
 
         {/* Navigation Items */}
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href));
+          {navItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              pathname === `/${item.slug}` ||
+              pathname === `/admin/${item.slug}` ||
+              pathname?.startsWith(`/${item.slug}/`) ||
+              pathname?.startsWith(`/admin/${item.slug}/`);
+
             return (
               <Link
                 key={item.name}
