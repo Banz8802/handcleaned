@@ -21,12 +21,19 @@ export interface AdminSession {
  * Derives a consistent secret key for HMAC session signing from existing environment secrets.
  */
 function getSigningSecret(): string {
-  return (
+  const secret =
+    process.env.ADMIN_SESSION_SECRET ||
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
     process.env.STRIPE_SECRET_KEY ||
-    process.env.RESEND_API_KEY ||
-    'handcleaned-secure-admin-portal-secret-token-2026'
-  );
+    process.env.RESEND_API_KEY;
+
+  if (!secret) {
+    throw new Error(
+      '[adminAuth] No session signing secret found. Please configure ADMIN_SESSION_SECRET, SUPABASE_SERVICE_ROLE_KEY, or STRIPE_SECRET_KEY.'
+    );
+  }
+
+  return secret;
 }
 
 /**
@@ -110,9 +117,17 @@ export async function authenticateAdmin(
     console.warn('[adminAuth] Supabase auth attempt notice:', supabaseErr);
   }
 
-  // 2. Verified Admin Credential check
+  // 2. Verified Admin Credential check strictly via environment variables
   const configuredAdminEmail = (process.env.ADMIN_EMAIL || 'admin@handcleaned.com.au').toLowerCase();
-  const configuredAdminPassword = process.env.ADMIN_PASSWORD || 'Admin@HandCleaned2026';
+  const configuredAdminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!configuredAdminPassword) {
+    console.error('[adminAuth] ADMIN_PASSWORD environment variable is not configured.');
+    return {
+      success: false,
+      error: 'Admin authentication is misconfigured: ADMIN_PASSWORD environment variable is not set.',
+    };
+  }
 
   if (cleanEmail === configuredAdminEmail && password === configuredAdminPassword) {
     const user: AdminUser = {
