@@ -1,6 +1,13 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 export default function WhatsAppButton() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   const phoneNumber = "61406898997";
   const displayPhone = "+61 406 898 997";
   const defaultMessage = encodeURIComponent(

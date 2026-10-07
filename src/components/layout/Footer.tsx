@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 
 // ---------------------------------------------------------------------------
@@ -104,6 +105,11 @@ const OPENING_HOURS = [
 // Footer — Main component export
 // ---------------------------------------------------------------------------
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="w-full bg-white flex flex-col">
       {/* Blue wave decoration transition at the top */}
