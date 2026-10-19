@@ -1,5 +1,11 @@
 import type { PropertyDetails, StoreyType } from "@/lib/types/booking";
-import { BEDROOM_OPTIONS, BATHROOM_OPTIONS, STOREY_OPTIONS } from "@/lib/data/bookingData";
+import {
+  BEDROOM_OPTIONS,
+  BATHROOM_OPTIONS,
+  STOREY_OPTIONS,
+  getContractedBathrooms,
+  calculateExtraBathroomFee,
+} from "@/lib/data/bookingData";
 
 interface Step3PropertyDetailsProps {
   property: PropertyDetails;
@@ -16,6 +22,9 @@ export default function Step3PropertyDetails({
   onBack,
   errors = {},
 }: Step3PropertyDetailsProps) {
+  const contractedBathrooms = getContractedBathrooms(property.bedrooms);
+  const currentExtraFee = calculateExtraBathroomFee(property.bedrooms, property.bathrooms);
+
   const handleFieldChange = (field: keyof PropertyDetails, value: string) => {
     onChange({
       ...property,
@@ -90,28 +99,65 @@ export default function Step3PropertyDetails({
 
         {/* Bathroom Selection Pills */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44] mb-2">
-            Number of Bathrooms <span className="text-red-500">*</span>
-          </label>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44]">
+              Number of Bathrooms <span className="text-red-500">*</span>
+            </label>
+            <span className="text-xs text-gray-500 font-medium">
+              Base contract includes up to <strong className="text-[#1A2E44]">{contractedBathrooms} Bath{contractedBathrooms > 1 ? "s" : ""}</strong>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
             {BATHROOM_OPTIONS.map((bath) => {
               const isSelected = property.bathrooms === bath;
+              const fee = calculateExtraBathroomFee(property.bedrooms, bath);
               return (
                 <button
                   key={bath}
                   type="button"
                   onClick={() => handleFieldChange("bathrooms", bath)}
-                  className={`py-3 px-2 rounded-xl text-xs font-bold transition-all border cursor-pointer text-center ${
+                  className={`py-3 px-2 rounded-xl text-xs font-bold transition-all border cursor-pointer text-center flex flex-col items-center justify-center gap-1 ${
                     isSelected
                       ? "bg-[#2CBAE8] text-white border-[#2CBAE8] shadow-sm ring-2 ring-[#2CBAE8]/20"
                       : "bg-[#EBF6FB]/30 text-[#1A2E44] border-gray-200 hover:border-gray-300"
                   }`}
                 >
-                  {bath} {bath === "1" ? "Bath" : "Baths"}
+                  <span>{bath} {bath === "1" ? "Bath" : "Baths"}</span>
+                  {fee > 0 ? (
+                    <span
+                      className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                        isSelected
+                          ? "bg-white/20 text-[#FFE67B]"
+                          : "bg-[#FFE67B]/50 text-[#1A2E44]"
+                      }`}
+                    >
+                      +${fee.toFixed(0)}
+                    </span>
+                  ) : (
+                    <span
+                      className={`text-[10px] font-medium ${
+                        isSelected ? "text-white/80" : "text-gray-400"
+                      }`}
+                    >
+                      Included
+                    </span>
+                  )}
                 </button>
               );
             })}
           </div>
+
+          {currentExtraFee > 0 && (
+            <div className="mt-3 p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-xs text-amber-900 flex items-start sm:items-center gap-2.5">
+              <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-900 font-bold flex items-center justify-center flex-shrink-0 text-xs">
+                !
+              </span>
+              <span>
+                <strong>Extra Bathroom Fee Applied:</strong> {property.bathrooms} bathrooms exceeds the contracted {contractedBathrooms} bath allowance. An additional <strong className="text-[#1A2E44]">+${currentExtraFee.toFixed(2)}</strong> has been added ($25.00/full extra bath, $15.00/half extra bath).
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Storey Configuration */}

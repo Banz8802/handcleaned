@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSession } from '@/services/adminAuthService';
 import { getExportBookings } from '@/services/adminBookingService';
+import {
+  parseBathrooms,
+  getContractedBathrooms,
+  calculateExtraBathroomFee,
+} from '@/lib/data/pricingConfig';
 
 function escapeCsvCell(value: unknown): string {
   if (value === null || value === undefined) return '""';
@@ -56,26 +61,41 @@ export async function GET(req: NextRequest) {
       'Property Address',
       'Bedrooms',
       'Bathrooms',
+      'Contracted Bathrooms',
+      'Extra Bathrooms',
+      'Extra Bathroom Fee (AUD)',
       'Created Date',
     ];
 
-    const rows = (bookings || []).map((b) => [
-      escapeCsvCell(b.booking_reference),
-      escapeCsvCell(`${b.first_name} ${b.last_name}`.trim()),
-      escapeCsvCell(b.email),
-      escapeCsvCell(b.phone),
-      escapeCsvCell(b.service),
-      escapeCsvCell(b.package_name),
-      escapeCsvCell(b.booking_date),
-      escapeCsvCell(b.booking_time),
-      escapeCsvCell(b.price.toFixed(2)),
-      escapeCsvCell(b.payment_status.toUpperCase()),
-      escapeCsvCell(b.booking_status.toUpperCase()),
-      escapeCsvCell(b.property_address),
-      escapeCsvCell(b.bedrooms),
-      escapeCsvCell(b.bathrooms),
-      escapeCsvCell(new Date(b.created_at).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })),
-    ]);
+    const rows = (bookings || []).map((b) => {
+      const bedroomsStr = String(b.bedrooms ?? '1');
+      const bathroomsVal = b.bathrooms ?? '1';
+      const parsedBaths = parseBathrooms(bathroomsVal);
+      const contractedBaths = getContractedBathrooms(bedroomsStr);
+      const extraBaths = Math.max(0, parsedBaths - contractedBaths);
+      const extraFee = calculateExtraBathroomFee(bedroomsStr, bathroomsVal);
+
+      return [
+        escapeCsvCell(b.booking_reference),
+        escapeCsvCell(`${b.first_name} ${b.last_name}`.trim()),
+        escapeCsvCell(b.email),
+        escapeCsvCell(b.phone),
+        escapeCsvCell(b.service),
+        escapeCsvCell(b.package_name),
+        escapeCsvCell(b.booking_date),
+        escapeCsvCell(b.booking_time),
+        escapeCsvCell(b.price.toFixed(2)),
+        escapeCsvCell(b.payment_status.toUpperCase()),
+        escapeCsvCell(b.booking_status.toUpperCase()),
+        escapeCsvCell(b.property_address),
+        escapeCsvCell(b.bedrooms),
+        escapeCsvCell(b.bathrooms),
+        escapeCsvCell(contractedBaths.toFixed(1)),
+        escapeCsvCell(extraBaths > 0 ? extraBaths.toFixed(1) : '0.0'),
+        escapeCsvCell(extraFee.toFixed(2)),
+        escapeCsvCell(new Date(b.created_at).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })),
+      ];
+    });
 
     const csvContent = [
       headers.join(','),

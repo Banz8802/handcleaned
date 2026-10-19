@@ -404,3 +404,37 @@ export async function getExportBookings(filters: BookingFilters = {}): Promise<{
     return { bookings: [], error: msg };
   }
 }
+
+/**
+ * Update arbitrary booking fields (e.g. bathrooms, bedrooms, price, notes).
+ */
+export async function updateBookingDetails(
+  id: string,
+  updates: Partial<Pick<AdminBooking, 'bathrooms' | 'bedrooms' | 'price' | 'notes' | 'property_address'>>
+): Promise<{ success: boolean; error: string | null }> {
+  try {
+    const supabase = getClient();
+    const payload: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+    if (updates.bathrooms !== undefined) payload.bathrooms = updates.bathrooms;
+    if (updates.bedrooms !== undefined) payload.bedrooms = updates.bedrooms;
+    if (updates.price !== undefined) payload.price = updates.price;
+    if (updates.notes !== undefined) payload.notes = updates.notes;
+    if (updates.property_address !== undefined) payload.property_address = updates.property_address;
+
+    const { error } = await supabase
+      .from('bookings')
+      .update(payload)
+      .eq('id', id);
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true, error: null };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { success: false, error: msg };
+  }
+}
+

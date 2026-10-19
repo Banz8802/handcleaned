@@ -9,6 +9,11 @@ import {
   DEFAULT_PROPERTY_TYPES as PROPERTY_TYPES,
   DEFAULT_AIRBNB_PRICING_CARDS as PRICING_CARDS,
 } from "@/lib/data/airbnbPricing";
+import {
+  BATHROOM_OPTIONS,
+  getContractedBathrooms,
+  calculateExtraBathroomFee,
+} from "@/lib/data/bookingData";
 
 export type { PropertyType, StoreyType, PricingCardConfig };
 
@@ -19,6 +24,7 @@ interface AirbnbPricingSectionProps {
 export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSectionProps) {
   const router = useRouter();
   const [selectedProperty, setSelectedProperty] = useState<PropertyType>("1 Bed + 1 to 1.5 Bath");
+  const [selectedBathrooms, setSelectedBathrooms] = useState<string>("1.5");
   const [selectedStorey, setSelectedStorey] = useState<StoreyType>("Single");
 
   // Determine available storeys for the selected property type
@@ -28,8 +34,14 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
     selectedProperty === "4 Bed + 1 to 2 Bath" ||
     selectedProperty === "5 Bed + 1 to 2 Bath";
 
+  const contractedBathrooms = getContractedBathrooms(selectedProperty);
+  const extraBathroomFee = calculateExtraBathroomFee(selectedProperty, selectedBathrooms);
+
   const handlePropertyChange = (prop: PropertyType) => {
     setSelectedProperty(prop);
+    const contracted = getContractedBathrooms(prop);
+    setSelectedBathrooms(contracted.toString());
+
     if (prop === "Studio") {
       setSelectedStorey("Single");
     } else if (
@@ -48,32 +60,25 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
     }
 
     let bedrooms = "1";
-    let bathrooms = "1";
     if (selectedProperty === "Studio") {
       bedrooms = "Studio";
-      bathrooms = "1";
     } else if (selectedProperty.startsWith("1 Bed")) {
       bedrooms = "1";
-      bathrooms = "1.5";
     } else if (selectedProperty.startsWith("2 Bed")) {
       bedrooms = "2";
-      bathrooms = "2";
     } else if (selectedProperty.startsWith("3 Bed")) {
       bedrooms = "3";
-      bathrooms = "2";
     } else if (selectedProperty.startsWith("4 Bed")) {
       bedrooms = "4";
-      bathrooms = "2";
     } else if (selectedProperty.startsWith("5 Bed")) {
       bedrooms = "5";
-      bathrooms = "2";
     }
 
     const params = new URLSearchParams({
       service: "airbnb-cleaning",
       package: cardId,
       bedrooms,
-      bathrooms,
+      bathrooms: selectedBathrooms,
       storey: selectedStorey,
     });
 
@@ -106,11 +111,11 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
           </p>
         </div>
 
-        {/* ── Interactive Property & Storey Controls ────────────────────────── */}
-        <div className="bg-[#EBF6FB] rounded-2xl p-6 sm:p-8 mb-14 border border-[#2CBAE8]/20 shadow-sm max-w-[960px] mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* ── Interactive Property, Bathrooms & Storey Controls ────────────────────────── */}
+        <div className="bg-[#EBF6FB] rounded-2xl p-6 sm:p-8 mb-14 border border-[#2CBAE8]/20 shadow-sm max-w-[960px] mx-auto space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             {/* Property Size Selector */}
-            <div className="w-full md:w-3/5">
+            <div>
               <label htmlFor="property-size-select" className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44] mb-2">
                 1. Select Property Size:
               </label>
@@ -136,7 +141,7 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
             </div>
 
             {/* Storey Selector */}
-            <div className="w-full md:w-2/5">
+            <div>
               <span className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44] mb-2">
                 2. Select Storey:
               </span>
@@ -183,19 +188,78 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
               </div>
             </div>
           </div>
+
+          {/* 3. Bathrooms Selector */}
+          <div className="pt-4 border-t border-gray-200/60">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2.5">
+              <span className="block text-xs font-bold uppercase tracking-wider text-[#1A2E44]">
+                3. Number of Bathrooms:
+              </span>
+              <span className="text-xs text-gray-500 font-medium">
+                Contract base allowance: <strong className="text-[#1A2E44]">{contractedBathrooms} Bath{contractedBathrooms > 1 ? "s" : ""}</strong>
+              </span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+              {BATHROOM_OPTIONS.map((bath) => {
+                const isSelected = selectedBathrooms === bath;
+                const fee = calculateExtraBathroomFee(selectedProperty, bath);
+                return (
+                  <button
+                    key={bath}
+                    type="button"
+                    onClick={() => setSelectedBathrooms(bath)}
+                    className={`py-2.5 px-2 rounded-xl text-xs font-bold transition-all border cursor-pointer text-center flex flex-col items-center justify-center gap-1 ${
+                      isSelected
+                        ? "bg-[#2CBAE8] text-white border-[#2CBAE8] shadow-sm ring-2 ring-[#2CBAE8]/20"
+                        : "bg-white text-[#1A2E44] border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <span>{bath} {bath === "1" ? "Bath" : "Baths"}</span>
+                    {fee > 0 ? (
+                      <span
+                        className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                          isSelected ? "bg-white/20 text-[#FFE67B]" : "bg-[#FFE67B]/60 text-[#1A2E44]"
+                        }`}
+                      >
+                        +${fee.toFixed(0)}
+                      </span>
+                    ) : (
+                      <span
+                        className={`text-[10px] font-medium ${
+                          isSelected ? "text-white/80" : "text-gray-400"
+                        }`}
+                      >
+                        Included
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {extraBathroomFee > 0 && (
+              <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-center gap-2">
+                <span className="font-bold">Notice:</span>
+                <span>
+                  Adding {selectedBathrooms} bathrooms exceeds the contracted {contractedBathrooms} bath limit. <strong className="text-[#1A2E44]">+${extraBathroomFee.toFixed(2)}</strong> extra bathroom surcharge is included in the package prices below ($25/full bath, $15/half bath).
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ── 4 Pricing Cards Grid ────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-6 items-stretch">
           {PRICING_CARDS.map((card) => {
             const sizePrices = card.prices[selectedProperty] || {};
-            let currentPrice = sizePrices[selectedStorey];
+            let basePrice = sizePrices[selectedStorey];
 
             // Fallback price logic if storey isn't applicable
-            if (currentPrice === undefined) {
-              currentPrice = sizePrices["Single"] || 0;
+            if (basePrice === undefined) {
+              basePrice = sizePrices["Single"] || 0;
             }
 
+            const currentPrice = basePrice + extraBathroomFee;
             const formattedPrice = currentPrice.toFixed(2);
 
             return (
@@ -244,6 +308,11 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
                     <p className={`text-[11px] font-medium mt-1 ${card.isPopular ? "text-[#FFE67B]" : "text-[#2CBAE8]"}`}>
                       {selectedProperty} ({selectedStorey})
                     </p>
+                    {extraBathroomFee > 0 && (
+                      <span className={`inline-block mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full ${card.isPopular ? "bg-white/20 text-[#FFE67B]" : "bg-amber-100 text-amber-900"}`}>
+                        Includes +${extraBathroomFee.toFixed(2)} for {selectedBathrooms} baths
+                      </span>
+                    )}
                   </div>
 
                   {/* Inclusions List */}
@@ -293,8 +362,8 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
         </div>
 
         {/* Footnote */}
-        <p className="text-center text-xs text-gray-500 mt-8">
-          * Note: For Initial / Deep Cleaning, the base price includes up to 2 bedrooms. An additional $10 will apply for each extra bedroom. All prices are inclusive of GST.
+        <p className="text-center text-xs text-gray-500 mt-8 max-w-[850px] mx-auto leading-relaxed">
+          * Note: Base turnover prices include up to the contracted bathroom allowance (Studio: 1 Bath, 1 Bed: up to 1.5 Baths, 2–5 Bed: up to 2 Baths). Additional bathrooms are charged at +$25.00/full bath and +$15.00/half bath. For Initial / Deep Cleaning, the base price includes up to 2 bedrooms (+$10 for each extra bedroom). All prices are inclusive of GST.
         </p>
       </div>
     </section>

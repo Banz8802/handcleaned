@@ -5,6 +5,7 @@ import type { AdminBooking } from '@/services/adminBookingService';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { BookingDetailModal } from '@/components/admin/BookingDetailModal';
 import { EmptyState } from '@/components/admin/EmptyState';
+import { getContractedBathrooms } from '@/lib/data/pricingConfig';
 
 interface BookingsViewProps {
   initialBookings: AdminBooking[];
@@ -20,6 +21,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
+  const [bathroomFilter, setBathroomFilter] = useState<'all' | 'extra_only' | 'standard'>('all');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [sortBy, setSortBy] = useState<'created_at' | 'booking_date' | 'price'>('created_at');
@@ -60,6 +62,14 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
         return false;
       }
 
+      // Bathroom filter
+      if (bathroomFilter !== 'all') {
+        const contracted = getContractedBathrooms(b.bedrooms.toString());
+        const hasExtra = b.bathrooms > contracted;
+        if (bathroomFilter === 'extra_only' && !hasExtra) return false;
+        if (bathroomFilter === 'standard' && hasExtra) return false;
+      }
+
       // Date Range
       if (dateFrom && b.booking_date < dateFrom) {
         return false;
@@ -80,7 +90,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
       }
       return sortOrder === 'asc' ? comp : -comp;
     });
-  }, [bookings, searchTerm, paymentFilter, statusFilter, serviceFilter, dateFrom, dateTo, sortBy, sortOrder]);
+  }, [bookings, searchTerm, paymentFilter, statusFilter, serviceFilter, bathroomFilter, dateFrom, dateTo, sortBy, sortOrder]);
 
   // Paginated items
   const totalPages = Math.ceil(filteredBookings.length / itemsPerPage) || 1;
@@ -94,6 +104,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
     setPaymentFilter('all');
     setStatusFilter('all');
     setServiceFilter('all');
+    setBathroomFilter('all');
     setDateFrom('');
     setDateTo('');
     setSortBy('created_at');
@@ -138,7 +149,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
             />
           </div>
 
-          {(searchTerm || paymentFilter !== 'all' || statusFilter !== 'all' || serviceFilter !== 'all' || dateFrom || dateTo) && (
+          {(searchTerm || paymentFilter !== 'all' || statusFilter !== 'all' || serviceFilter !== 'all' || bathroomFilter !== 'all' || dateFrom || dateTo) && (
             <button
               onClick={handleResetFilters}
               className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer shrink-0"
@@ -149,7 +160,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
         </div>
 
         {/* Row 2: Select Filters */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 pt-1">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
           {/* Service Filter */}
           <div>
             <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
@@ -168,6 +179,25 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
               <option value="Residential">Residential Cleaning</option>
               <option value="Commercial">Commercial Cleaning</option>
               <option value="Linen">Linen Hire</option>
+            </select>
+          </div>
+
+          {/* Bathroom Filter */}
+          <div>
+            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Bathrooms
+            </label>
+            <select
+              value={bathroomFilter}
+              onChange={(e) => {
+                setBathroomFilter(e.target.value as 'all' | 'extra_only' | 'standard');
+                setCurrentPage(1);
+              }}
+              className="w-full text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#00AEEF] focus:bg-white"
+            >
+              <option value="all">All Bathrooms</option>
+              <option value="extra_only">Extra Baths (Above Contract)</option>
+              <option value="standard">Standard Included Baths</option>
             </select>
           </div>
 
@@ -332,8 +362,24 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
                         <p className="text-[11px] text-slate-500 truncate max-w-[150px]">{b.email}</p>
                       </td>
                       <td className="py-3.5 px-4 text-slate-800 font-medium">{b.service}</td>
-                      <td className="py-3.5 px-4 text-slate-600 truncate max-w-[130px]">
-                        {b.package_name}
+                      <td className="py-3.5 px-4">
+                        <p className="text-slate-800 font-semibold truncate max-w-[140px]">
+                          {b.package_name}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[11px] text-slate-500 font-medium">
+                            {b.bedrooms === 0 ? 'Studio' : `${b.bedrooms} Bed`}, {b.bathrooms} Bath
+                          </span>
+                          {(() => {
+                            const contracted = getContractedBathrooms(b.bedrooms === 0 ? 'Studio' : b.bedrooms.toString());
+                            const excess = Math.max(0, b.bathrooms - contracted);
+                            return excess > 0 ? (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 shrink-0">
+                                +{excess} Extra Bath
+                              </span>
+                            ) : null;
+                          })()}
+                        </div>
                       </td>
                       <td className="py-3.5 px-4 font-semibold text-slate-800">{b.booking_date}</td>
                       <td className="py-3.5 px-4 text-slate-600 font-medium">{b.booking_time}</td>
@@ -394,6 +440,20 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
                     <p className="text-[11px] text-slate-500">
                       {b.service} • {b.package_name}
                     </p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        {b.bedrooms === 0 ? 'Studio' : `${b.bedrooms} Bed`}, {b.bathrooms} Bath
+                      </span>
+                      {(() => {
+                        const contracted = getContractedBathrooms(b.bedrooms === 0 ? 'Studio' : b.bedrooms.toString());
+                        const excess = Math.max(0, b.bathrooms - contracted);
+                        return excess > 0 ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 shrink-0">
+                            +{excess} Extra Bath
+                          </span>
+                        ) : null;
+                      })()}
+                    </div>
                   </div>
 
                   <div className="text-[11px] text-slate-600 flex items-center justify-between">

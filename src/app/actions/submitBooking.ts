@@ -83,7 +83,13 @@ export async function submitBooking(
 
     const mappedProperty = getMappedPropertyType(input.bedrooms);
     const storey = input.storey || 'Single';
-    const finalPrice = calculatePackagePrice(selectedPkg, mappedProperty, storey, input.cleaners || 1);
+    const finalPrice = calculatePackagePrice(
+      selectedPkg,
+      mappedProperty,
+      storey,
+      input.cleaners || 1,
+      input.bathrooms
+    );
 
     // 3. Supabase Client Initialization
     const supabase = getSupabaseServerClient();

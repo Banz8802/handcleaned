@@ -1,0 +1,233 @@
+{
+  "hero": {
+    "videoUrl": "/videos/hero-bg-final.webm",
+    "badgeText": "We Provide, Sydney, New South Wales, and Australia",
+    "heading": "Home Cleaning\nServices and Airbnb",
+    "subheading": "We bring the best in your space with expert cleaning that reflects our highest standards.",
+    "ctaText": "Get a Quote",
+    "ctaLink": "/booking"
+  },
+  "homeAbout": {
+    "badgeText": "About Us",
+    "heading": "House Cleaning",
+    "description": "Our service is designed to maintain your home in a consistently clean, hygienic, and welcoming condition. Whether you choose a weekly, fortnightly, or custom schedule, our professional team ensures every visit leaves your space refreshed and immaculate — just the way you like it. This service is perfect for busy households, professionals, families, or anyone who values a tidy and organized living environment without the stress of cleaning it themselves.",
+    "imageUrl": "/images/cleaners.webp",
+    "ctaText": "Read more",
+    "ctaLink": "/about-us"
+  },
+  "aboutPage": {
+    "hero": {
+      "badgeText": "About Us",
+      "heading": "Professional Cleaning.\nThoughtful Service.\nExceptional Results.",
+      "subheading": "At Hand Cleaned, we are committed to providing professional, reliable, and detail-oriented cleaning services designed to make your space feel fresh, comfortable, and well cared for.",
+      "ctaText": "Book Your Clean",
+      "phone": "+61 411 289 877"
+    },
+    "intro": {
+      "badgeText": "About Hand Cleaned",
+      "heading": "Care, Professionalism & Attention to Detail",
+      "paragraph1": "At Hand Cleaned, we are committed to providing professional, reliable, and detail-oriented cleaning services designed to make your space feel fresh, comfortable, and well cared for.",
+      "paragraph2": "We understand that a clean environment is more than just appearance—it contributes to comfort, productivity, and peace of mind. That is why we approach every cleaning service with care, professionalism, and attention to detail.",
+      "imageUrl": "/images/cleaners.webp",
+      "badgeTitle": "Dedicated Professionals",
+      "badgeSubtitle": "Treating every property with the care it deserves",
+      "pillars": [
+        {
+          "title": "Comfort",
+          "description": "Enjoy a fresh, welcoming, and relaxed atmosphere in your property."
+        },
+        {
+          "title": "Productivity",
+          "description": "Stay clear-headed and efficient in an organized, immaculate space."
+        },
+        {
+          "title": "Peace of Mind",
+          "description": "Trust in dependable professionals who care for every single detail."
+        }
+      ]
+    }
+  },
+  "servicesCards": [
+    {
+      "id": "airbnb-cleaning",
+      "title": "Airbnb Cleaning",
+      "description": "Fast turnaround turnover cleaning and guest-ready preparation for your short-term rental.",
+      "image": "/images/airbnb-cleaning.webp",
+      "href": "/airbnb-cleaning"
+    },
+    {
+      "id": "residential-cleaning",
+      "title": "Residential Cleaning",
+      "description": "Comprehensive home cleaning tailored to maintain a clean, hygienic, and welcoming space.",
+      "image": "/images/Deep Cleaning.webp",
+      "href": "/residential-cleaning"
+    },
+    {
+      "id": "commercial-cleaning",
+      "title": "Commercial Cleaning",
+      "description": "Reliable office and workspace cleaning to keep your workplace healthy and productive.",
+      "image": "/images/Commercial Cleaning.webp",
+      "href": "/commercial-cleaning"
+    },
+    {
+      "id": "linen-hire",
+      "title": "Linen Hire",
+      "description": "Fresh, premium hotel-quality bed sheets, towels, and linen supply for your properties.",
+      "image": "/images/Linen Hire.webp",
+      "href": "/linen-hire"
+    }
+  ],
+  "residentialPage": {
+    "hero": {
+      "badgeText": "Sydney Residential Home Cleaning Specialists",
+      "heading": "Residential Cleaning\nPricing & Services",
+      "subheading": "Comprehensive home cleaning tailored to maintain a clean, hygienic, and welcoming space. Flexible regular and deep cleaning for busy households with clear hourly pricing per cleaner.",
+      "bgImage": "/images/residential-cleaning-bg-hero.webp",
+      "cta1Text": "Calculate Hourly Rate",
+      "cta1Link": "#pricing",
+      "cta2Text": "Book Home Clean",
+      "cta2Link": "/booking"
+    },
+    "featuresTitle": "Why Sydney Families Trust Hand Cleaned",
+    "features": [
+      {
+        "title": "Background Checked Staff",
+        "description": "Every cleaner on our team undergoes rigorous identity verification, police checks, and professional training for your complete peace of mind."
+      },
+      {
+        "title": "Eco-Friendly Products",
+        "description": "We use non-toxic, pet-safe, and eco-friendly cleaning supplies that leave your home smelling fresh without harsh chemical residues."
+      },
+      {
+        "title": "Flexible Team Sizing",
+        "description": "Easily scale your cleaning team from 1 to 2 cleaners based on your home size, schedule, and speed requirements."
+      },
+      {
+        "title": "Transparent Hourly Billing",
+        "description": "Clear hourly rates ($60/hr regular, $68/hr deep) with zero hidden fees. Pay only for the exact cleaner hours requested."
+      }
+    ]
+  },
+  "airbnbPage": {
+    "hero": {
+      "badgeText": "Sydney & Greater NSW Airbnb Cleaning Specialists",
+      "heading": "Airbnb Cleaning\nPricing & Services",
+      "subheading": "Fast turnaround turnover cleaning and guest-ready preparation for your short-term rental. Spotless departure turnovers, midstay refreshes, and deep setup cleans tailored for Sydney superhosts.",
+      "bgImage": "/images/airbnb-cleaning-hero-bg.webp",
+      "cta1Text": "Explore 4 Pricing Options",
+      "cta1Link": "#pricing",
+      "cta2Text": "Reserve Directly",
+      "cta2Link": "/booking"
+    },
+    "featuresTitle": "What You Get With Hand Cleaned Airbnb Services",
+    "features": [
+      {
+        "title": "Hotel-Standard Turnover",
+        "description": "Every departure clean ensures crisp bed making, fresh linen changeovers, and pristine towel displays that delight incoming guests."
+      },
+      {
+        "title": "Deep Sanitization",
+        "description": "High-touch surfaces, bathroom fixtures, kitchen counters, and appliances are sanitized using eco-friendly cleaning solutions."
+      },
+      {
+        "title": "Reliable Turnaround",
+        "description": "Our team works around your checkout (10:00 AM) and check-in (3:00 PM) windows so your property is always guest-ready on time."
+      },
+      {
+        "title": "Amenities & Supplies Check",
+        "description": "We replenish essential guest toiletries, toilet rolls, hand soaps, and kitchen sponges, leaving your property fully stocked."
+      }
+    ]
+  },
+  "commercialPage": {
+    "hero": {
+      "badgeText": "Sydney Commercial Office & Facility Cleaning Specialists",
+      "heading": "Commercial Cleaning\nPricing & Services",
+      "subheading": "Reliable office and workspace cleaning to keep your workplace healthy and productive. Professional commercial sanitization ($68/hr per cleaner excl. GST) with customizable team sizing.",
+      "bgImage": "/images/commercial-cleaning-hero.webp",
+      "cta1Text": "Explore Commercial Pricing",
+      "cta1Link": "#pricing",
+      "cta2Text": "Request Commercial Quote",
+      "cta2Link": "/booking"
+    },
+    "featuresTitle": "Why Sydney Businesses Trust Hand Cleaned",
+    "features": [
+      {
+        "title": "Security Cleared & Vetted",
+        "description": "Our commercial cleaning staff undergo full background checks, police clearances, and confidentiality training for secure corporate environments."
+      },
+      {
+        "title": "After-Hours Scheduling",
+        "description": "We work around your office hours (early morning, evening, or weekends) so your staff experience zero workplace disruption."
+      },
+      {
+        "title": "GST Invoice Compliant",
+        "description": "All commercial services come with tax-compliant tax invoices, transparent hourly reporting, and straightforward business invoicing."
+      },
+      {
+        "title": "Commercial Eco-Products",
+        "description": "Hospital-grade, eco-friendly commercial sanitizers that eliminate 99.9% of bacteria without leaving harsh odors in your office."
+      }
+    ]
+  },
+  "testimonials": {
+    "sectionBadge": "Testimonial",
+    "sectionHeading": "We are Very Happy for\nClient’s Reviews.",
+    "items": [
+      {
+        "id": "1",
+        "name": "Emily Davis",
+        "role": "CLIENT",
+        "text": "Hand Cleaned has been a complete game-changer for our busy household. Their professional team is punctual, reliable, and leaves every corner of our home spotless and refreshed. I couldn't be happier with their outstanding service!",
+        "avatar": "/images/avatar1.jpg",
+        "rating": 5,
+        "active": true
+      },
+      {
+        "id": "2",
+        "name": "Sarah Jenkins",
+        "role": "HOME OWNER",
+        "text": "Hand Cleaned transformed our home! The attention to detail is outstanding, and their team is always punctual, friendly, and thoroughly professional every single visit.",
+        "avatar": "/images/avatar2.jpg",
+        "rating": 5,
+        "active": true
+      },
+      {
+        "id": "3",
+        "name": "Michelle Chen",
+        "role": "AIRBNB HOST",
+        "text": "Managing multiple Airbnb properties was stressful until I hired Hand Cleaned. Quick turnaround times and immaculate condition every single time. 5 stars!",
+        "avatar": "/images/avatar3.jpg",
+        "rating": 5,
+        "active": true
+      },
+      {
+        "id": "4",
+        "name": "Amanda Thompson",
+        "role": "COMMERCIAL CLIENT",
+        "text": "Top tier cleaning service in Sydney. They customize the cleaning plan according to our office needs and keep our space spotless week after week.",
+        "avatar": "/images/avatar4.jpg",
+        "rating": 5,
+        "active": true
+      },
+      {
+        "id": "5",
+        "name": "Jessica Taylor",
+        "role": "END OF LEASE CLIENT",
+        "text": "Got my full bond back without any hassle! The end-of-lease deep clean was absolutely spotless. Highly recommend Hand Cleaned to anyone moving out.",
+        "avatar": "/images/avatar5.jpg",
+        "rating": 5,
+        "active": true
+      },
+      {
+        "id": "6",
+        "name": "Rebecca Wilson",
+        "role": "RESIDENTIAL CLIENT",
+        "text": "Reliable, trustworthy, and friendly team. Knowing our home is cleaned by professionals gives us peace of mind every single week.",
+        "avatar": "/images/avatar1.jpg",
+        "rating": 5,
+        "active": true
+      }
+    ]
+  }
+}

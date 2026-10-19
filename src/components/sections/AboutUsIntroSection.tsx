@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getSiteContent, type AboutPageContent } from "@/lib/data/contentConfig";
 
 function SectionLabel({ text }: { text: string }) {
   return (
@@ -8,37 +9,31 @@ function SectionLabel({ text }: { text: string }) {
   );
 }
 
-const BENEFIT_PILLS = [
-  {
-    title: "Comfort",
-    description: "Enjoy a fresh, welcoming, and relaxed atmosphere in your property.",
-    icon: (
-      <svg className="w-5 h-5 text-[#00AEEF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-  },
-  {
-    title: "Productivity",
-    description: "Stay clear-headed and efficient in an organized, immaculate space.",
-    icon: (
-      <svg className="w-5 h-5 text-[#00AEEF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Peace of Mind",
-    description: "Trust in dependable professionals who care for every single detail.",
-    icon: (
-      <svg className="w-5 h-5 text-[#00AEEF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-  },
+const PILLAR_ICONS = [
+  (
+    <svg key="1" className="w-5 h-5 text-[#00AEEF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  ),
+  (
+    <svg key="2" className="w-5 h-5 text-[#00AEEF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  ),
+  (
+    <svg key="3" className="w-5 h-5 text-[#00AEEF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  ),
 ];
 
-export default function AboutUsIntroSection() {
+interface AboutUsIntroSectionProps {
+  content?: AboutPageContent['intro'];
+}
+
+export default function AboutUsIntroSection({ content: customContent }: AboutUsIntroSectionProps) {
+  const content = customContent || getSiteContent().aboutPage.intro;
+
   return (
     <section
       className="relative w-full bg-white overflow-hidden py-16 lg:py-24"
@@ -55,33 +50,29 @@ export default function AboutUsIntroSection() {
           
           {/* Left Column: Text Copy */}
           <div className="lg:col-span-7 flex flex-col justify-center text-left">
-            <SectionLabel text="About Hand Cleaned" />
+            <SectionLabel text={content.badgeText || "About Hand Cleaned"} />
 
             <h2
               id="about-intro-heading"
               className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1A2E44] leading-tight tracking-tight mb-6"
             >
-              Care, Professionalism & Attention to Detail
+              {content.heading}
             </h2>
 
             <div className="space-y-4 text-gray-600 text-base leading-relaxed mb-8">
-              <p>
-                At <strong className="text-[#1A2E44]">Hand Cleaned</strong>, we are committed to providing professional, reliable, and detail-oriented cleaning services designed to make your space feel fresh, comfortable, and well cared for.
-              </p>
-              <p>
-                We understand that a clean environment is more than just appearance—it contributes to <strong className="text-[#1A2E44]">comfort</strong>, <strong className="text-[#1A2E44]">productivity</strong>, and <strong className="text-[#1A2E44]">peace of mind</strong>. That is why we approach every cleaning service with care, professionalism, and attention to detail.
-              </p>
+              <p>{content.paragraph1}</p>
+              <p>{content.paragraph2}</p>
             </div>
 
             {/* 3 Pillar Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-              {BENEFIT_PILLS.map((pillar) => (
+              {(content.pillars || []).map((pillar, idx) => (
                 <div
-                  key={pillar.title}
+                  key={pillar.title || idx}
                   className="bg-[#F7FBFF] border border-[#EBF6FB] p-4 rounded-2xl flex flex-col gap-2 hover:border-[#2CBAE8]/30 transition-all duration-200"
                 >
                   <div className="w-9 h-9 rounded-xl bg-[#EBF6FB] flex items-center justify-center flex-shrink-0">
-                    {pillar.icon}
+                    {PILLAR_ICONS[idx % PILLAR_ICONS.length]}
                   </div>
                   <h3 className="text-[#1A2E44] font-bold text-sm">
                     {pillar.title}
@@ -98,7 +89,7 @@ export default function AboutUsIntroSection() {
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-[480px] aspect-[4/5] rounded-3xl overflow-hidden shadow-xl border border-gray-100 group">
               <Image
-                src="/images/cleaners.webp"
+                src={content.imageUrl || "/images/cleaners.webp"}
                 alt="Hand Cleaned Professional Cleaning Team"
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -113,10 +104,10 @@ export default function AboutUsIntroSection() {
                 </div>
                 <div>
                   <p className="text-[#1A2E44] font-bold text-xs uppercase tracking-wider">
-                    Dedicated Professionals
+                    {content.badgeTitle || "Dedicated Professionals"}
                   </p>
                   <p className="text-gray-500 text-xs mt-0.5">
-                    Treating every property with the care it deserves
+                    {content.badgeSubtitle || "Treating every property with the care it deserves"}
                   </p>
                 </div>
               </div>

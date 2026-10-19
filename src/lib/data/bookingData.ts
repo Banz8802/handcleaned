@@ -56,7 +56,19 @@ export const BEDROOM_OPTIONS = [
   { label: "5 Bed", value: "5", propertyType: "5 Bed + 1 to 2 Bath" as PropertyType },
 ];
 
-export const BATHROOM_OPTIONS = ["1", "1.5", "2", "2.5", "3+"];
+export const BATHROOM_OPTIONS = ["1", "1.5", "2", "2.5", "3", "3.5", "4+"];
+
+export {
+  type PricingRatesConfig,
+  getPricingRates,
+  parseBathrooms,
+  getContractedBathrooms,
+  calculateExtraBathroomFee,
+} from "./pricingConfig";
+
+import {
+  calculateExtraBathroomFee,
+} from "./pricingConfig";
 
 export const STOREY_OPTIONS: { label: string; value: StoreyType }[] = [
   { label: "Single Storey", value: "Single" },
@@ -137,8 +149,11 @@ export function calculatePackagePrice(
   pkg: BookingPackage,
   propertyType: PropertyType,
   storey: StoreyType,
-  cleanersCount: number = 1
+  cleanersCount: number = 1,
+  bathrooms?: string | number
 ): number {
+  let basePrice = 150.0;
+
   // Fixed price packages (e.g. Linen Hire)
   if (pkg.price !== undefined) {
     return pkg.price;
@@ -147,24 +162,30 @@ export function calculatePackagePrice(
   // Hourly rate packages (e.g. Residential, Commercial)
   if (pkg.ratePerCleanerPerHour !== undefined) {
     const hours = pkg.serviceId === "residential-cleaning" ? 2 : 2; // default 2 hours per session
-    return pkg.ratePerCleanerPerHour * Math.max(1, cleanersCount) * hours;
-  }
-
-  // Tiered Airbnb pricing matrix
-  if (pkg.prices) {
+    basePrice = pkg.ratePerCleanerPerHour * Math.max(1, cleanersCount) * hours;
+  } else if (pkg.prices) {
+    // Tiered Airbnb pricing matrix
     const propertyPrices = pkg.prices[propertyType];
-    if (!propertyPrices) return 150.0;
-
-    if (propertyPrices[storey] !== undefined) {
-      return propertyPrices[storey]!;
+    if (propertyPrices) {
+      if (propertyPrices[storey] !== undefined) {
+        basePrice = propertyPrices[storey]!;
+      } else if (propertyPrices["Single"] !== undefined) {
+        basePrice = propertyPrices["Single"]!;
+      } else if (propertyPrices["Two-Storey"] !== undefined) {
+        basePrice = propertyPrices["Two-Storey"]!;
+      } else if (propertyPrices["Three-Storey"] !== undefined) {
+        basePrice = propertyPrices["Three-Storey"]!;
+      }
     }
-
-    if (propertyPrices["Single"] !== undefined) return propertyPrices["Single"]!;
-    if (propertyPrices["Two-Storey"] !== undefined) return propertyPrices["Two-Storey"]!;
-    if (propertyPrices["Three-Storey"] !== undefined) return propertyPrices["Three-Storey"]!;
   }
 
-  return 150.0;
+  // Add extra bathroom surcharge if bathrooms count is provided and exceeds contracted allowance
+  if (bathrooms !== undefined && pkg.serviceId !== "linen-hire") {
+    const extraBathroomFee = calculateExtraBathroomFee(propertyType, bathrooms);
+    return basePrice + extraBathroomFee;
+  }
+
+  return basePrice;
 }
 
 export function getAirbnbPackages(): BookingPackage[] {

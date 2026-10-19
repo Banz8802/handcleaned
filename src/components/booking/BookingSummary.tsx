@@ -6,6 +6,7 @@ import type {
   ScheduleDetails,
   CustomerDetails,
 } from "@/lib/types/booking";
+import { calculateExtraBathroomFee } from "@/lib/data/bookingData";
 
 interface BookingSummaryProps {
   service: BookingService;
@@ -27,6 +28,8 @@ export default function BookingSummary({
   currentStep,
 }: BookingSummaryProps) {
   const [mobileExpanded, setMobileExpanded] = useState(false);
+  const extraBathroomFee = calculateExtraBathroomFee(property.bedrooms, property.bathrooms);
+  const basePackagePrice = Math.max(0, calculatedPrice - extraBathroomFee);
 
   return (
     <aside className="w-full">
@@ -148,9 +151,16 @@ export default function BookingSummary({
                 {property.bedrooms === "Studio" ? "Studio" : `${property.bedrooms} Bedroom(s)`}
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-start">
               <span className="text-gray-400">Bathrooms:</span>
-              <span className="font-semibold text-white">{property.bathrooms} Bathroom(s)</span>
+              <div className="text-right">
+                <span className="font-semibold text-white">{property.bathrooms} Bathroom(s)</span>
+                {extraBathroomFee > 0 && (
+                  <span className="block text-[10px] text-[#FFE67B] font-semibold">
+                    (+${extraBathroomFee.toFixed(2)} extra bath fee)
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-400">Storey:</span>
@@ -206,9 +216,21 @@ export default function BookingSummary({
         )}
 
         {/* Price Breakdown */}
-        <div className="bg-[#243d58] rounded-xl p-4 mb-6">
-          <div className="flex justify-between items-baseline mb-1">
-            <span className="text-xs text-gray-300 font-semibold">Total Price:</span>
+        <div className="bg-[#243d58] rounded-xl p-4 mb-6 space-y-2">
+          <div className="flex justify-between items-center text-xs text-gray-300">
+            <span>Base Package:</span>
+            <span className="font-semibold text-white">${basePackagePrice.toFixed(2)}</span>
+          </div>
+
+          {extraBathroomFee > 0 && (
+            <div className="flex justify-between items-center text-xs text-[#FFE67B]">
+              <span>Extra Bathroom Fee:</span>
+              <span className="font-bold">+${extraBathroomFee.toFixed(2)}</span>
+            </div>
+          )}
+
+          <div className="pt-2 border-t border-white/10 flex justify-between items-baseline">
+            <span className="text-xs text-gray-200 font-semibold">Total Price:</span>
             <span className="text-2xl font-extrabold text-[#2CBAE8]">
               ${calculatedPrice.toFixed(2)}
             </span>

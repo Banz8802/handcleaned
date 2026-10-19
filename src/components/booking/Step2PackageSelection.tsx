@@ -6,6 +6,7 @@ interface Step2PackageSelectionProps {
   selectedPackageId: string;
   mappedPropertyType: PropertyType;
   storey: StoreyType;
+  bathrooms?: string;
   onSelectPackage: (pkg: BookingPackage) => void;
   onNext: () => void;
   onBack: () => void;
@@ -16,6 +17,7 @@ export default function Step2PackageSelection({
   selectedPackageId,
   mappedPropertyType,
   storey,
+  bathrooms,
   onSelectPackage,
   onNext,
   onBack,
@@ -38,7 +40,7 @@ export default function Step2PackageSelection({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {packages.map((pkg) => {
           const isSelected = selectedPackageId === pkg.id;
-          const calculatedPrice = calculatePackagePrice(pkg, mappedPropertyType, storey);
+          const calculatedPrice = calculatePackagePrice(pkg, mappedPropertyType, storey, 1, bathrooms);
 
           return (
             <div

@@ -1,40 +1,6 @@
 import ServiceCard, { type ServiceCardData } from "@/components/ui/ServiceCard";
 import BubbleDecoration from "@/components/ui/BubbleDecoration";
-
-// ---------------------------------------------------------------------------
-// Service data — update title, price, and image path when real assets arrive.
-// The image field is the src that will be passed to <Image> in ServiceCard.
-// ---------------------------------------------------------------------------
-const SERVICES: ServiceCardData[] = [
-  {
-    id: "airbnb-cleaning",
-    title: "Airbnb Cleaning",
-    description: "Fast turnaround turnover cleaning and guest-ready preparation for your short-term rental.",
-    image: "/images/airbnb-cleaning.webp",
-    href: "/airbnb-cleaning",
-  },
-  {
-    id: "residential-cleaning",
-    title: "Residential Cleaning",
-    description: "Comprehensive home cleaning tailored to maintain a clean, hygienic, and welcoming space.",
-    image: "/images/Deep Cleaning.webp",
-    href: "/residential-cleaning",
-  },
-  {
-    id: "commercial-cleaning",
-    title: "Commercial Cleaning",
-    description: "Reliable office and workspace cleaning to keep your workplace healthy and productive.",
-    image: "/images/Commercial Cleaning.webp",
-    href: "/commercial-cleaning",
-  },
-  {
-    id: "linen-hire",
-    title: "Linen Hire",
-    description: "Fresh, premium hotel-quality bed sheets, towels, and linen supply for your properties.",
-    image: "/images/Linen Hire.webp",
-    href: "/linen-hire",
-  },
-];
+import { getSiteContent } from "@/lib/data/contentConfig";
 
 // ---------------------------------------------------------------------------
 // Section label — shared pattern across all sections
@@ -130,7 +96,7 @@ export default function ServicesSection() {
 
         {/* ── Service cards grid ────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
-          {SERVICES.map((service) => (
+          {getSiteContent().servicesCards.map((service) => (
             <ServiceCard key={service.id} {...service} />
           ))}
         </div>

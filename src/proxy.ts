@@ -18,7 +18,7 @@ export function proxy(req: NextRequest) {
     }
 
     // 2. Standard admin routes on subdomain (/login, /dashboard, etc.) -> rewrite to /admin/*
-    const subdomainAdminRoutes = ['/login', '/dashboard', '/bookings', '/transactions', '/reports'];
+    const subdomainAdminRoutes = ['/login', '/dashboard', '/bookings', '/transactions', '/reports', '/pricing', '/content'];
     for (const route of subdomainAdminRoutes) {
       if (pathname === route || pathname.startsWith(`${route}/`)) {
         url.pathname = `/admin${pathname}`;

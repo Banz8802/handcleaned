@@ -117,7 +117,8 @@ export default function BookingFlow() {
     selectedPackage,
     mappedPropertyType,
     property.storey,
-    property.cleanersCount || 1
+    property.cleanersCount || 1,
+    property.bathrooms
   );
 
   // Step Navigation Handlers
@@ -312,6 +313,7 @@ export default function BookingFlow() {
                 selectedPackageId={selectedPackage.id}
                 mappedPropertyType={mappedPropertyType}
                 storey={property.storey}
+                bathrooms={property.bathrooms}
                 onSelectPackage={setSelectedPackage}
                 onNext={handleNextStep}
                 onBack={handleBackStep}

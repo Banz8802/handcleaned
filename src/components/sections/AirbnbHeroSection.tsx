@@ -70,7 +70,16 @@ function Badge({ text }: { text: string }) {
   );
 }
 
-export default function AirbnbHeroSection() {
+import { getSiteContent, type ServicePageContent } from "@/lib/data/contentConfig";
+
+interface AirbnbHeroSectionProps {
+  content?: ServicePageContent['hero'];
+}
+
+export default function AirbnbHeroSection({ content: customContent }: AirbnbHeroSectionProps) {
+  const content = customContent || getSiteContent().airbnbPage.hero;
+  const headingLines = (content.heading || "").split("\n");
+
   return (
     <section
       className="relative w-full overflow-hidden bg-[#00AEEF] z-0"
@@ -78,7 +87,8 @@ export default function AirbnbHeroSection() {
     >
       {/* Background Image */}
       <Image
-        src="/images/airbnb-cleaning-hero-bg.webp"
+        key={content.bgImage}
+        src={content.bgImage || "/images/airbnb-cleaning-hero-bg.webp"}
         alt="Airbnb Cleaning Services"
         fill
         priority
@@ -105,34 +115,37 @@ export default function AirbnbHeroSection() {
         <div className="pt-20 pb-32 lg:pt-24 lg:pb-36 text-left max-w-[720px] w-full">
           {/* Location Badge */}
           <div className="mb-6">
-            <Badge text="Sydney & Greater NSW Airbnb Cleaning Specialists" />
+            <Badge text={content.badgeText || "Sydney & Greater NSW Airbnb Cleaning Specialists"} />
           </div>
 
           {/* Title */}
           <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-bold text-white leading-[1.15] tracking-tight mb-6">
-            Airbnb Cleaning
-            <br />
-            <span className="text-[#FFE67B]">Pricing & Services</span>
+            {headingLines.map((line, idx) => (
+              <span key={idx}>
+                {line}
+                {idx < headingLines.length - 1 && <br />}
+              </span>
+            ))}
           </h1>
 
           {/* Description */}
           <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-[600px]">
-            Fast turnaround turnover cleaning and guest-ready preparation for your short-term rental. Spotless departure turnovers, midstay refreshes, and deep setup cleans tailored for Sydney superhosts.
+            {content.subheading}
           </p>
 
           {/* CTAs */}
           <div className="flex flex-wrap items-center gap-4">
             <a
-              href="#pricing"
+              href={content.cta1Link || "#pricing"}
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#2CBAE8] hover:bg-[#17739C] text-white font-bold text-sm transition-all duration-200 shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30 hover:scale-[1.02]"
             >
-              Explore 4 Pricing Options
+              {content.cta1Text || "Explore 4 Pricing Options"}
             </a>
             <Link
-              href="/booking"
+              href={content.cta2Link || "/booking"}
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-white/15 border border-white/30 text-white font-semibold text-sm hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
             >
-              Reserve Directly
+              {content.cta2Text || "Reserve Directly"}
             </Link>
           </div>
         </div>

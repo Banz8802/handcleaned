@@ -1,15 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getSiteContent, type HomeAboutContent } from "@/lib/data/contentConfig";
 
 // ---------------------------------------------------------------------------
-// ImageCollage — the distinctive 2x2 collage layout with rounded corners
-// and a central blue diamond overlapping all four quadrants.
+// ImageCollage — collage layout with rounded corners
 // ---------------------------------------------------------------------------
-function ImageCollage() {
+function ImageCollage({ src }: { src: string }) {
   return (
-    <div className="relative flex-shrink-0 w-full max-w-[500px] aspect-[580/556] overflow-hidden rounded-3xl mx-auto lg:mx-0">
+    <div className="relative flex-shrink-0 w-full max-w-[500px] aspect-[580/556] overflow-hidden rounded-3xl mx-auto lg:mx-0 shadow-lg">
       <Image
-        src="/images/cleaners.webp"
+        src={src || "/images/cleaners.webp"}
         alt="About Hand Cleaned"
         fill
         className="object-cover"
@@ -31,10 +31,16 @@ function SectionLabel({ text }: { text: string }) {
   );
 }
 
+interface AboutSectionProps {
+  content?: HomeAboutContent;
+}
+
 // ---------------------------------------------------------------------------
 // AboutSection — main export
 // ---------------------------------------------------------------------------
-export default function AboutSection() {
+export default function AboutSection({ content: customContent }: AboutSectionProps) {
+  const content = customContent || getSiteContent().homeAbout;
+
   return (
     <section
       className="relative w-full bg-white overflow-hidden py-20 lg:py-28"
@@ -51,37 +57,30 @@ export default function AboutSection() {
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-16 xl:gap-20">
 
           {/* ── Left: image collage ──────────────────────────────────── */}
-          <ImageCollage />
+          <ImageCollage src={content.imageUrl} />
 
           {/* ── Right: text content ──────────────────────────────────── */}
           <div className="flex-1 flex flex-col justify-center text-center lg:text-left min-w-0 lg:pt-8">
 
-            <SectionLabel text="About Us" />
+            <SectionLabel text={content.badgeText || "About Us"} />
 
             <h2
               id="about-heading"
               className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1A2E44] leading-tight tracking-tight mb-5"
             >
-              House Cleaning
+              {content.heading}
             </h2>
 
-            <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-[480px] mx-auto lg:mx-0">
-              Our service is designed to maintain your home in a consistently
-              clean, hygienic, and welcoming condition. Whether you choose a
-              weekly, fortnightly, or custom schedule, our professional team
-              ensures every visit leaves your space refreshed and immaculate —
-              just the way you like it. This service is perfect for busy
-              households, professionals, families, or anyone who values a tidy
-              and organized living environment without the stress of cleaning it
-              themselves.
+            <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-[480px] mx-auto lg:mx-0 whitespace-pre-line">
+              {content.description}
             </p>
 
             <div className="flex justify-center lg:justify-start">
               <Link
-                href="/about-us"
+                href={content.ctaLink || "/about-us"}
                 className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm hover:bg-[#17739C] transition-colors"
               >
-                Read more
+                {content.ctaText || "Read more"}
                 <svg
                   viewBox="0 0 16 16"
                   fill="currentColor"

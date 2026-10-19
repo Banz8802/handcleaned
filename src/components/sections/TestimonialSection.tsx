@@ -2,65 +2,38 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { getSiteContent, type TestimonialSectionContent } from "@/lib/data/contentConfig";
 
-interface Testimonial {
-  id: number;
-  name: string;
-  role: string;
-  text: string;
+interface TestimonialSectionProps {
+  content?: TestimonialSectionContent;
 }
 
-const TESTIMONIALS: Testimonial[] = [
-  {
-    id: 1,
-    name: "Emily Davis",
-    role: "CLIENT",
-    text: "Hand Cleaned has been a complete game-changer for our busy household. Their professional team is punctual, reliable, and leaves every corner of our home spotless and refreshed. I couldn't be happier with their outstanding service!",
-  },
-  {
-    id: 2,
-    name: "Sarah Jenkins",
-    role: "HOME OWNER",
-    text: "Hand Cleaned transformed our home! The attention to detail is outstanding, and their team is always punctual, friendly, and thoroughly professional every single visit.",
-  },
-  {
-    id: 3,
-    name: "Michelle Chen",
-    role: "AIRBNB HOST",
-    text: "Managing multiple Airbnb properties was stressful until I hired Hand Cleaned. Quick turnaround times and immaculate condition every single time. 5 stars!",
-  },
-  {
-    id: 4,
-    name: "Amanda Thompson",
-    role: "COMMERCIAL CLIENT",
-    text: "Top tier cleaning service in Sydney. They customize the cleaning plan according to our office needs and keep our space spotless week after week.",
-  },
-  {
-    id: 5,
-    name: "Jessica Taylor",
-    role: "END OF LEASE CLIENT",
-    text: "Got my full bond back without any hassle! The end-of-lease deep clean was absolutely spotless. Highly recommend Hand Cleaned to anyone moving out.",
-  },
-  {
-    id: 6,
-    name: "Rebecca Wilson",
-    role: "RESIDENTIAL CLIENT",
-    text: "Reliable, trustworthy, and friendly team. Knowing our home is cleaned by professionals gives us peace of mind every single week.",
-  },
-];
+export default function TestimonialSection({ content: customContent }: TestimonialSectionProps) {
+  const content = customContent || getSiteContent().testimonials;
+  const activeTestimonials = (content.items || []).filter((item) => item.active !== false);
+  const items = activeTestimonials.length > 0 ? activeTestimonials : (content.items || []);
 
-export default function TestimonialSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const current = TESTIMONIALS[currentIndex];
+  const current = items[currentIndex] || items[0] || {
+    id: "1",
+    name: "Emily Davis",
+    role: "CLIENT",
+    text: "Hand Cleaned has been a complete game-changer for our busy household.",
+    avatar: "/images/avatar1.jpg",
+    rating: 5,
+    active: true,
+  };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? TESTIMONIALS.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? items.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === TESTIMONIALS.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === items.length - 1 ? 0 : prev + 1));
   };
+
+  const headingLines = (content.sectionHeading || "We are Very Happy for\nClient’s Reviews.").split("\n");
 
   return (
     <section
@@ -71,15 +44,18 @@ export default function TestimonialSection() {
         {/* ── Section Header ────────────────────────────────────────────── */}
         <div className="text-center mb-14 lg:mb-20">
           <span className="inline-block text-[#2CBAE8] text-xs font-semibold uppercase tracking-[0.18em] mb-3">
-            Testimonial
+            {content.sectionBadge || "Testimonial"}
           </span>
           <h2
             id="testimonial-heading"
             className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1A2E44] leading-tight tracking-tight max-w-[600px] mx-auto"
           >
-            We are Very Happy for
-            <br />
-            Client’s Reviews.
+            {headingLines.map((line, idx) => (
+              <span key={idx}>
+                {line}
+                {idx < headingLines.length - 1 && <br />}
+              </span>
+            ))}
           </h2>
         </div>
 
@@ -103,8 +79,8 @@ export default function TestimonialSection() {
               {/* Center Main Large Featured Avatar */}
               <div className="absolute top-[5%] left-[22%] w-36 h-36 sm:w-44 sm:h-44 rounded-[32px] overflow-hidden shadow-2xl border-4 border-white z-10 transition-transform hover:scale-105">
                 <Image
-                  src="/images/avatar2.jpg"
-                  alt="Emily Davis"
+                  src={current.avatar || "/images/avatar2.jpg"}
+                  alt={current.name || "Client review"}
                   fill
                   className="object-cover"
                 />
@@ -248,7 +224,7 @@ export default function TestimonialSection() {
                 <div className="text-sm font-semibold text-[#1A2E44]">
                   <span className="font-bold text-[#1A2E44]">{currentIndex + 1}</span>
                   <span className="text-gray-400 mx-1">/</span>
-                  <span className="text-gray-400">{TESTIMONIALS.length}</span>
+                  <span className="text-gray-400">{items.length}</span>
                 </div>
               </div>
 

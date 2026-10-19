@@ -69,7 +69,16 @@ function EyebrowBadge({ text }: { text: string }) {
   );
 }
 
-export default function AboutUsHeroSection() {
+import { getSiteContent, type AboutPageContent } from "@/lib/data/contentConfig";
+
+interface AboutUsHeroSectionProps {
+  content?: AboutPageContent['hero'];
+}
+
+export default function AboutUsHeroSection({ content: customContent }: AboutUsHeroSectionProps) {
+  const content = customContent || getSiteContent().aboutPage.hero;
+  const headingLines = (content.heading || "").split("\n");
+
   return (
     <section
       className="relative w-full overflow-hidden bg-gradient-to-br from-[#00AEEF] via-[#17739C] to-[#1A2E44] z-0"
@@ -86,21 +95,22 @@ export default function AboutUsHeroSection() {
         <div className="pt-16 pb-24 lg:pt-20 lg:pb-28 text-left max-w-[760px] w-full">
           {/* Eyebrow */}
           <div className="mb-4">
-            <EyebrowBadge text="About Us" />
+            <EyebrowBadge text={content.badgeText || "About Us"} />
           </div>
 
           {/* Heading */}
           <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-white leading-[1.18] tracking-tight mb-5">
-            Professional Cleaning.
-            <br />
-            Thoughtful Service.
-            <br />
-            <span className="text-[#FFE67B]">Exceptional Results.</span>
+            {headingLines.map((line, idx) => (
+              <span key={idx}>
+                {line}
+                {idx < headingLines.length - 1 && <br />}
+              </span>
+            ))}
           </h1>
 
-          {/* Supporting Text from PDF */}
+          {/* Supporting Text */}
           <p className="text-white/90 text-base sm:text-lg leading-relaxed mb-8 max-w-[640px]">
-            At Hand Cleaned, we are committed to providing professional, reliable, and detail-oriented cleaning services designed to make your space feel fresh, comfortable, and well cared for.
+            {content.subheading}
           </p>
 
           {/* Action CTAs */}
@@ -109,14 +119,16 @@ export default function AboutUsHeroSection() {
               href="/booking"
               className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-[#2CBAE8] hover:bg-[#17739C] text-white font-bold text-sm transition-all duration-200 shadow-md shadow-[#2CBAE8]/20 hover:shadow-lg hover:shadow-[#2CBAE8]/30 hover:scale-[1.02]"
             >
-              Book Your Clean
+              {content.ctaText || "Book Your Clean"}
             </Link>
-            <a
-              href="tel:+61411289877"
-              className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-white/15 border border-white/30 text-white font-semibold text-sm hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
-            >
-              <span>Call +61 411 289 877</span>
-            </a>
+            {content.phone && (
+              <a
+                href={`tel:${content.phone.replace(/\s+/g, '')}`}
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-white/15 border border-white/30 text-white font-semibold text-sm hover:bg-white/25 transition-all duration-200 backdrop-blur-sm"
+              >
+                <span>Call {content.phone}</span>
+              </a>
+            )}
           </div>
         </div>
       </div>

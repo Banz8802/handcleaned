@@ -1,7 +1,7 @@
 'use server';
 
 import { authenticateAdmin, logoutAdmin, getAdminSession } from '@/services/adminAuthService';
-import { updateBookingStatus, updatePaymentStatus, type AdminBooking } from '@/services/adminBookingService';
+import { updateBookingStatus, updatePaymentStatus, updateBookingDetails, type AdminBooking } from '@/services/adminBookingService';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
@@ -97,3 +97,96 @@ export async function updatePaymentStatusAction(
   revalidatePath('/dashboard');
   return { success: true };
 }
+
+/**
+ * Save / Update pricing rates from Admin CRM.
+ */
+export async function savePricingRatesAction(
+  rates: Partial<import('@/lib/data/pricingConfig').PricingRatesConfig>
+): Promise<AdminActionResponse> {
+  const session = await getAdminSession();
+  if (!session.authenticated) {
+    return { success: false, error: 'Unauthorized. Please log in.' };
+  }
+
+  const { saveAdminPricingRates } = await import('@/services/adminPricingService');
+  const result = await saveAdminPricingRates(rates, session.user?.email || 'admin@handcleaned.com.au');
+
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to save pricing rates.' };
+  }
+
+  // Revalidate all pages that depend on pricing
+  revalidatePath('/admin/pricing');
+  revalidatePath('/pricing');
+  revalidatePath('/admin/bookings');
+  revalidatePath('/bookings');
+  revalidatePath('/booking');
+  revalidatePath('/airbnb-cleaning');
+  revalidatePath('/residential-cleaning');
+  revalidatePath('/commercial-cleaning');
+  revalidatePath('/');
+
+  return { success: true };
+}
+
+/**
+ * Update booking details (bathrooms, bedrooms, price, notes, etc.)
+ */
+export async function updateBookingDetailsAction(
+  id: string,
+  updates: Parameters<typeof updateBookingDetails>[1]
+): Promise<AdminActionResponse> {
+  const session = await getAdminSession();
+  if (!session.authenticated) {
+    return { success: false, error: 'Unauthorized. Please log in.' };
+  }
+
+  const result = await updateBookingDetails(id, updates);
+
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to update booking details.' };
+  }
+
+  revalidatePath('/admin/bookings');
+  revalidatePath('/admin/transactions');
+  revalidatePath('/admin/dashboard');
+  revalidatePath('/bookings');
+  revalidatePath('/transactions');
+  revalidatePath('/dashboard');
+
+  return { success: true };
+}
+
+/**
+ * Save / Update Website Content (wordings, images, hero video, pages, testimonials).
+ */
+export async function saveSiteContentAction(
+  content: Partial<import('@/lib/data/contentConfig').SiteContentConfig>
+): Promise<AdminActionResponse> {
+  const session = await getAdminSession();
+  if (!session.authenticated) {
+    return { success: false, error: 'Unauthorized. Please log in.' };
+  }
+
+  const { saveAdminSiteContent } = await import('@/services/adminContentService');
+  const result = await saveAdminSiteContent(content, session.user?.email || 'admin@handcleaned.com.au');
+
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to save website content.' };
+  }
+
+  // Revalidate all public and admin pages that display this content
+  revalidatePath('/');
+  revalidatePath('/about-us');
+  revalidatePath('/residential-cleaning');
+  revalidatePath('/airbnb-cleaning');
+  revalidatePath('/commercial-cleaning');
+  revalidatePath('/linen-hire');
+  revalidatePath('/admin/content');
+  revalidatePath('/content');
+
+  return { success: true };
+}
+
+

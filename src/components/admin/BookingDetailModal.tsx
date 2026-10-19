@@ -3,7 +3,15 @@
 import React, { useState, useTransition } from 'react';
 import type { AdminBooking } from '@/services/adminBookingService';
 import { StatusBadge } from './StatusBadge';
-import { updateBookingStatusAction, updatePaymentStatusAction } from '@/app/actions/adminActions';
+import {
+  updateBookingStatusAction,
+  updatePaymentStatusAction,
+  updateBookingDetailsAction,
+} from '@/app/actions/adminActions';
+import {
+  getContractedBathrooms,
+  calculateExtraBathroomFee,
+} from '@/lib/data/pricingConfig';
 
 interface BookingDetailModalProps {
   booking: AdminBooking | null;
@@ -19,6 +27,10 @@ export function BookingDetailModal({ booking, onClose, onUpdated }: BookingDetai
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<AdminBooking['payment_status']>(
     booking?.payment_status || 'pending'
   );
+  const [isEditingSpecs, setIsEditingSpecs] = useState(false);
+  const [editedBathrooms, setEditedBathrooms] = useState<number>(booking?.bathrooms || 1);
+  const [editedPrice, setEditedPrice] = useState<number>(booking?.price || 0);
+  const [editedNotes, setEditedNotes] = useState<string>(booking?.notes || '');
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Sync if booking changes
@@ -26,11 +38,40 @@ export function BookingDetailModal({ booking, onClose, onUpdated }: BookingDetai
     if (booking) {
       setSelectedBookingStatus(booking.booking_status);
       setSelectedPaymentStatus(booking.payment_status);
+      setEditedBathrooms(booking.bathrooms);
+      setEditedPrice(booking.price);
+      setEditedNotes(booking.notes || '');
+      setIsEditingSpecs(false);
       setMessage(null);
     }
   }, [booking]);
 
   if (!booking) return null;
+
+  const contractedBaths = getContractedBathrooms(booking.bedrooms === 0 ? 'Studio' : booking.bedrooms.toString());
+  const excessBaths = Math.max(0, booking.bathrooms - contractedBaths);
+  const excessFee = calculateExtraBathroomFee(booking.bedrooms === 0 ? 'Studio' : booking.bedrooms.toString(), booking.bathrooms);
+
+  const handleSaveSpecs = () => {
+    setMessage(null);
+    startTransition(async () => {
+      const res = await updateBookingDetailsAction(booking.id, {
+        bathrooms: editedBathrooms,
+        price: editedPrice,
+        notes: editedNotes,
+      });
+      if (res.success) {
+        booking.bathrooms = editedBathrooms;
+        booking.price = editedPrice;
+        booking.notes = editedNotes;
+        setIsEditingSpecs(false);
+        setMessage({ type: 'success', text: 'Booking specifications and bathroom details updated.' });
+        if (onUpdated) onUpdated();
+      } else {
+        setMessage({ type: 'error', text: res.error || 'Failed to update specifications.' });
+      }
+    });
+  };
 
   const handleSaveChanges = () => {
     setMessage(null);
@@ -148,32 +189,119 @@ export function BookingDetailModal({ booking, onClose, onUpdated }: BookingDetai
           {/* SECTION 2: SERVICE & PROPERTY */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/60">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#17739C] mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                Service Details
-              </h3>
-              <div className="space-y-2 text-xs">
-                <div>
-                  <p className="text-slate-500 font-medium">Service</p>
-                  <p className="text-slate-900 font-bold mt-0.5">{booking.service}</p>
-                </div>
-                <div>
-                  <p className="text-slate-500 font-medium">Package</p>
-                  <p className="text-slate-800 font-semibold mt-0.5">{booking.package_name}</p>
-                </div>
-                <div className="flex gap-4 pt-1">
-                  <div>
-                    <p className="text-slate-500 font-medium">Bedrooms</p>
-                    <p className="text-slate-800 font-bold">{booking.bedrooms}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-500 font-medium">Bathrooms</p>
-                    <p className="text-slate-800 font-bold">{booking.bathrooms}</p>
-                  </div>
-                </div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#17739C] flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  Service Details
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingSpecs(!isEditingSpecs)}
+                  className="text-[11px] font-bold text-[#00AEEF] hover:underline cursor-pointer"
+                >
+                  {isEditingSpecs ? 'Cancel Edit' : 'Edit Specs / Bathrooms'}
+                </button>
               </div>
+
+              {isEditingSpecs ? (
+                <div className="space-y-3 pt-1">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      Bathrooms Count
+                    </label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="1"
+                      value={editedBathrooms}
+                      onChange={(e) => setEditedBathrooms(parseFloat(e.target.value) || 1)}
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#00AEEF]"
+                    />
+                    <span className="text-[10px] text-slate-500 mt-0.5 block">
+                      Contract Allowance: {contractedBaths} Baths
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      Total Booking Price (AUD)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={editedPrice}
+                      onChange={(e) => setEditedPrice(parseFloat(e.target.value) || 0)}
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#00AEEF]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      Admin / Customer Notes
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={editedNotes}
+                      onChange={(e) => setEditedNotes(e.target.value)}
+                      className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#00AEEF] resize-none"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveSpecs}
+                    disabled={isPending}
+                    className="w-full py-2 rounded-lg bg-[#00AEEF] text-white text-xs font-bold hover:bg-[#0098d4] transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {isPending ? 'Saving Specs...' : 'Save Updated Specifications'}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2 text-xs">
+                  <div>
+                    <p className="text-slate-500 font-medium">Service</p>
+                    <p className="text-slate-900 font-bold mt-0.5">{booking.service}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 font-medium">Package</p>
+                    <p className="text-slate-800 font-semibold mt-0.5">{booking.package_name}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div>
+                      <p className="text-slate-500 font-medium">Bedrooms</p>
+                      <p className="text-slate-800 font-bold">
+                        {booking.bedrooms === 0 ? 'Studio' : `${booking.bedrooms} Bed`}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 font-medium">Bathrooms</p>
+                      <p className="text-slate-800 font-bold">{booking.bathrooms} Bath(s)</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200/60 space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-500">Contract Allowance:</span>
+                      <span className="font-semibold text-slate-700">{contractedBaths} Baths</span>
+                    </div>
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-500">Excess Bathrooms:</span>
+                      <span className={`font-bold ${excessBaths > 0 ? 'text-amber-700' : 'text-slate-700'}`}>
+                        {excessBaths > 0 ? `+${excessBaths} Extra` : 'None (Included)'}
+                      </span>
+                    </div>
+                    {excessFee > 0 && (
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-slate-500">Bathroom Surcharge:</span>
+                        <span className="font-extrabold text-amber-700">+${excessFee.toFixed(2)} AUD</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="bg-slate-50/80 rounded-2xl p-4 border border-slate-200/60">

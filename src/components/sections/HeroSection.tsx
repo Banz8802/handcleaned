@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { getSiteContent, type HeroContent } from "@/lib/data/contentConfig";
 
 // ---------------------------------------------------------------------------
 // Bottom wave divider — organic foam/cloud shape that sits at the very bottom
@@ -81,10 +82,15 @@ function Badge({ text }: { text: string }) {
   );
 }
 
+interface HeroSectionProps {
+  content?: HeroContent;
+}
+
 // ---------------------------------------------------------------------------
 // HeroSection — main export
 // ---------------------------------------------------------------------------
-export default function HeroSection() {
+export default function HeroSection({ content: customContent }: HeroSectionProps) {
+  const content = customContent || getSiteContent().hero;
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -93,7 +99,9 @@ export default function HeroSection() {
         console.log("Autoplay was prevented:", err);
       });
     }
-  }, []);
+  }, [content.videoUrl]);
+
+  const headingLines = (content.heading || "").split("\n");
 
   return (
     <section
@@ -102,8 +110,9 @@ export default function HeroSection() {
     >
       {/* Background Video */}
       <video
+        key={content.videoUrl}
         ref={videoRef}
-        src="/videos/hero-bg-final.webm"
+        src={content.videoUrl || "/videos/hero-bg-final.webm"}
         autoPlay
         loop
         muted
@@ -126,28 +135,30 @@ export default function HeroSection() {
 
           {/* Badge */}
           <div className="mb-6">
-            <Badge text="We Provide, Sydney, New South Wales, and Australia" />
+            <Badge text={content.badgeText || "We Provide, Sydney, New South Wales, and Australia"} />
           </div>
 
           {/* Main heading */}
           <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-bold text-white leading-[1.15] tracking-tight mb-6">
-            Home Cleaning
-            <br />
-            Services and Airbnb
+            {headingLines.map((line, idx) => (
+              <span key={idx}>
+                {line}
+                {idx < headingLines.length - 1 && <br />}
+              </span>
+            ))}
           </h1>
 
           {/* Supporting paragraph */}
           <p className="text-white/90 text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-[480px]">
-            We bring the best in your space with expert cleaning that reflects
-            our highest standards.
+            {content.subheading}
           </p>
 
           {/* CTA button */}
           <Link
-            href="/booking"
+            href={content.ctaLink || "/booking"}
             className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#2CBAE8] text-white font-semibold text-sm hover:bg-[#17739C] transition-colors"
           >
-            Get a Quote
+            {content.ctaText || "Get a Quote"}
           </Link>
         </div>
       </div>
