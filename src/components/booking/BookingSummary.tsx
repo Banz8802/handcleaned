@@ -6,6 +6,7 @@ import type {
   ScheduleDetails,
   CustomerDetails,
 } from "@/lib/types/booking";
+import type { PricingRatesConfig } from "@/lib/data/pricingConfig";
 import { calculateExtraBathroomFee } from "@/lib/data/bookingData";
 
 interface BookingSummaryProps {
@@ -16,6 +17,7 @@ interface BookingSummaryProps {
   schedule: ScheduleDetails;
   customer: CustomerDetails;
   currentStep: number;
+  pricingRates?: PricingRatesConfig;
 }
 
 export default function BookingSummary({
@@ -26,9 +28,10 @@ export default function BookingSummary({
   schedule,
   customer,
   currentStep,
+  pricingRates,
 }: BookingSummaryProps) {
   const [mobileExpanded, setMobileExpanded] = useState(false);
-  const extraBathroomFee = calculateExtraBathroomFee(property.bedrooms, property.bathrooms);
+  const extraBathroomFee = calculateExtraBathroomFee(property.bedrooms, property.bathrooms, pricingRates);
   const basePackagePrice = Math.max(0, calculatedPrice - extraBathroomFee);
 
   return (

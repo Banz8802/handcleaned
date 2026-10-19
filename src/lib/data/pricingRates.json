@@ -1,26 +1,26 @@
 {
-  "extraFullBathroomFee": 25.0,
-  "extraHalfBathroomFee": 15.0,
+  "extraFullBathroomFee": 25,
+  "extraHalfBathroomFee": 15,
   "contractedBathrooms": {
-    "studio": 1.0,
+    "studio": 1,
     "oneBed": 1.5,
-    "twoPlusBeds": 2.0
+    "twoPlusBeds": 2
   },
   "deepCleanExtraBedroom": {
-    "extraBedroomFee": 10.0,
+    "extraBedroomFee": 10,
     "includedBedrooms": 2
   },
   "storeySurcharges": {
-    "standardTwoStorey": 21.0,
-    "standardThreeStorey": 42.0,
+    "standardTwoStorey": 21,
+    "standardThreeStorey": 42,
     "deepTwoStorey": 31.5,
-    "deepThreeStorey": 63.0
+    "deepThreeStorey": 63
   },
   "hourlyRates": {
-    "regularCleaningPerHour": 60.0,
-    "deepCleaningPerHour": 68.0,
-    "commercialCleaningPerHour": 65.0
+    "regularCleaningPerHour": 60,
+    "deepCleaningPerHour": 68,
+    "commercialCleaningPerHour": 65
   },
-  "updatedAt": "2026-10-19T20:00:00.000Z",
+  "updatedAt": "2026-10-19T13:26:04.806Z",
   "updatedBy": "admin@handcleaned.com.au"
 }

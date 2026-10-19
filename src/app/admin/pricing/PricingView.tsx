@@ -1,16 +1,52 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import type { PricingRatesConfig } from '@/lib/data/pricingConfig';
 import { savePricingRatesAction } from '@/app/actions/adminActions';
 import { calculateExtraBathroomFee, getContractedBathrooms } from '@/lib/data/pricingConfig';
+
+export type PricingRatesFormState = {
+  extraFullBathroomFee: number | string;
+  extraHalfBathroomFee: number | string;
+  contractedBathrooms: {
+    studio: number | string;
+    oneBed: number | string;
+    twoPlusBeds: number | string;
+  };
+  deepCleanExtraBedroom: {
+    extraBedroomFee: number | string;
+    includedBedrooms: number | string;
+  };
+  storeySurcharges: {
+    standardTwoStorey: number | string;
+    standardThreeStorey: number | string;
+    deepTwoStorey: number | string;
+    deepThreeStorey: number | string;
+  };
+  hourlyRates: {
+    regularCleaningPerHour: number | string;
+    deepCleaningPerHour: number | string;
+    commercialCleaningPerHour: number | string;
+  };
+  updatedAt?: string;
+  updatedBy?: string;
+};
 
 interface PricingViewProps {
   initialRates: PricingRatesConfig;
 }
 
+const toNum = (val: number | string | undefined, fallback: number = 0): number => {
+  if (typeof val === 'number') return val;
+  if (!val && val !== '0') return fallback;
+  const parsed = parseFloat(String(val));
+  return isNaN(parsed) ? fallback : parsed;
+};
+
 export function PricingView({ initialRates }: PricingViewProps) {
-  const [rates, setRates] = useState<PricingRatesConfig>(initialRates);
+  const router = useRouter();
+  const [rates, setRates] = useState<PricingRatesFormState>(initialRates);
   const [isPending, startTransition] = useTransition();
   const [saveStatus, setSaveStatus] = useState<{
     type: 'idle' | 'success' | 'error';
@@ -22,20 +58,18 @@ export function PricingView({ initialRates }: PricingViewProps) {
   const [simBathrooms, setSimBathrooms] = useState<string>('2.5');
 
   const handleBathroomRateChange = (field: 'extraFullBathroomFee' | 'extraHalfBathroomFee', val: string) => {
-    const num = parseFloat(val);
     setRates((prev) => ({
       ...prev,
-      [field]: isNaN(num) ? 0 : num,
+      [field]: val,
     }));
   };
 
   const handleContractedBathChange = (field: 'studio' | 'oneBed' | 'twoPlusBeds', val: string) => {
-    const num = parseFloat(val);
     setRates((prev) => ({
       ...prev,
       contractedBathrooms: {
         ...prev.contractedBathrooms,
-        [field]: isNaN(num) ? 0 : num,
+        [field]: val,
       },
     }));
   };
@@ -44,12 +78,11 @@ export function PricingView({ initialRates }: PricingViewProps) {
     field: 'standardTwoStorey' | 'standardThreeStorey' | 'deepTwoStorey' | 'deepThreeStorey',
     val: string
   ) => {
-    const num = parseFloat(val);
     setRates((prev) => ({
       ...prev,
       storeySurcharges: {
         ...prev.storeySurcharges,
-        [field]: isNaN(num) ? 0 : num,
+        [field]: val,
       },
     }));
   };
@@ -58,12 +91,11 @@ export function PricingView({ initialRates }: PricingViewProps) {
     field: 'extraBedroomFee' | 'includedBedrooms',
     val: string
   ) => {
-    const num = parseFloat(val);
     setRates((prev) => ({
       ...prev,
       deepCleanExtraBedroom: {
         ...prev.deepCleanExtraBedroom,
-        [field]: isNaN(num) ? 0 : num,
+        [field]: val,
       },
     }));
   };
@@ -72,12 +104,11 @@ export function PricingView({ initialRates }: PricingViewProps) {
     field: 'regularCleaningPerHour' | 'deepCleaningPerHour' | 'commercialCleaningPerHour',
     val: string
   ) => {
-    const num = parseFloat(val);
     setRates((prev) => ({
       ...prev,
       hourlyRates: {
         ...prev.hourlyRates,
-        [field]: isNaN(num) ? 0 : num,
+        [field]: val,
       },
     }));
   };
@@ -85,12 +116,41 @@ export function PricingView({ initialRates }: PricingViewProps) {
   const handleSave = () => {
     setSaveStatus({ type: 'idle' });
     startTransition(async () => {
-      const res = await savePricingRatesAction(rates);
+      const payload: PricingRatesConfig = {
+        extraFullBathroomFee: toNum(rates.extraFullBathroomFee, 25),
+        extraHalfBathroomFee: toNum(rates.extraHalfBathroomFee, 15),
+        contractedBathrooms: {
+          studio: toNum(rates.contractedBathrooms.studio, 1),
+          oneBed: toNum(rates.contractedBathrooms.oneBed, 1.5),
+          twoPlusBeds: toNum(rates.contractedBathrooms.twoPlusBeds, 2),
+        },
+        deepCleanExtraBedroom: {
+          extraBedroomFee: toNum(rates.deepCleanExtraBedroom.extraBedroomFee, 10),
+          includedBedrooms: Math.round(toNum(rates.deepCleanExtraBedroom.includedBedrooms, 2)),
+        },
+        storeySurcharges: {
+          standardTwoStorey: toNum(rates.storeySurcharges.standardTwoStorey, 21),
+          standardThreeStorey: toNum(rates.storeySurcharges.standardThreeStorey, 42),
+          deepTwoStorey: toNum(rates.storeySurcharges.deepTwoStorey, 31.5),
+          deepThreeStorey: toNum(rates.storeySurcharges.deepThreeStorey, 63),
+        },
+        hourlyRates: {
+          regularCleaningPerHour: toNum(rates.hourlyRates.regularCleaningPerHour, 60),
+          deepCleaningPerHour: toNum(rates.hourlyRates.deepCleaningPerHour, 68),
+          commercialCleaningPerHour: toNum(rates.hourlyRates.commercialCleaningPerHour, 65),
+        },
+      };
+
+      const res = await savePricingRatesAction(payload);
       if (res.success) {
+        if (res.data) {
+          setRates(res.data);
+        }
         setSaveStatus({
           type: 'success',
           message: 'Pricing rates and bathroom policies successfully updated and saved across all booking systems.',
         });
+        router.refresh();
       } else {
         setSaveStatus({
           type: 'error',
@@ -133,9 +193,34 @@ export function PricingView({ initialRates }: PricingViewProps) {
     }
   };
 
-  // Live Simulator Calculations using current rates
-  const simContracted = getContractedBathrooms(simBedrooms, rates);
-  const simExcessFee = calculateExtraBathroomFee(simBedrooms, simBathrooms, rates);
+  // Live Simulator Calculations using current active rates
+  const activeRatesForSim: PricingRatesConfig = {
+    extraFullBathroomFee: toNum(rates.extraFullBathroomFee, 25),
+    extraHalfBathroomFee: toNum(rates.extraHalfBathroomFee, 15),
+    contractedBathrooms: {
+      studio: toNum(rates.contractedBathrooms.studio, 1),
+      oneBed: toNum(rates.contractedBathrooms.oneBed, 1.5),
+      twoPlusBeds: toNum(rates.contractedBathrooms.twoPlusBeds, 2),
+    },
+    deepCleanExtraBedroom: {
+      extraBedroomFee: toNum(rates.deepCleanExtraBedroom.extraBedroomFee, 10),
+      includedBedrooms: Math.round(toNum(rates.deepCleanExtraBedroom.includedBedrooms, 2)),
+    },
+    storeySurcharges: {
+      standardTwoStorey: toNum(rates.storeySurcharges.standardTwoStorey, 21),
+      standardThreeStorey: toNum(rates.storeySurcharges.standardThreeStorey, 42),
+      deepTwoStorey: toNum(rates.storeySurcharges.deepTwoStorey, 31.5),
+      deepThreeStorey: toNum(rates.storeySurcharges.deepThreeStorey, 63),
+    },
+    hourlyRates: {
+      regularCleaningPerHour: toNum(rates.hourlyRates.regularCleaningPerHour, 60),
+      deepCleaningPerHour: toNum(rates.hourlyRates.deepCleaningPerHour, 68),
+      commercialCleaningPerHour: toNum(rates.hourlyRates.commercialCleaningPerHour, 65),
+    },
+  };
+
+  const simContracted = getContractedBathrooms(simBedrooms, activeRatesForSim);
+  const simExcessFee = calculateExtraBathroomFee(simBedrooms, simBathrooms, activeRatesForSim);
   const parsedSimBaths = parseFloat(simBathrooms.replace('+', '')) || 1;
   const simExcessBaths = Math.max(0, parsedSimBaths - simContracted);
 

@@ -13,13 +13,21 @@ import {
   calculateExtraBathroomFee,
 } from '@/lib/data/pricingConfig';
 
+import type { PricingRatesConfig } from '@/lib/data/pricingConfig';
+
 interface BookingDetailModalProps {
   booking: AdminBooking | null;
   onClose: () => void;
   onUpdated?: () => void;
+  pricingRates?: PricingRatesConfig;
 }
 
-export function BookingDetailModal({ booking, onClose, onUpdated }: BookingDetailModalProps) {
+export function BookingDetailModal({
+  booking,
+  onClose,
+  onUpdated,
+  pricingRates,
+}: BookingDetailModalProps) {
   const [isPending, startTransition] = useTransition();
   const [selectedBookingStatus, setSelectedBookingStatus] = useState<AdminBooking['booking_status']>(
     booking?.booking_status || 'pending'
@@ -48,9 +56,16 @@ export function BookingDetailModal({ booking, onClose, onUpdated }: BookingDetai
 
   if (!booking) return null;
 
-  const contractedBaths = getContractedBathrooms(booking.bedrooms === 0 ? 'Studio' : booking.bedrooms.toString());
+  const contractedBaths = getContractedBathrooms(
+    booking.bedrooms === 0 ? 'Studio' : booking.bedrooms.toString(),
+    pricingRates
+  );
   const excessBaths = Math.max(0, booking.bathrooms - contractedBaths);
-  const excessFee = calculateExtraBathroomFee(booking.bedrooms === 0 ? 'Studio' : booking.bedrooms.toString(), booking.bathrooms);
+  const excessFee = calculateExtraBathroomFee(
+    booking.bedrooms === 0 ? 'Studio' : booking.bedrooms.toString(),
+    booking.bathrooms,
+    pricingRates
+  );
 
   const handleSaveSpecs = () => {
     setMessage(null);

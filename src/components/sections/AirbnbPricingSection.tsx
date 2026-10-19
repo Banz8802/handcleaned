@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   type PropertyType,
@@ -14,6 +14,11 @@ import {
   getContractedBathrooms,
   calculateExtraBathroomFee,
 } from "@/lib/data/bookingData";
+import {
+  type PricingRatesConfig,
+  getPricingRates,
+  setPricingRates,
+} from "@/lib/data/pricingConfig";
 
 export type { PropertyType, StoreyType, PricingCardConfig };
 
@@ -23,6 +28,24 @@ interface AirbnbPricingSectionProps {
 
 export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSectionProps) {
   const router = useRouter();
+  const [pricingRates, setPricingRatesState] = useState<PricingRatesConfig>(() => getPricingRates());
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/pricing-rates')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: PricingRatesConfig | null) => {
+        if (data && mounted) {
+          setPricingRates(data);
+          setPricingRatesState(data);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch active pricing rates for airbnb pricing section:', err));
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const [selectedProperty, setSelectedProperty] = useState<PropertyType>("1 Bed + 1 to 1.5 Bath");
   const [selectedBathrooms, setSelectedBathrooms] = useState<string>("1.5");
   const [selectedStorey, setSelectedStorey] = useState<StoreyType>("Single");
@@ -34,12 +57,12 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
     selectedProperty === "4 Bed + 1 to 2 Bath" ||
     selectedProperty === "5 Bed + 1 to 2 Bath";
 
-  const contractedBathrooms = getContractedBathrooms(selectedProperty);
-  const extraBathroomFee = calculateExtraBathroomFee(selectedProperty, selectedBathrooms);
+  const contractedBathrooms = getContractedBathrooms(selectedProperty, pricingRates);
+  const extraBathroomFee = calculateExtraBathroomFee(selectedProperty, selectedBathrooms, pricingRates);
 
   const handlePropertyChange = (prop: PropertyType) => {
     setSelectedProperty(prop);
-    const contracted = getContractedBathrooms(prop);
+    const contracted = getContractedBathrooms(prop, pricingRates);
     setSelectedBathrooms(contracted.toString());
 
     if (prop === "Studio") {
@@ -202,7 +225,7 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
               {BATHROOM_OPTIONS.map((bath) => {
                 const isSelected = selectedBathrooms === bath;
-                const fee = calculateExtraBathroomFee(selectedProperty, bath);
+                const fee = calculateExtraBathroomFee(selectedProperty, bath, pricingRates);
                 return (
                   <button
                     key={bath}

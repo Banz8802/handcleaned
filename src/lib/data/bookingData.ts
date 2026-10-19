@@ -58,7 +58,7 @@ export const BEDROOM_OPTIONS = [
 
 export const BATHROOM_OPTIONS = ["1", "1.5", "2", "2.5", "3", "3.5", "4+"];
 
-export {
+import {
   type PricingRatesConfig,
   getPricingRates,
   parseBathrooms,
@@ -66,9 +66,13 @@ export {
   calculateExtraBathroomFee,
 } from "./pricingConfig";
 
-import {
+export {
+  type PricingRatesConfig,
+  getPricingRates,
+  parseBathrooms,
+  getContractedBathrooms,
   calculateExtraBathroomFee,
-} from "./pricingConfig";
+};
 
 export const STOREY_OPTIONS: { label: string; value: StoreyType }[] = [
   { label: "Single Storey", value: "Single" },
@@ -87,7 +91,10 @@ export function getMappedPropertyType(bedrooms: string): PropertyType {
 /**
  * Returns package options tailored to the selected service.
  */
-export function getPackagesForService(serviceId: string): BookingPackage[] {
+export function getPackagesForService(
+  serviceId: string,
+  rates: PricingRatesConfig = getPricingRates()
+): BookingPackage[] {
   switch (serviceId) {
     case "residential-cleaning":
       return DEFAULT_RESIDENTIAL_PACKAGES.map((pkg) => ({
@@ -98,7 +105,10 @@ export function getPackagesForService(serviceId: string): BookingPackage[] {
         isPopular: pkg.isPopular,
         shortDescription: pkg.shortDescription,
         inclusions: pkg.inclusions,
-        ratePerCleanerPerHour: pkg.ratePerCleanerPerHour,
+        ratePerCleanerPerHour:
+          pkg.id === "regular"
+            ? (rates.hourlyRates?.regularCleaningPerHour ?? pkg.ratePerCleanerPerHour)
+            : (rates.hourlyRates?.deepCleaningPerHour ?? pkg.ratePerCleanerPerHour),
       }));
 
     case "commercial-cleaning":
@@ -111,7 +121,8 @@ export function getPackagesForService(serviceId: string): BookingPackage[] {
           isPopular: true,
           shortDescription: DEFAULT_COMMERCIAL_PACKAGE.shortDescription,
           inclusions: DEFAULT_COMMERCIAL_PACKAGE.inclusions,
-          ratePerCleanerPerHour: DEFAULT_COMMERCIAL_PACKAGE.ratePerCleanerPerHour,
+          ratePerCleanerPerHour:
+            rates.hourlyRates?.commercialCleaningPerHour ?? DEFAULT_COMMERCIAL_PACKAGE.ratePerCleanerPerHour,
         },
       ];
 
@@ -150,7 +161,8 @@ export function calculatePackagePrice(
   propertyType: PropertyType,
   storey: StoreyType,
   cleanersCount: number = 1,
-  bathrooms?: string | number
+  bathrooms?: string | number,
+  rates: PricingRatesConfig = getPricingRates()
 ): number {
   let basePrice = 150.0;
 
@@ -161,7 +173,7 @@ export function calculatePackagePrice(
 
   // Hourly rate packages (e.g. Residential, Commercial)
   if (pkg.ratePerCleanerPerHour !== undefined) {
-    const hours = pkg.serviceId === "residential-cleaning" ? 2 : 2; // default 2 hours per session
+    const hours = 2; // default 2 hours per session
     basePrice = pkg.ratePerCleanerPerHour * Math.max(1, cleanersCount) * hours;
   } else if (pkg.prices) {
     // Tiered Airbnb pricing matrix
@@ -181,7 +193,7 @@ export function calculatePackagePrice(
 
   // Add extra bathroom surcharge if bathrooms count is provided and exceeds contracted allowance
   if (bathrooms !== undefined && pkg.serviceId !== "linen-hire") {
-    const extraBathroomFee = calculateExtraBathroomFee(propertyType, bathrooms);
+    const extraBathroomFee = calculateExtraBathroomFee(propertyType, bathrooms, rates);
     return basePrice + extraBathroomFee;
   }
 

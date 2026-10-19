@@ -29,8 +29,34 @@ export interface PricingRatesConfig {
 
 export const DEFAULT_PRICING_RATES: PricingRatesConfig = pricingRatesData as PricingRatesConfig;
 
+// In-memory active rates that can be updated at runtime when admin saves edits
+let activePricingRates: PricingRatesConfig = { ...DEFAULT_PRICING_RATES };
+
 export function getPricingRates(): PricingRatesConfig {
-  return DEFAULT_PRICING_RATES;
+  return activePricingRates;
+}
+
+export function setPricingRates(rates: PricingRatesConfig): void {
+  activePricingRates = {
+    ...DEFAULT_PRICING_RATES,
+    ...rates,
+    contractedBathrooms: {
+      ...DEFAULT_PRICING_RATES.contractedBathrooms,
+      ...(rates.contractedBathrooms || {}),
+    },
+    deepCleanExtraBedroom: {
+      ...DEFAULT_PRICING_RATES.deepCleanExtraBedroom,
+      ...(rates.deepCleanExtraBedroom || {}),
+    },
+    storeySurcharges: {
+      ...DEFAULT_PRICING_RATES.storeySurcharges,
+      ...(rates.storeySurcharges || {}),
+    },
+    hourlyRates: {
+      ...DEFAULT_PRICING_RATES.hourlyRates,
+      ...(rates.hourlyRates || {}),
+    },
+  };
 }
 
 /**

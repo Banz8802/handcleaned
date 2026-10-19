@@ -7,12 +7,15 @@ import { BookingDetailModal } from '@/components/admin/BookingDetailModal';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { getContractedBathrooms } from '@/lib/data/pricingConfig';
 
+import type { PricingRatesConfig } from '@/lib/data/pricingConfig';
+
 interface BookingsViewProps {
   initialBookings: AdminBooking[];
   dbError?: string | null;
+  pricingRates?: PricingRatesConfig;
 }
 
-export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
+export function BookingsView({ initialBookings, dbError, pricingRates }: BookingsViewProps) {
   const [bookings, setBookings] = useState<AdminBooking[]>(initialBookings);
   const [selectedBooking, setSelectedBooking] = useState<AdminBooking | null>(null);
 
@@ -64,7 +67,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
 
       // Bathroom filter
       if (bathroomFilter !== 'all') {
-        const contracted = getContractedBathrooms(b.bedrooms.toString());
+        const contracted = getContractedBathrooms(b.bedrooms.toString(), pricingRates);
         const hasExtra = b.bathrooms > contracted;
         if (bathroomFilter === 'extra_only' && !hasExtra) return false;
         if (bathroomFilter === 'standard' && hasExtra) return false;
@@ -371,7 +374,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
                             {b.bedrooms === 0 ? 'Studio' : `${b.bedrooms} Bed`}, {b.bathrooms} Bath
                           </span>
                           {(() => {
-                            const contracted = getContractedBathrooms(b.bedrooms === 0 ? 'Studio' : b.bedrooms.toString());
+                            const contracted = getContractedBathrooms(b.bedrooms === 0 ? 'Studio' : b.bedrooms.toString(), pricingRates);
                             const excess = Math.max(0, b.bathrooms - contracted);
                             return excess > 0 ? (
                               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 shrink-0">
@@ -445,7 +448,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
                         {b.bedrooms === 0 ? 'Studio' : `${b.bedrooms} Bed`}, {b.bathrooms} Bath
                       </span>
                       {(() => {
-                        const contracted = getContractedBathrooms(b.bedrooms === 0 ? 'Studio' : b.bedrooms.toString());
+                        const contracted = getContractedBathrooms(b.bedrooms === 0 ? 'Studio' : b.bedrooms.toString(), pricingRates);
                         const excess = Math.max(0, b.bathrooms - contracted);
                         return excess > 0 ? (
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 shrink-0">
@@ -509,6 +512,7 @@ export function BookingsView({ initialBookings, dbError }: BookingsViewProps) {
       <BookingDetailModal
         booking={selectedBooking}
         onClose={() => setSelectedBooking(null)}
+        pricingRates={pricingRates}
         onUpdated={() => {
           setBookings([...bookings]);
         }}

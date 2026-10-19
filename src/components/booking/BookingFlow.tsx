@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import BookingProgress from "./BookingProgress";
 import Step1ServiceSelection from "./Step1ServiceSelection";
@@ -19,6 +19,11 @@ import {
   getMappedPropertyType,
   calculatePackagePrice,
 } from "@/lib/data/bookingData";
+import {
+  type PricingRatesConfig,
+  getPricingRates,
+  setPricingRates,
+} from "@/lib/data/pricingConfig";
 
 import type {
   BookingService,
@@ -32,6 +37,23 @@ import type {
 export default function BookingFlow() {
   const searchParams = useSearchParams();
   const services = AVAILABLE_SERVICES;
+  const [pricingRates, setPricingRatesState] = useState<PricingRatesConfig>(() => getPricingRates());
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/pricing-rates')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: PricingRatesConfig | null) => {
+        if (data && mounted) {
+          setPricingRates(data);
+          setPricingRatesState(data);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch active pricing rates:', err));
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const serviceParam = searchParams.get("service");
   const packageParam = searchParams.get("package");
@@ -52,7 +74,7 @@ export default function BookingFlow() {
   });
 
   // 2. Resolve packages for the initial service
-  const servicePackages = getPackagesForService(selectedService.id);
+  const servicePackages = getPackagesForService(selectedService.id, pricingRates);
 
   // 3. Resolve initial package
   const [selectedPackage, setSelectedPackage] = useState<BookingPackage>(() => {
@@ -104,12 +126,12 @@ export default function BookingFlow() {
   // Handle service selection change
   const handleSelectService = (service: BookingService) => {
     setSelectedService(service);
-    const newPackages = getPackagesForService(service.id);
+    const newPackages = getPackagesForService(service.id, pricingRates);
     setSelectedPackage(newPackages[0]);
   };
 
   // Current packages available for selected service
-  const currentPackages = getPackagesForService(selectedService.id);
+  const currentPackages = getPackagesForService(selectedService.id, pricingRates);
 
   // Derived mapped property type & current price
   const mappedPropertyType = getMappedPropertyType(property.bedrooms);
@@ -118,7 +140,8 @@ export default function BookingFlow() {
     mappedPropertyType,
     property.storey,
     property.cleanersCount || 1,
-    property.bathrooms
+    property.bathrooms,
+    pricingRates
   );
 
   // Step Navigation Handlers
@@ -314,6 +337,7 @@ export default function BookingFlow() {
                 mappedPropertyType={mappedPropertyType}
                 storey={property.storey}
                 bathrooms={property.bathrooms}
+                pricingRates={pricingRates}
                 onSelectPackage={setSelectedPackage}
                 onNext={handleNextStep}
                 onBack={handleBackStep}
@@ -327,6 +351,7 @@ export default function BookingFlow() {
                 onNext={handleNextStep}
                 onBack={handleBackStep}
                 errors={errors}
+                pricingRates={pricingRates}
               />
             )}
 
@@ -364,6 +389,7 @@ export default function BookingFlow() {
               schedule={schedule}
               customer={customer}
               currentStep={currentStep}
+              pricingRates={pricingRates}
             />
           </div>
 

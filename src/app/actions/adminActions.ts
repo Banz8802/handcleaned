@@ -6,9 +6,10 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
-export interface AdminActionResponse {
+export interface AdminActionResponse<T = unknown> {
   success: boolean;
   error?: string;
+  data?: T;
 }
 
 /**
@@ -103,7 +104,7 @@ export async function updatePaymentStatusAction(
  */
 export async function savePricingRatesAction(
   rates: Partial<import('@/lib/data/pricingConfig').PricingRatesConfig>
-): Promise<AdminActionResponse> {
+): Promise<AdminActionResponse<import('@/lib/data/pricingConfig').PricingRatesConfig>> {
   const session = await getAdminSession();
   if (!session.authenticated) {
     return { success: false, error: 'Unauthorized. Please log in.' };
@@ -127,7 +128,7 @@ export async function savePricingRatesAction(
   revalidatePath('/commercial-cleaning');
   revalidatePath('/');
 
-  return { success: true };
+  return { success: true, data: result.data };
 }
 
 /**

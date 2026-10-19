@@ -14,19 +14,51 @@ function getClient() {
   return getSupabaseServerClient();
 }
 
+let inMemoryPricingCache: PricingRatesConfig | null = null;
+
+function parsePositiveNum(val: unknown, fallback: number): number {
+  if (val === undefined || val === null || val === '') return fallback;
+  const n = typeof val === 'number' ? val : parseFloat(String(val));
+  return !isNaN(n) && n >= 0 ? n : fallback;
+}
+
 /**
  * Reads the active pricing rates configuration.
- * Prioritizes persistent disk JSON, then Supabase settings, then default constants.
+ * Prioritizes in-memory cache, then persistent disk JSON, then Supabase settings, then default constants.
  */
 export async function getAdminPricingRates(): Promise<PricingRatesConfig> {
+  if (inMemoryPricingCache) {
+    return inMemoryPricingCache;
+  }
+
   try {
     if (fs.existsSync(PRICING_JSON_PATH)) {
       const fileData = fs.readFileSync(PRICING_JSON_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      return {
+      const merged: PricingRatesConfig = {
         ...DEFAULT_PRICING_RATES,
         ...parsed,
+        contractedBathrooms: {
+          ...DEFAULT_PRICING_RATES.contractedBathrooms,
+          ...(parsed.contractedBathrooms || {}),
+        },
+        deepCleanExtraBedroom: {
+          ...DEFAULT_PRICING_RATES.deepCleanExtraBedroom,
+          ...(parsed.deepCleanExtraBedroom || {}),
+        },
+        storeySurcharges: {
+          ...DEFAULT_PRICING_RATES.storeySurcharges,
+          ...(parsed.storeySurcharges || {}),
+        },
+        hourlyRates: {
+          ...DEFAULT_PRICING_RATES.hourlyRates,
+          ...(parsed.hourlyRates || {}),
+        },
       };
+      inMemoryPricingCache = merged;
+      const { setPricingRates } = await import('@/lib/data/pricingConfig');
+      setPricingRates(merged);
+      return merged;
     }
   } catch (err) {
     console.warn('[getAdminPricingRates] Could not read local file, falling back:', err);
@@ -35,28 +67,50 @@ export async function getAdminPricingRates(): Promise<PricingRatesConfig> {
   // Attempt to read from Supabase settings if available
   try {
     const supabase = getClient();
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('pricing_settings')
       .select('settings_data')
       .eq('key', 'active_pricing_rates')
       .maybeSingle();
 
-    if (data?.settings_data) {
-      return {
+    if (!error && data?.settings_data) {
+      const parsed = data.settings_data as PricingRatesConfig;
+      const merged: PricingRatesConfig = {
         ...DEFAULT_PRICING_RATES,
-        ...(data.settings_data as PricingRatesConfig),
+        ...parsed,
+        contractedBathrooms: {
+          ...DEFAULT_PRICING_RATES.contractedBathrooms,
+          ...(parsed.contractedBathrooms || {}),
+        },
+        deepCleanExtraBedroom: {
+          ...DEFAULT_PRICING_RATES.deepCleanExtraBedroom,
+          ...(parsed.deepCleanExtraBedroom || {}),
+        },
+        storeySurcharges: {
+          ...DEFAULT_PRICING_RATES.storeySurcharges,
+          ...(parsed.storeySurcharges || {}),
+        },
+        hourlyRates: {
+          ...DEFAULT_PRICING_RATES.hourlyRates,
+          ...(parsed.hourlyRates || {}),
+        },
       };
+      inMemoryPricingCache = merged;
+      const { setPricingRates } = await import('@/lib/data/pricingConfig');
+      setPricingRates(merged);
+      return merged;
     }
   } catch {
     // Table may not exist yet in Supabase, ignore
   }
 
+  inMemoryPricingCache = DEFAULT_PRICING_RATES;
   return DEFAULT_PRICING_RATES;
 }
 
 /**
  * Validates and updates the pricing rates configuration.
- * Persists to disk and syncs with Supabase if table is present.
+ * Persists to disk, memory cache, and syncs with Supabase if table is present.
  */
 export async function saveAdminPricingRates(
   rates: Partial<PricingRatesConfig>,
@@ -66,82 +120,49 @@ export async function saveAdminPricingRates(
     const current = await getAdminPricingRates();
 
     const updatedConfig: PricingRatesConfig = {
-      extraFullBathroomFee:
-        typeof rates.extraFullBathroomFee === 'number' && rates.extraFullBathroomFee >= 0
-          ? rates.extraFullBathroomFee
-          : current.extraFullBathroomFee,
-      extraHalfBathroomFee:
-        typeof rates.extraHalfBathroomFee === 'number' && rates.extraHalfBathroomFee >= 0
-          ? rates.extraHalfBathroomFee
-          : current.extraHalfBathroomFee,
+      extraFullBathroomFee: parsePositiveNum(rates.extraFullBathroomFee, current.extraFullBathroomFee),
+      extraHalfBathroomFee: parsePositiveNum(rates.extraHalfBathroomFee, current.extraHalfBathroomFee),
       contractedBathrooms: {
-        studio:
-          typeof rates.contractedBathrooms?.studio === 'number' && rates.contractedBathrooms.studio >= 0
-            ? rates.contractedBathrooms.studio
-            : current.contractedBathrooms.studio,
-        oneBed:
-          typeof rates.contractedBathrooms?.oneBed === 'number' && rates.contractedBathrooms.oneBed >= 0
-            ? rates.contractedBathrooms.oneBed
-            : current.contractedBathrooms.oneBed,
-        twoPlusBeds:
-          typeof rates.contractedBathrooms?.twoPlusBeds === 'number' && rates.contractedBathrooms.twoPlusBeds >= 0
-            ? rates.contractedBathrooms.twoPlusBeds
-            : current.contractedBathrooms.twoPlusBeds,
+        studio: parsePositiveNum(rates.contractedBathrooms?.studio, current.contractedBathrooms.studio),
+        oneBed: parsePositiveNum(rates.contractedBathrooms?.oneBed, current.contractedBathrooms.oneBed),
+        twoPlusBeds: parsePositiveNum(rates.contractedBathrooms?.twoPlusBeds, current.contractedBathrooms.twoPlusBeds),
       },
       deepCleanExtraBedroom: {
-        extraBedroomFee:
-          typeof rates.deepCleanExtraBedroom?.extraBedroomFee === 'number' && rates.deepCleanExtraBedroom.extraBedroomFee >= 0
-            ? rates.deepCleanExtraBedroom.extraBedroomFee
-            : current.deepCleanExtraBedroom.extraBedroomFee,
-        includedBedrooms:
-          typeof rates.deepCleanExtraBedroom?.includedBedrooms === 'number' && rates.deepCleanExtraBedroom.includedBedrooms >= 0
-            ? rates.deepCleanExtraBedroom.includedBedrooms
-            : current.deepCleanExtraBedroom.includedBedrooms,
+        extraBedroomFee: parsePositiveNum(rates.deepCleanExtraBedroom?.extraBedroomFee, current.deepCleanExtraBedroom.extraBedroomFee),
+        includedBedrooms: Math.round(parsePositiveNum(rates.deepCleanExtraBedroom?.includedBedrooms, current.deepCleanExtraBedroom.includedBedrooms)),
       },
       storeySurcharges: {
-        standardTwoStorey:
-          typeof rates.storeySurcharges?.standardTwoStorey === 'number' && rates.storeySurcharges.standardTwoStorey >= 0
-            ? rates.storeySurcharges.standardTwoStorey
-            : current.storeySurcharges.standardTwoStorey,
-        standardThreeStorey:
-          typeof rates.storeySurcharges?.standardThreeStorey === 'number' && rates.storeySurcharges.standardThreeStorey >= 0
-            ? rates.storeySurcharges.standardThreeStorey
-            : current.storeySurcharges.standardThreeStorey,
-        deepTwoStorey:
-          typeof rates.storeySurcharges?.deepTwoStorey === 'number' && rates.storeySurcharges.deepTwoStorey >= 0
-            ? rates.storeySurcharges.deepTwoStorey
-            : current.storeySurcharges.deepTwoStorey,
-        deepThreeStorey:
-          typeof rates.storeySurcharges?.deepThreeStorey === 'number' && rates.storeySurcharges.deepThreeStorey >= 0
-            ? rates.storeySurcharges.deepThreeStorey
-            : current.storeySurcharges.deepThreeStorey,
+        standardTwoStorey: parsePositiveNum(rates.storeySurcharges?.standardTwoStorey, current.storeySurcharges.standardTwoStorey),
+        standardThreeStorey: parsePositiveNum(rates.storeySurcharges?.standardThreeStorey, current.storeySurcharges.standardThreeStorey),
+        deepTwoStorey: parsePositiveNum(rates.storeySurcharges?.deepTwoStorey, current.storeySurcharges.deepTwoStorey),
+        deepThreeStorey: parsePositiveNum(rates.storeySurcharges?.deepThreeStorey, current.storeySurcharges.deepThreeStorey),
       },
       hourlyRates: {
-        regularCleaningPerHour:
-          typeof rates.hourlyRates?.regularCleaningPerHour === 'number' && rates.hourlyRates.regularCleaningPerHour >= 0
-            ? rates.hourlyRates.regularCleaningPerHour
-            : current.hourlyRates.regularCleaningPerHour,
-        deepCleaningPerHour:
-          typeof rates.hourlyRates?.deepCleaningPerHour === 'number' && rates.hourlyRates.deepCleaningPerHour >= 0
-            ? rates.hourlyRates.deepCleaningPerHour
-            : current.hourlyRates.deepCleaningPerHour,
-        commercialCleaningPerHour:
-          typeof rates.hourlyRates?.commercialCleaningPerHour === 'number' && rates.hourlyRates.commercialCleaningPerHour >= 0
-            ? rates.hourlyRates.commercialCleaningPerHour
-            : current.hourlyRates.commercialCleaningPerHour,
+        regularCleaningPerHour: parsePositiveNum(rates.hourlyRates?.regularCleaningPerHour, current.hourlyRates.regularCleaningPerHour),
+        deepCleaningPerHour: parsePositiveNum(rates.hourlyRates?.deepCleaningPerHour, current.hourlyRates.deepCleaningPerHour),
+        commercialCleaningPerHour: parsePositiveNum(rates.hourlyRates?.commercialCleaningPerHour, current.hourlyRates.commercialCleaningPerHour),
       },
       updatedAt: new Date().toISOString(),
       updatedBy,
     };
 
-    // 1. Write to local disk file
+    // 1. Update in-memory runtime cache immediately
+    inMemoryPricingCache = updatedConfig;
+    const { setPricingRates } = await import('@/lib/data/pricingConfig');
+    setPricingRates(updatedConfig);
+
+    // 2. Write to local disk file
     try {
+      const dir = path.dirname(PRICING_JSON_PATH);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
       fs.writeFileSync(PRICING_JSON_PATH, JSON.stringify(updatedConfig, null, 2), 'utf-8');
     } catch (writeErr) {
-      console.error('[saveAdminPricingRates] Disk write error:', writeErr);
+      console.warn('[saveAdminPricingRates] Disk write warning (read-only/serverless environment):', writeErr);
     }
 
-    // 2. Optionally sync with Supabase
+    // 3. Best-effort sync with Supabase
     try {
       const supabase = getClient();
       await supabase.from('pricing_settings').upsert({
@@ -150,7 +171,7 @@ export async function saveAdminPricingRates(
         updated_at: new Date().toISOString(),
       });
     } catch {
-      // Table may not exist yet, fallback to file only is fine
+      // Table may not exist yet, fallback to in-memory/disk is fine
     }
 
     return { success: true, error: null, data: updatedConfig };

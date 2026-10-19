@@ -12,6 +12,7 @@ import {
   type BookingEmailData,
 } from '@/lib/email/emailTemplates';
 import type { StoreyType } from '@/lib/data/airbnbPricing';
+import { getAdminPricingRates } from '@/services/adminPricingService';
 import { Resend } from 'resend';
 
 export interface SubmitBookingInput {
@@ -71,7 +72,8 @@ export async function submitBooking(
     }
 
     // 2. Server-side Price Calculation (Do NOT trust client price)
-    const availablePackages = getPackagesForService(input.serviceId);
+    const pricingRates = await getAdminPricingRates();
+    const availablePackages = getPackagesForService(input.serviceId, pricingRates);
     const selectedPkg =
       availablePackages.find((p) => p.id === input.packageId) ||
       (input.packageId === 'queen-linen' ? availablePackages.find((p) => p.id === 'king-linen') : null) ||
@@ -88,7 +90,8 @@ export async function submitBooking(
       mappedProperty,
       storey,
       input.cleaners || 1,
-      input.bathrooms
+      input.bathrooms,
+      pricingRates
     );
 
     // 3. Supabase Client Initialization

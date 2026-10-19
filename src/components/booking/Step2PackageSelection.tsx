@@ -1,4 +1,5 @@
 import type { BookingPackage, PropertyType, StoreyType } from "@/lib/types/booking";
+import type { PricingRatesConfig } from "@/lib/data/pricingConfig";
 import { calculatePackagePrice } from "@/lib/data/bookingData";
 
 interface Step2PackageSelectionProps {
@@ -7,6 +8,7 @@ interface Step2PackageSelectionProps {
   mappedPropertyType: PropertyType;
   storey: StoreyType;
   bathrooms?: string;
+  pricingRates?: PricingRatesConfig;
   onSelectPackage: (pkg: BookingPackage) => void;
   onNext: () => void;
   onBack: () => void;
@@ -18,6 +20,7 @@ export default function Step2PackageSelection({
   mappedPropertyType,
   storey,
   bathrooms,
+  pricingRates,
   onSelectPackage,
   onNext,
   onBack,
@@ -40,7 +43,7 @@ export default function Step2PackageSelection({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {packages.map((pkg) => {
           const isSelected = selectedPackageId === pkg.id;
-          const calculatedPrice = calculatePackagePrice(pkg, mappedPropertyType, storey, 1, bathrooms);
+          const calculatedPrice = calculatePackagePrice(pkg, mappedPropertyType, storey, 1, bathrooms, pricingRates);
 
           return (
             <div

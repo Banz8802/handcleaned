@@ -1,4 +1,5 @@
 import type { PropertyDetails, StoreyType } from "@/lib/types/booking";
+import type { PricingRatesConfig } from "@/lib/data/pricingConfig";
 import {
   BEDROOM_OPTIONS,
   BATHROOM_OPTIONS,
@@ -13,6 +14,7 @@ interface Step3PropertyDetailsProps {
   onNext: () => void;
   onBack: () => void;
   errors?: Record<string, string>;
+  pricingRates?: PricingRatesConfig;
 }
 
 export default function Step3PropertyDetails({
@@ -21,9 +23,10 @@ export default function Step3PropertyDetails({
   onNext,
   onBack,
   errors = {},
+  pricingRates,
 }: Step3PropertyDetailsProps) {
-  const contractedBathrooms = getContractedBathrooms(property.bedrooms);
-  const currentExtraFee = calculateExtraBathroomFee(property.bedrooms, property.bathrooms);
+  const contractedBathrooms = getContractedBathrooms(property.bedrooms, pricingRates);
+  const currentExtraFee = calculateExtraBathroomFee(property.bedrooms, property.bathrooms, pricingRates);
 
   const handleFieldChange = (field: keyof PropertyDetails, value: string) => {
     onChange({
@@ -111,7 +114,7 @@ export default function Step3PropertyDetails({
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
             {BATHROOM_OPTIONS.map((bath) => {
               const isSelected = property.bathrooms === bath;
-              const fee = calculateExtraBathroomFee(property.bedrooms, bath);
+              const fee = calculateExtraBathroomFee(property.bedrooms, bath, pricingRates);
               return (
                 <button
                   key={bath}

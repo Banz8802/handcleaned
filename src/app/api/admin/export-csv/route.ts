@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSession } from '@/services/adminAuthService';
 import { getExportBookings } from '@/services/adminBookingService';
+import { getAdminPricingRates } from '@/services/adminPricingService';
 import {
   parseBathrooms,
   getContractedBathrooms,
@@ -67,13 +68,15 @@ export async function GET(req: NextRequest) {
       'Created Date',
     ];
 
+    const rates = await getAdminPricingRates();
+
     const rows = (bookings || []).map((b) => {
       const bedroomsStr = String(b.bedrooms ?? '1');
       const bathroomsVal = b.bathrooms ?? '1';
       const parsedBaths = parseBathrooms(bathroomsVal);
-      const contractedBaths = getContractedBathrooms(bedroomsStr);
+      const contractedBaths = getContractedBathrooms(bedroomsStr, rates);
       const extraBaths = Math.max(0, parsedBaths - contractedBaths);
-      const extraFee = calculateExtraBathroomFee(bedroomsStr, bathroomsVal);
+      const extraFee = calculateExtraBathroomFee(bedroomsStr, bathroomsVal, rates);
 
       return [
         escapeCsvCell(b.booking_reference),
