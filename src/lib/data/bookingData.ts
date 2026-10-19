@@ -108,9 +108,9 @@ export function getPackagesForService(serviceId: string): BookingPackage[] {
         id: pkg.id,
         serviceId: "linen-hire",
         name: pkg.name,
-        badge: pkg.gstNote,
-        isPopular: pkg.id === "king-linen" || pkg.id === "queen-linen",
-        shortDescription: `Hotel quality linen set including sheets, pillow cases, bath towels, and hand towels.`,
+        badge: pkg.rentalPeriod || pkg.gstNote,
+        isPopular: pkg.id === "king-linen",
+        shortDescription: `Hotel quality 7-day rental linen set. Daily late fee: $${pkg.dailyLateFee?.toFixed(2) || "0.00"}. All prices ${pkg.gstNote.toLowerCase()}.`,
         inclusions: pkg.inclusions.map((inc) => `${inc.item} (${inc.count})`),
         price: pkg.price,
       }));

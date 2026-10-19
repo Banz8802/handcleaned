@@ -72,7 +72,10 @@ export async function submitBooking(
 
     // 2. Server-side Price Calculation (Do NOT trust client price)
     const availablePackages = getPackagesForService(input.serviceId);
-    const selectedPkg = availablePackages.find((p) => p.id === input.packageId) || availablePackages[0];
+    const selectedPkg =
+      availablePackages.find((p) => p.id === input.packageId) ||
+      (input.packageId === 'queen-linen' ? availablePackages.find((p) => p.id === 'king-linen') : null) ||
+      availablePackages[0];
 
     if (!selectedPkg) {
       return { success: false, error: 'Invalid service or package selection.' };

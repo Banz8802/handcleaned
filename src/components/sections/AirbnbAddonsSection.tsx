@@ -50,14 +50,27 @@ export default function AirbnbAddonsSection() {
           </div>
         </div>
 
+        {/* GST & Extra Bedroom Notice */}
+        <div className="bg-[#EBF6FB] border border-[#2CBAE8]/30 rounded-xl p-4 mb-6 max-w-[960px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-[#1A2E44]">
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-[#2CBAE8] text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
+              ✓
+            </span>
+            <span className="font-bold">All prices are inclusive of GST.</span>
+          </div>
+          <span className="text-gray-600">
+            Initial / Deep Clean includes up to 2 bedrooms. <strong className="text-[#1A2E44]">+$10 for each extra bedroom</strong>.
+          </span>
+        </div>
+
         {/* Additional Storey Information Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[960px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1040px] mx-auto">
           <div className="bg-[#EBF6FB] rounded-2xl p-6 border border-[#2CBAE8]/20">
             <h3 className="text-base font-bold text-[#1A2E44] mb-2 flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-[#2CBAE8] text-white flex items-center justify-center text-xs font-bold">
                 i
               </span>
-              Standard Turnover Storey Surcharges
+              Standard Turnover Storeys
             </h3>
             <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
               Applies to Departure Clean & Midstay Clean packages:
@@ -79,10 +92,10 @@ export default function AirbnbAddonsSection() {
               <span className="w-6 h-6 rounded-full bg-[#FFE67B] text-[#1A2E44] flex items-center justify-center text-xs font-bold">
                 !
               </span>
-              Initial / Deep Clean Storey Surcharges
+              Initial / Deep Clean Storeys
             </h3>
             <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-              Applies to Initial / Deep Cleaning package only:
+              Applies to Initial / Deep Cleaning package:
             </p>
             <ul className="mt-3 space-y-1.5 text-xs text-[#1A2E44] font-medium">
               <li className="flex justify-between border-b border-gray-200/60 pb-1">
@@ -92,6 +105,28 @@ export default function AirbnbAddonsSection() {
               <li className="flex justify-between pt-1">
                 <span>Three-Storey Properties:</span>
                 <span className="font-bold text-[#2CBAE8]">+$63.00</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-[#EBF6FB] rounded-2xl p-6 border border-[#2CBAE8]/20">
+            <h3 className="text-base font-bold text-[#1A2E44] mb-2 flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-[#1A2E44] text-[#FFE67B] flex items-center justify-center text-xs font-bold">
+                +
+              </span>
+              Extra Bedroom Policy
+            </h3>
+            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+              Applies to Initial / Deep Cleaning package:
+            </p>
+            <ul className="mt-3 space-y-1.5 text-xs text-[#1A2E44] font-medium">
+              <li className="flex justify-between border-b border-gray-200/60 pb-1">
+                <span>Included Base:</span>
+                <span className="font-bold text-[#1A2E44]">Up to 2 Bedrooms</span>
+              </li>
+              <li className="flex justify-between pt-1">
+                <span>Each Extra Bedroom:</span>
+                <span className="font-bold text-[#2CBAE8]">+$10.00</span>
               </li>
             </ul>
           </div>

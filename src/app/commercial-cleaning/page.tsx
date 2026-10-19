@@ -12,7 +12,7 @@ import LocationSection from "@/components/sections/LocationSection";
 export const metadata: Metadata = {
   title: "Commercial Cleaning, Linen Hire & Office Services Sydney | Hand Cleaned",
   description:
-    "Professional commercial cleaning ($68/hr per cleaner excl. GST), premium linen hire packages (King/Queen $36, Single $30), and custom extra services in Sydney.",
+    "Professional commercial cleaning ($68/hr per cleaner excl. GST), premium linen hire packages (King $36, Single $30, Pool Towel $4.20 incl. GST), and custom extra services in Sydney.",
 };
 
 export default function CommercialCleaningPage() {
@@ -24,7 +24,7 @@ export default function CommercialCleaningPage() {
       {/* Main Commercial Pricing Calculator ($68/hr excl. GST) */}
       <CommercialPricingSection />
 
-      {/* Linen Hire Section (King, Queen, Single Sets) */}
+      {/* Linen Hire Section (King, Single Kit Packs & Pool Towels) */}
       <LinenHireSection />
 
       {/* Extra Services Optional Add-ons (Price on Request / Manual Quote Required) */}

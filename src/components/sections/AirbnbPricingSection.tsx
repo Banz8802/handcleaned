@@ -101,6 +101,9 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
           <p className="text-gray-600 text-sm sm:text-base max-w-[620px] mx-auto leading-relaxed">
             Select your property size and storey configuration below to calculate exact turnover costs across our 4 tailored cleaning packages.
           </p>
+          <p className="text-xs font-bold text-[#2CBAE8] uppercase tracking-wider mt-2">
+            * All prices are inclusive of GST
+          </p>
         </div>
 
         {/* ── Interactive Property & Storey Controls ────────────────────────── */}
@@ -288,6 +291,11 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
             );
           })}
         </div>
+
+        {/* Footnote */}
+        <p className="text-center text-xs text-gray-500 mt-8">
+          * Note: For Initial / Deep Cleaning, the base price includes up to 2 bedrooms. An additional $10 will apply for each extra bedroom. All prices are inclusive of GST.
+        </p>
       </div>
     </section>
   );

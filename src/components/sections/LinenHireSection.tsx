@@ -9,8 +9,9 @@ export default function LinenHireSection() {
     let pkgId = "";
     if (packageName) {
       if (packageName.toLowerCase().includes("king")) pkgId = "king-linen";
-      else if (packageName.toLowerCase().includes("queen")) pkgId = "queen-linen";
+      else if (packageName.toLowerCase().includes("queen")) pkgId = "king-linen";
       else if (packageName.toLowerCase().includes("single")) pkgId = "single-linen";
+      else if (packageName.toLowerCase().includes("pool")) pkgId = "pool-towel";
     }
     const params = new URLSearchParams({
       service: "linen-hire",
@@ -24,7 +25,7 @@ export default function LinenHireSection() {
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-12">
           <span className="inline-block text-[#2CBAE8] text-xs font-semibold uppercase tracking-[0.18em] mb-3">
             Hotel Quality Supply
           </span>
@@ -32,14 +33,24 @@ export default function LinenHireSection() {
             id="linen-hire-heading"
             className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1A2E44] leading-tight tracking-tight max-w-[650px] mx-auto mb-3"
           >
-            Linen Hire Services
+            Airbnb Linen Hire Services
           </h2>
           <p className="text-gray-600 text-sm max-w-[600px] mx-auto">
-            Fresh, crisp, premium hotel-grade linen packages delivered directly for your commercial properties & rentals.
+            Fresh, crisp, premium hotel-grade linen kit packs delivered directly for your Airbnb & short-stay rentals.
           </p>
           <p className="text-xs font-bold text-[#2CBAE8] uppercase tracking-wider mt-2">
-            * All prices are exclusive of GST
+            * All prices are inclusive of GST
           </p>
+        </div>
+
+        {/* 7-Day Rental & Late Fee Notice Banner */}
+        <div className="bg-white/80 border border-[#2CBAE8]/30 rounded-2xl p-4 sm:p-5 mb-10 max-w-[960px] mx-auto flex items-start sm:items-center gap-3.5 shadow-xs">
+          <span className="w-8 h-8 rounded-full bg-[#2CBAE8] text-white flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5 sm:mt-0">
+            i
+          </span>
+          <div className="text-xs sm:text-sm text-[#1A2E44] leading-relaxed">
+            <strong className="font-bold">Rental Policy:</strong> Linen rental period is <strong>7 days</strong>. All rented items are required to be returned within this period. A daily late fee will be applied for any items not returned after the 7-day rental period until they are received.
+          </div>
         </div>
 
         {/* 3 Linen Cards Grid */}
@@ -52,14 +63,22 @@ export default function LinenHireSection() {
               <div>
                 {/* Header */}
                 <div className="text-center mb-5 pb-4 border-b border-gray-100">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#2CBAE8] bg-[#EBF6FB] px-2.5 py-1 rounded-full inline-block mb-2">
+                    {pkg.rentalPeriod || "7-day rental"}
+                  </span>
                   <h3 className="text-xl font-bold text-[#1A2E44] mb-2">{pkg.name}</h3>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-sm font-semibold text-gray-500">$</span>
-                    <span className="text-4xl font-extrabold text-[#1A2E44]">{pkg.price}</span>
+                    <span className="text-4xl font-extrabold text-[#1A2E44]">{pkg.price.toFixed(2)}</span>
                   </div>
                   <span className="text-[11px] font-semibold text-[#2CBAE8] uppercase tracking-wide block mt-1">
                     {pkg.gstNote}
                   </span>
+                  {pkg.dailyLateFee !== undefined && (
+                    <span className="text-[11px] font-medium text-red-500 block mt-1.5">
+                      Daily Late Fee: ${pkg.dailyLateFee.toFixed(2)}
+                    </span>
+                  )}
                 </div>
 
                 {/* Itemized Inclusions */}

@@ -7,9 +7,9 @@ import CtaBannerSection from "@/components/sections/CtaBannerSection";
 import LocationSection from "@/components/sections/LocationSection";
 
 export const metadata: Metadata = {
-  title: "Linen Hire Packages & Supply Sydney | Hand Cleaned",
+  title: "Airbnb Linen Hire Packages & Supply Sydney | Hand Cleaned",
   description:
-    "Premium hotel-quality linen hire packages in Sydney. King Linen Hire ($36), Queen Linen Hire ($36), and Single Linen Hire ($30) exclusive of GST.",
+    "Premium hotel-quality Airbnb linen kit packs in Sydney. King Linen Kit Pack ($36.00), Single Linen Kit Pack ($30.00), and Pool Towel ($4.20) inclusive of GST with 7-day rental period.",
 };
 
 export default function LinenHirePage() {

@@ -59,7 +59,7 @@ export const DEFAULT_AIRBNB_PRICING_CARDS: PricingCardConfig[] = [
       "Trash removal & host inspection ready",
     ],
     prices: {
-      Studio: { Single: 118.4 },
+      Studio: { Single: 123.0 },
       "1 Bed + 1 to 1.5 Bath": { Single: 135.54, "Two-Storey": 156.54 },
       "2 Bed + 1 to 2 Bath": { Single: 161.6, "Two-Storey": 182.6 },
       "3 Bed + 1 to 2 Bath": { Single: 191.6, "Two-Storey": 212.6, "Three-Storey": 233.6 },
@@ -79,7 +79,7 @@ export const DEFAULT_AIRBNB_PRICING_CARDS: PricingCardConfig[] = [
       "Bathroom & kitchen quick tidy",
     ],
     prices: {
-      Studio: { Single: 118.4 },
+      Studio: { Single: 123.0 },
       "1 Bed + 1 to 1.5 Bath": { Single: 135.54, "Two-Storey": 156.54 },
       "2 Bed + 1 to 2 Bath": { Single: 161.6, "Two-Storey": 182.6 },
       "3 Bed + 1 to 2 Bath": { Single: 191.6, "Two-Storey": 212.6, "Three-Storey": 233.6 },
@@ -99,11 +99,11 @@ export const DEFAULT_AIRBNB_PRICING_CARDS: PricingCardConfig[] = [
       "Empty trash & replenish paper products",
     ],
     prices: {
-      Studio: { Single: 110.4 },
-      "1 Bed + 1 to 1.5 Bath": { Single: 127.54, "Two-Storey": 148.54 },
+      Studio: { Single: 118.4 },
+      "1 Bed + 1 to 1.5 Bath": { Single: 115.0, "Two-Storey": 120.4 },
       "2 Bed + 1 to 2 Bath": { Single: 145.6, "Two-Storey": 166.6 },
       "3 Bed + 1 to 2 Bath": { Single: 167.6, "Two-Storey": 188.6, "Three-Storey": 209.6 },
-      "4 Bed + 1 to 2 Bath": { Single: 189.6, "Two-Storey": 210.6, "Three-Storey": 231.6 },
+      "4 Bed + 1 to 2 Bath": { Single: 189.6, "Two-Storey": 210.6, "Three-Storey": 236.6 },
       "5 Bed + 1 to 2 Bath": { Single: 216.0, "Two-Storey": 237.0, "Three-Storey": 258.0 },
     },
   },
@@ -122,7 +122,7 @@ export const DEFAULT_AIRBNB_PRICING_CARDS: PricingCardConfig[] = [
     prices: {
       Studio: { Single: 220.46 },
       "1 Bed + 1 to 1.5 Bath": { Single: 253.02, "Two-Storey": 284.52 },
-      "2 Bed + 1 to 2 Bath": { Single: 302.54, "Two-Storey": 334.04 },
+      "2 Bed + 1 to 2 Bath": { Single: 302.54, "Two-Storey": 334.54 },
       "3 Bed + 1 to 2 Bath": { Single: 359.54, "Two-Storey": 391.04, "Three-Storey": 422.54 },
       "4 Bed + 1 to 2 Bath": { Single: 416.54, "Two-Storey": 448.04, "Three-Storey": 479.54 },
       "5 Bed + 1 to 2 Bath": { Single: 481.9, "Two-Storey": 513.4, "Three-Storey": 544.9 },
@@ -133,16 +133,16 @@ export const DEFAULT_AIRBNB_PRICING_CARDS: PricingCardConfig[] = [
 export const DEFAULT_PRICING_MATRIX: PricingMatrixRow[] = [
   {
     type: "Studio",
-    departure: "$118.40",
-    midstayLinen: "$118.40",
-    midstayOnly: "$110.40",
+    departure: "$123.00",
+    midstayLinen: "$123.00",
+    midstayOnly: "$118.40",
     deep: "$220.46",
   },
   {
     type: "1 Bed + 1 to 1.5 Bath",
     departure: "$135.54 – $156.54",
     midstayLinen: "$135.54 – $156.54",
-    midstayOnly: "$127.54 – $148.54",
+    midstayOnly: "$115.00 – $120.40",
     deep: "$253.02 – $284.52",
   },
   {
@@ -150,7 +150,7 @@ export const DEFAULT_PRICING_MATRIX: PricingMatrixRow[] = [
     departure: "$161.60 – $182.60",
     midstayLinen: "$161.60 – $182.60",
     midstayOnly: "$145.60 – $166.60",
-    deep: "$302.54 – $334.04",
+    deep: "$302.54 – $334.54",
   },
   {
     type: "3 Bed + 1 to 2 Bath",
@@ -163,7 +163,7 @@ export const DEFAULT_PRICING_MATRIX: PricingMatrixRow[] = [
     type: "4 Bed + 1 to 2 Bath",
     departure: "$221.60 – $263.60",
     midstayLinen: "$221.60 – $263.60",
-    midstayOnly: "$189.60 – $231.60",
+    midstayOnly: "$189.60 – $236.60",
     deep: "$416.54 – $479.54",
   },
   {
