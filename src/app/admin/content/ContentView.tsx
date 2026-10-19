@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import type {
   SiteContentConfig,
   TestimonialItem,
@@ -21,6 +22,7 @@ type TabType = 'home' | 'about' | 'services' | 'testimonials';
 type ServiceSubTab = 'residential' | 'airbnb' | 'commercial' | 'cards';
 
 export function ContentView({ initialContent, mediaAssets }: ContentViewProps) {
+  const router = useRouter();
   const [content, setContent] = useState<SiteContentConfig>(initialContent);
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [serviceSubTab, setServiceSubTab] = useState<ServiceSubTab>('residential');
@@ -70,10 +72,14 @@ export function ContentView({ initialContent, mediaAssets }: ContentViewProps) {
       try {
         const res = await saveSiteContentAction(content);
         if (res.success) {
+          if (res.data) {
+            setContent(res.data);
+          }
           setSaveStatus({
             type: 'success',
             message: 'Website content successfully updated and revalidated across all pages!',
           });
+          router.refresh();
           setTimeout(() => setSaveStatus({ type: 'idle' }), 5000);
         } else {
           setSaveStatus({

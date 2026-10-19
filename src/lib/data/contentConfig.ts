@@ -102,9 +102,53 @@ export interface SiteContentConfig {
 
 export const DEFAULT_SITE_CONTENT: SiteContentConfig = siteContentData as unknown as SiteContentConfig;
 
+// Mutable in-memory active content that syncs when admin updates content
+let activeSiteContent: SiteContentConfig = { ...DEFAULT_SITE_CONTENT };
+
 /**
  * Returns active site content configuration.
  */
 export function getSiteContent(): SiteContentConfig {
-  return DEFAULT_SITE_CONTENT;
+  return activeSiteContent;
+}
+
+/**
+ * Updates active site content configuration in-memory.
+ */
+export function setSiteContent(newContent: SiteContentConfig): void {
+  activeSiteContent = {
+    ...DEFAULT_SITE_CONTENT,
+    ...newContent,
+    hero: { ...DEFAULT_SITE_CONTENT.hero, ...(newContent.hero || {}) },
+    homeAbout: { ...DEFAULT_SITE_CONTENT.homeAbout, ...(newContent.homeAbout || {}) },
+    aboutPage: {
+      hero: { ...DEFAULT_SITE_CONTENT.aboutPage.hero, ...(newContent.aboutPage?.hero || {}) },
+      intro: {
+        ...DEFAULT_SITE_CONTENT.aboutPage.intro,
+        ...(newContent.aboutPage?.intro || {}),
+        pillars: newContent.aboutPage?.intro?.pillars || DEFAULT_SITE_CONTENT.aboutPage.intro.pillars,
+      },
+    },
+    servicesCards: newContent.servicesCards || DEFAULT_SITE_CONTENT.servicesCards,
+    residentialPage: {
+      hero: { ...DEFAULT_SITE_CONTENT.residentialPage.hero, ...(newContent.residentialPage?.hero || {}) },
+      featuresTitle: newContent.residentialPage?.featuresTitle || DEFAULT_SITE_CONTENT.residentialPage.featuresTitle,
+      features: newContent.residentialPage?.features || DEFAULT_SITE_CONTENT.residentialPage.features,
+    },
+    airbnbPage: {
+      hero: { ...DEFAULT_SITE_CONTENT.airbnbPage.hero, ...(newContent.airbnbPage?.hero || {}) },
+      featuresTitle: newContent.airbnbPage?.featuresTitle || DEFAULT_SITE_CONTENT.airbnbPage.featuresTitle,
+      features: newContent.airbnbPage?.features || DEFAULT_SITE_CONTENT.airbnbPage.features,
+    },
+    commercialPage: {
+      hero: { ...DEFAULT_SITE_CONTENT.commercialPage.hero, ...(newContent.commercialPage?.hero || {}) },
+      featuresTitle: newContent.commercialPage?.featuresTitle || DEFAULT_SITE_CONTENT.commercialPage.featuresTitle,
+      features: newContent.commercialPage?.features || DEFAULT_SITE_CONTENT.commercialPage.features,
+    },
+    testimonials: {
+      sectionBadge: newContent.testimonials?.sectionBadge || DEFAULT_SITE_CONTENT.testimonials.sectionBadge,
+      sectionHeading: newContent.testimonials?.sectionHeading || DEFAULT_SITE_CONTENT.testimonials.sectionHeading,
+      items: newContent.testimonials?.items || DEFAULT_SITE_CONTENT.testimonials.items,
+    },
+  };
 }

@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { DEFAULT_RESIDENTIAL_PACKAGES } from "@/lib/data/residentialPricing";
+import { getPricingRates, setPricingRates, type PricingRatesConfig } from "@/lib/data/pricingConfig";
+
 
 interface ResidentialPricingSectionProps {
   onSelectOption?: (packageName: string, totalRate: number, numCleaners: number) => void;
@@ -11,6 +13,19 @@ interface ResidentialPricingSectionProps {
 export default function ResidentialPricingSection({ onSelectOption }: ResidentialPricingSectionProps) {
   const router = useRouter();
   const [numCleaners, setNumCleaners] = useState<number>(1);
+  const [pricingRates, setPricingRatesState] = useState<PricingRatesConfig>(() => getPricingRates());
+
+  useEffect(() => {
+    fetch('/api/pricing-rates')
+      .then((res) => res.json())
+      .then((data: PricingRatesConfig | null) => {
+        if (data) {
+          setPricingRates(data);
+          setPricingRatesState(data);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch active pricing rates for residential pricing section:', err));
+  }, []);
 
   const handleReserve = (packageName: string, ratePerCleaner: number) => {
     const totalRate = numCleaners * ratePerCleaner;
@@ -25,6 +40,7 @@ export default function ResidentialPricingSection({ onSelectOption }: Residentia
     });
     router.push(`/booking?${params.toString()}`);
   };
+
 
   return (
     <section
@@ -80,7 +96,10 @@ export default function ResidentialPricingSection({ onSelectOption }: Residentia
         {/* ── 2 Main Residential Pricing Cards ────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[960px] mx-auto items-stretch">
           {DEFAULT_RESIDENTIAL_PACKAGES.map((pkg) => {
-            const calculatedTotalRate = numCleaners * pkg.ratePerCleanerPerHour;
+            const baseRate = pkg.id === 'deep-cleaning'
+              ? (pricingRates.hourlyRates?.deepCleaningPerHour ?? pkg.ratePerCleanerPerHour)
+              : (pricingRates.hourlyRates?.regularCleaningPerHour ?? pkg.ratePerCleanerPerHour);
+            const calculatedTotalRate = numCleaners * baseRate;
 
             return (
               <div
@@ -129,7 +148,7 @@ export default function ResidentialPricingSection({ onSelectOption }: Residentia
 
                     <div className="mt-3 pt-2.5 border-t border-black/10 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs font-semibold">
                       <span className={pkg.isPopular ? "text-[#FFE67B]" : "text-[#2CBAE8]"}>
-                        {numCleaners} {numCleaners === 1 ? "cleaner" : "cleaners"} × ${pkg.ratePerCleanerPerHour}/hr
+                        {numCleaners} {numCleaners === 1 ? "cleaner" : "cleaners"} × ${baseRate}/hr
                       </span>
                       <span className="opacity-40 hidden sm:inline">•</span>
                       <span
@@ -175,7 +194,7 @@ export default function ResidentialPricingSection({ onSelectOption }: Residentia
                 <div>
                   <button
                     type="button"
-                    onClick={() => handleReserve(pkg.name, pkg.ratePerCleanerPerHour)}
+                    onClick={() => handleReserve(pkg.name, baseRate)}
                     className={`w-full py-3.5 px-6 rounded-full font-bold text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 ${
                       pkg.isPopular
                         ? "bg-[#FFE67B] text-[#1A2E44] hover:bg-[#FFDE59] shadow-[#FFE67B]/20"

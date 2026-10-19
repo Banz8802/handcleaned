@@ -24,13 +24,72 @@ function parsePositiveNum(val: unknown, fallback: number): number {
 
 /**
  * Reads the active pricing rates configuration.
- * Prioritizes in-memory cache, then persistent disk JSON, then Supabase settings, then default constants.
+ * Prioritizes in-memory cache, then Supabase cloud database, then persistent disk JSON, then default constants.
  */
 export async function getAdminPricingRates(): Promise<PricingRatesConfig> {
   if (inMemoryPricingCache) {
     return inMemoryPricingCache;
   }
 
+  // 1. Attempt to read from Supabase settings FIRST (Source of truth in production / Vercel)
+  try {
+    const supabase = getClient();
+    
+    // Check unified app_settings table first
+    const { data: appData, error: appError } = await supabase
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'pricing_rates')
+      .maybeSingle();
+
+    const rawRates = !appError && appData?.value ? appData.value : null;
+
+    // Fallback check to legacy pricing_settings table
+    let legacyRates = null;
+    if (!rawRates) {
+      const { data: legData, error: legError } = await supabase
+        .from('pricing_settings')
+        .select('settings_data')
+        .eq('key', 'active_pricing_rates')
+        .maybeSingle();
+      if (!legError && legData?.settings_data) {
+        legacyRates = legData.settings_data;
+      }
+    }
+
+    const remoteConfig = (rawRates || legacyRates) as PricingRatesConfig | null;
+
+    if (remoteConfig) {
+      const merged: PricingRatesConfig = {
+        ...DEFAULT_PRICING_RATES,
+        ...remoteConfig,
+        contractedBathrooms: {
+          ...DEFAULT_PRICING_RATES.contractedBathrooms,
+          ...(remoteConfig.contractedBathrooms || {}),
+        },
+        deepCleanExtraBedroom: {
+          ...DEFAULT_PRICING_RATES.deepCleanExtraBedroom,
+          ...(remoteConfig.deepCleanExtraBedroom || {}),
+        },
+        storeySurcharges: {
+          ...DEFAULT_PRICING_RATES.storeySurcharges,
+          ...(remoteConfig.storeySurcharges || {}),
+        },
+        hourlyRates: {
+          ...DEFAULT_PRICING_RATES.hourlyRates,
+          ...(remoteConfig.hourlyRates || {}),
+        },
+      };
+      inMemoryPricingCache = merged;
+      const { setPricingRates } = await import('@/lib/data/pricingConfig');
+      setPricingRates(merged);
+      return merged;
+    }
+  } catch (sbErr) {
+    console.warn('[getAdminPricingRates] Supabase read attempt note:', sbErr);
+  }
+
+  // 2. Fallback to local disk file JSON (Local development or pre-bundled defaults)
   try {
     if (fs.existsSync(PRICING_JSON_PATH)) {
       const fileData = fs.readFileSync(PRICING_JSON_PATH, 'utf-8');
@@ -64,53 +123,13 @@ export async function getAdminPricingRates(): Promise<PricingRatesConfig> {
     console.warn('[getAdminPricingRates] Could not read local file, falling back:', err);
   }
 
-  // Attempt to read from Supabase settings if available
-  try {
-    const supabase = getClient();
-    const { data, error } = await supabase
-      .from('pricing_settings')
-      .select('settings_data')
-      .eq('key', 'active_pricing_rates')
-      .maybeSingle();
-
-    if (!error && data?.settings_data) {
-      const parsed = data.settings_data as PricingRatesConfig;
-      const merged: PricingRatesConfig = {
-        ...DEFAULT_PRICING_RATES,
-        ...parsed,
-        contractedBathrooms: {
-          ...DEFAULT_PRICING_RATES.contractedBathrooms,
-          ...(parsed.contractedBathrooms || {}),
-        },
-        deepCleanExtraBedroom: {
-          ...DEFAULT_PRICING_RATES.deepCleanExtraBedroom,
-          ...(parsed.deepCleanExtraBedroom || {}),
-        },
-        storeySurcharges: {
-          ...DEFAULT_PRICING_RATES.storeySurcharges,
-          ...(parsed.storeySurcharges || {}),
-        },
-        hourlyRates: {
-          ...DEFAULT_PRICING_RATES.hourlyRates,
-          ...(parsed.hourlyRates || {}),
-        },
-      };
-      inMemoryPricingCache = merged;
-      const { setPricingRates } = await import('@/lib/data/pricingConfig');
-      setPricingRates(merged);
-      return merged;
-    }
-  } catch {
-    // Table may not exist yet in Supabase, ignore
-  }
-
   inMemoryPricingCache = DEFAULT_PRICING_RATES;
   return DEFAULT_PRICING_RATES;
 }
 
 /**
  * Validates and updates the pricing rates configuration.
- * Persists to disk, memory cache, and syncs with Supabase if table is present.
+ * Persists to Supabase, disk, and in-memory runtime cache.
  */
 export async function saveAdminPricingRates(
   rates: Partial<PricingRatesConfig>,
@@ -151,7 +170,7 @@ export async function saveAdminPricingRates(
     const { setPricingRates } = await import('@/lib/data/pricingConfig');
     setPricingRates(updatedConfig);
 
-    // 2. Write to local disk file
+    // 2. Write to local disk file (for local development persistence)
     try {
       const dir = path.dirname(PRICING_JSON_PATH);
       if (!fs.existsSync(dir)) {
@@ -159,19 +178,53 @@ export async function saveAdminPricingRates(
       }
       fs.writeFileSync(PRICING_JSON_PATH, JSON.stringify(updatedConfig, null, 2), 'utf-8');
     } catch (writeErr) {
-      console.warn('[saveAdminPricingRates] Disk write warning (read-only/serverless environment):', writeErr);
+      console.warn('[saveAdminPricingRates] Disk write skipped (ephemeral/serverless environment):', writeErr);
     }
 
-    // 3. Best-effort sync with Supabase
+    // 3. Persist to Supabase (primary persistent storage for live site)
+    let supabaseSaved = false;
+    let supabaseErrorMessage: string | null = null;
     try {
       const supabase = getClient();
-      await supabase.from('pricing_settings').upsert({
+      
+      // Try primary app_settings table
+      const { error: appErr } = await supabase.from('app_settings').upsert({
+        key: 'pricing_rates',
+        value: updatedConfig,
+        updated_at: new Date().toISOString(),
+        updated_by: updatedBy,
+      });
+
+      if (!appErr) {
+        supabaseSaved = true;
+      } else {
+        supabaseErrorMessage = appErr.message;
+        console.warn('[saveAdminPricingRates] app_settings upsert error:', appErr.message);
+      }
+
+      // Also try pricing_settings table
+      const { error: legErr } = await supabase.from('pricing_settings').upsert({
         key: 'active_pricing_rates',
         settings_data: updatedConfig,
         updated_at: new Date().toISOString(),
       });
-    } catch {
-      // Table may not exist yet, fallback to in-memory/disk is fine
+
+      if (!legErr) {
+        supabaseSaved = true;
+      }
+    } catch (sbEx) {
+      supabaseErrorMessage = sbEx instanceof Error ? sbEx.message : String(sbEx);
+      console.warn('[saveAdminPricingRates] Supabase connection exception:', supabaseErrorMessage);
+    }
+
+    // If running in production (e.g. Vercel) and Supabase failed, notify the admin
+    const isProduction = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
+    if (isProduction && !supabaseSaved && supabaseErrorMessage) {
+      return {
+        success: false,
+        error: `Database persistence failed (${supabaseErrorMessage}). Please run the supabase-schema.sql script in your Supabase SQL Editor to enable live database storage.`,
+        data: updatedConfig,
+      };
     }
 
     return { success: true, error: null, data: updatedConfig };

@@ -6,16 +6,22 @@ import SpecializedServicesSection from "@/components/sections/SpecializedService
 import TestimonialSection from "@/components/sections/TestimonialSection";
 import CtaBannerSection from "@/components/sections/CtaBannerSection";
 import LocationSection from "@/components/sections/LocationSection";
+import { getAdminSiteContent } from "@/services/adminContentService";
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function Home() {
+  const content = await getAdminSiteContent();
+
   return (
     <main className="flex flex-col">
-      <HeroSection />
-      <AboutSection />
+      <HeroSection content={content.hero} />
+      <AboutSection content={content.homeAbout} />
       <ServicesSection />
       <BookingSection />
       <SpecializedServicesSection />
-      <TestimonialSection />
+      <TestimonialSection content={content.testimonials} />
       <CtaBannerSection />
       <LocationSection />
     </main>

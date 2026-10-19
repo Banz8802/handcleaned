@@ -14,11 +14,18 @@ export const metadata: Metadata = {
     "Transparent Airbnb departure turnover, midstay refresh, and deep cleaning pricing in Sydney. Instant quotes from Studio to 5-bedroom properties with zero hidden fees.",
 };
 
-export default function AirbnbCleaningPage() {
+import { getAdminSiteContent } from "@/services/adminContentService";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function AirbnbCleaningPage() {
+  const content = await getAdminSiteContent();
+
   return (
     <main className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <AirbnbHeroSection />
+      <AirbnbHeroSection content={content.airbnbPage.hero} />
 
       {/* Main Pricing Section featuring 4 Pricing Cards */}
       <AirbnbPricingSection />
@@ -30,7 +37,8 @@ export default function AirbnbCleaningPage() {
       <AirbnbAddonsSection />
 
       {/* Reused Homepage Testimonial Section */}
-      <TestimonialSection />
+      <TestimonialSection content={content.testimonials} />
+
 
       {/* Reused Homepage Services Section */}
       <div id="services">

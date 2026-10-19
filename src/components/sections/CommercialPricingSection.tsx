@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { DEFAULT_COMMERCIAL_PACKAGE } from "@/lib/data/commercialPricing";
+import { getPricingRates, setPricingRates, type PricingRatesConfig } from "@/lib/data/pricingConfig";
 
 interface CommercialPricingSectionProps {
   onSelectOption?: (optionName: string, calculatedHourlyRate: number, cleanersCount: number) => void;
@@ -11,8 +12,22 @@ interface CommercialPricingSectionProps {
 export default function CommercialPricingSection({ onSelectOption }: CommercialPricingSectionProps) {
   const router = useRouter();
   const [numCleaners, setNumCleaners] = useState<number>(1);
+  const [pricingRates, setPricingRatesState] = useState<PricingRatesConfig>(() => getPricingRates());
 
-  const calculatedTotalRate = numCleaners * DEFAULT_COMMERCIAL_PACKAGE.ratePerCleanerPerHour;
+  useEffect(() => {
+    fetch('/api/pricing-rates')
+      .then((res) => res.json())
+      .then((data: PricingRatesConfig | null) => {
+        if (data) {
+          setPricingRates(data);
+          setPricingRatesState(data);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch active pricing rates for commercial pricing section:', err));
+  }, []);
+
+  const ratePerCleaner = pricingRates.hourlyRates?.commercialCleaningPerHour ?? DEFAULT_COMMERCIAL_PACKAGE.ratePerCleanerPerHour;
+  const calculatedTotalRate = numCleaners * ratePerCleaner;
 
   const handleReserve = () => {
     if (onSelectOption) {
@@ -113,7 +128,7 @@ export default function CommercialPricingSection({ onSelectOption }: CommercialP
 
                 <div className="mt-2 pt-2 border-t border-white/10 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs font-semibold">
                   <span className="text-[#FFE67B]">
-                    {numCleaners} {numCleaners === 1 ? "cleaner" : "cleaners"} × ${DEFAULT_COMMERCIAL_PACKAGE.ratePerCleanerPerHour}/hr
+                    {numCleaners} {numCleaners === 1 ? "cleaner" : "cleaners"} × ${ratePerCleaner}/hr
                   </span>
                   <span className="text-white/50 hidden sm:inline">•</span>
                   <span className="text-white/70">Exclusive of GST</span>

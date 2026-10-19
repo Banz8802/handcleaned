@@ -164,7 +164,7 @@ export async function updateBookingDetailsAction(
  */
 export async function saveSiteContentAction(
   content: Partial<import('@/lib/data/contentConfig').SiteContentConfig>
-): Promise<AdminActionResponse> {
+): Promise<AdminActionResponse<import('@/lib/data/contentConfig').SiteContentConfig>> {
   const session = await getAdminSession();
   if (!session.authenticated) {
     return { success: false, error: 'Unauthorized. Please log in.' };
@@ -187,7 +187,7 @@ export async function saveSiteContentAction(
   revalidatePath('/admin/content');
   revalidatePath('/content');
 
-  return { success: true };
+  return { success: true, data: result.data };
 }
 
 

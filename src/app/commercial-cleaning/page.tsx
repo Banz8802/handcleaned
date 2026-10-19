@@ -15,11 +15,18 @@ export const metadata: Metadata = {
     "Professional commercial cleaning ($68/hr per cleaner excl. GST), premium linen hire packages (King $36, Single $30, Pool Towel $4.20 incl. GST), and custom extra services in Sydney.",
 };
 
-export default function CommercialCleaningPage() {
+import { getAdminSiteContent } from "@/services/adminContentService";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function CommercialCleaningPage() {
+  const content = await getAdminSiteContent();
+
   return (
     <main className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <CommercialHeroSection />
+      <CommercialHeroSection content={content.commercialPage.hero} />
 
       {/* Main Commercial Pricing Calculator ($68/hr excl. GST) */}
       <CommercialPricingSection />
@@ -34,7 +41,8 @@ export default function CommercialCleaningPage() {
       <CommercialServiceDetailsSection />
 
       {/* Reused Homepage Testimonial Section */}
-      <TestimonialSection />
+      <TestimonialSection content={content.testimonials} />
+
 
       {/* Reused Homepage Services Section */}
       <div id="services">

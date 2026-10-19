@@ -21,11 +21,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutUsPage() {
+import { getAdminSiteContent } from "@/services/adminContentService";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function AboutUsPage() {
+  const content = await getAdminSiteContent();
+
   return (
     <main className="min-h-screen bg-white">
-      <AboutUsHeroSection />
-      <AboutUsIntroSection />
+      <AboutUsHeroSection content={content.aboutPage.hero} />
+      <AboutUsIntroSection content={content.aboutPage.intro} />
       <AboutUsServiceApproachSection />
       <AboutUsCommitmentSection />
       <AboutUsMissionSection />
@@ -33,3 +40,4 @@ export default function AboutUsPage() {
     </main>
   );
 }
+

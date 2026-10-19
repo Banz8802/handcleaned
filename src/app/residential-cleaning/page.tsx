@@ -14,11 +14,18 @@ export const metadata: Metadata = {
     "Flexible regular home cleaning ($60/hr per cleaner) and deep home cleaning ($68/hr per cleaner) in Sydney. Calculate custom cleaner team sizes with transparent hourly rates.",
 };
 
-export default function ResidentialCleaningPage() {
+import { getAdminSiteContent } from "@/services/adminContentService";
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function ResidentialCleaningPage() {
+  const content = await getAdminSiteContent();
+
   return (
     <main className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <ResidentialHeroSection />
+      <ResidentialHeroSection content={content.residentialPage.hero} />
 
       {/* Main Pricing Section featuring Regular & Deep Cleaning Calculator */}
       <ResidentialPricingSection />
@@ -30,7 +37,8 @@ export default function ResidentialCleaningPage() {
       <ResidentialAddonsSection />
 
       {/* Reused Homepage Testimonial Section */}
-      <TestimonialSection />
+      <TestimonialSection content={content.testimonials} />
+
 
       {/* Reused Homepage Services Section */}
       <div id="services">

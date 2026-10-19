@@ -1,6 +1,27 @@
+'use client';
+
+import { useState, useEffect } from "react";
 import { DEFAULT_CLEANER_RATES } from "@/lib/data/residentialPricing";
+import { getPricingRates, setPricingRates, type PricingRatesConfig } from "@/lib/data/pricingConfig";
 
 export default function ResidentialAddonsSection() {
+  const [pricingRates, setPricingRatesState] = useState<PricingRatesConfig>(() => getPricingRates());
+
+  useEffect(() => {
+    fetch('/api/pricing-rates')
+      .then((res) => res.json())
+      .then((data: PricingRatesConfig | null) => {
+        if (data) {
+          setPricingRates(data);
+          setPricingRatesState(data);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch active pricing rates for residential addons section:', err));
+  }, []);
+
+  const regRate = pricingRates.hourlyRates?.regularCleaningPerHour ?? 60;
+  const deepRate = pricingRates.hourlyRates?.deepCleaningPerHour ?? 68;
+
   return (
     <section className="relative w-full bg-white py-20 lg:py-24 overflow-hidden" aria-labelledby="residential-matrix-heading">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
@@ -32,25 +53,30 @@ export default function ResidentialAddonsSection() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 text-xs sm:text-sm text-[#1A2E44]">
-                {DEFAULT_CLEANER_RATES.map((row) => (
-                  <tr key={row.cleaners} className={row.cleaners % 2 === 1 ? "bg-white" : "bg-[#EBF6FB]/30"}>
-                    <td className="py-3.5 px-6 font-bold text-[#1A2E44]">
-                      {row.cleaners} {row.cleaners === 1 ? "Cleaner" : "Cleaners"}
-                    </td>
-                    <td className="py-3.5 px-6 font-medium text-[#1A2E44]">
-                      ${row.regularHourlyTotal} / hour
-                      <span className="text-xs text-gray-400 block sm:inline sm:ml-2">
-                        (${60}/hr × {row.cleaners})
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-6 font-bold text-[#2CBAE8]">
-                      ${row.deepHourlyTotal} / hour
-                      <span className="text-xs text-gray-400 font-normal block sm:inline sm:ml-2">
-                        (${68}/hr × {row.cleaners})
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {DEFAULT_CLEANER_RATES.map((row) => {
+                  const calculatedRegular = regRate * row.cleaners;
+                  const calculatedDeep = deepRate * row.cleaners;
+
+                  return (
+                    <tr key={row.cleaners} className={row.cleaners % 2 === 1 ? "bg-white" : "bg-[#EBF6FB]/30"}>
+                      <td className="py-3.5 px-6 font-bold text-[#1A2E44]">
+                        {row.cleaners} {row.cleaners === 1 ? "Cleaner" : "Cleaners"}
+                      </td>
+                      <td className="py-3.5 px-6 font-medium text-[#1A2E44]">
+                        ${calculatedRegular} / hour
+                        <span className="text-xs text-gray-400 block sm:inline sm:ml-2">
+                          (${regRate}/hr × {row.cleaners})
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-6 font-bold text-[#2CBAE8]">
+                        ${calculatedDeep} / hour
+                        <span className="text-xs text-gray-400 font-normal block sm:inline sm:ml-2">
+                          (${deepRate}/hr × {row.cleaners})
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -63,7 +89,7 @@ export default function ResidentialAddonsSection() {
               <span className="w-6 h-6 rounded-full bg-[#2CBAE8] text-white flex items-center justify-center text-xs font-bold">
                 ✓
               </span>
-              Regular Cleaning ($60/hr per cleaner)
+              Regular Cleaning (${regRate}/hr per cleaner)
             </h3>
             <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
               Ideal for weekly or fortnightly maintenance cleans. Covers general dusting, floor vacuuming, mopping, bathroom sanitization, and kitchen tidy up.
@@ -75,7 +101,7 @@ export default function ResidentialAddonsSection() {
               <span className="w-6 h-6 rounded-full bg-[#FFE67B] text-[#1A2E44] flex items-center justify-center text-xs font-bold">
                 !
               </span>
-              Deep Cleaning ($68/hr per cleaner)
+              Deep Cleaning (${deepRate}/hr per cleaner)
             </h3>
             <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
               Recommended for initial cleans or deep resets. Focuses on built-up soap scum, detailed tile scrubbing, oven/rangehood detailing, and skirting board wipes.
