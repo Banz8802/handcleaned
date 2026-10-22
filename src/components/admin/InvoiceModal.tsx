@@ -85,15 +85,21 @@ export function InvoiceModal({ booking, onClose }: InvoiceModalProps) {
     }
     .invoice-box {
       max-width: 740px;
+      min-height: 255mm;
       margin: 0 auto;
-      padding: 4px 10px;
+      padding: 4px 10px 0 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       page-break-inside: avoid;
       break-inside: avoid;
+    }
+    .invoice-content {
+      width: 100%;
     }
     .banner-container {
       width: 100%;
       margin-bottom: 12px;
-      border-bottom: 1px solid #e2e8f0;
       border-radius: 6px 6px 0 0;
       overflow: hidden;
     }
@@ -231,18 +237,13 @@ export function InvoiceModal({ booking, onClose }: InvoiceModalProps) {
     .footer-container {
       position: relative;
       width: 100%;
-      margin-top: 12px;
-      border-top: 1px solid #e2e8f0;
-      border-radius: 0 0 6px 6px;
-      overflow: hidden;
+      margin-top: auto;
+      padding-top: 36px;
       text-align: center;
     }
     .footer-img {
       width: 100%;
       height: auto;
-      max-height: 95px;
-      object-fit: cover;
-      object-position: bottom center;
       display: block;
     }
     .footer-overlay {
@@ -254,8 +255,8 @@ export function InvoiceModal({ booking, onClose }: InvoiceModalProps) {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      padding: 0 16px 42px 16px;
+      justify-content: center;
+      padding: 14px 20px 4px 20px;
       text-align: center;
       z-index: 2;
     }
@@ -274,7 +275,8 @@ export function InvoiceModal({ booking, onClose }: InvoiceModalProps) {
 </head>
 <body>
   <div class="invoice-box">
-    <div class="banner-container">
+    <div class="invoice-content">
+      <div class="banner-container">
       <img src="${INVOICE_HEADER_BANNER}" alt="HandCleaned — Clean with a side of WOW" class="banner-img" />
     </div>
 
@@ -377,6 +379,7 @@ export function InvoiceModal({ booking, onClose }: InvoiceModalProps) {
           <td style="text-align: right; font-weight: 800; color: ${balanceDue > 0 ? '#dc2626' : '#16a34a'};">$${balanceDue.toFixed(2)} AUD</td>
         </tr>
       </table>
+    </div>
     </div>
 
     <div class="footer-container">
@@ -564,7 +567,7 @@ Mayra Bedoya Quintero | ABN: 51164078848 | 3 Sunbeam Street Campsie, NSW 2194 | 
               className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-8 max-w-3xl mx-auto text-slate-800"
             >
               {/* Top Banner Header */}
-              <div className="-mx-5 -mt-5 sm:-mx-8 sm:-mt-8 mb-5 overflow-hidden rounded-t-2xl border-b border-slate-100">
+              <div className="-mx-5 -mt-5 sm:-mx-8 sm:-mt-8 mb-5 overflow-hidden rounded-t-2xl">
                 <img
                   src="/images/invoice-header-logo.png"
                   alt="HandCleaned — Clean with a side of WOW"
@@ -788,13 +791,13 @@ Mayra Bedoya Quintero | ABN: 51164078848 | 3 Sunbeam Street Campsie, NSW 2194 | 
               </div>
 
               {/* Footer Banner with Centered Text */}
-              <div className="relative -mx-5 -mb-5 sm:-mx-8 sm:-mb-8 mt-6 overflow-hidden rounded-b-2xl border-t border-slate-100">
+              <div className="relative -mx-5 -mb-5 sm:-mx-8 sm:-mb-8 mt-12 sm:mt-16 overflow-hidden rounded-b-2xl">
                 <img
                   src="/images/invoice-footer-bg.png"
                   alt="HandCleaned Footer"
-                  className="w-full h-auto block min-h-[90px] object-cover"
+                  className="w-full h-auto block"
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-end text-center px-6 pb-8 sm:pb-12 z-10 space-y-1">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10 space-y-1">
                   <p className="font-bold text-slate-800 text-[11px] sm:text-xs">
                     Thank you for choosing HandCleaned. We appreciate your business.
                   </p>
