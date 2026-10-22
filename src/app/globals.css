@@ -72,5 +72,64 @@ h1, h2, h3, h4, h5, h6 {
 .animate-bubble-float-3 { animation: bubbleFloat3 7s ease-in-out infinite; }
 .animate-bubble-float-4 { animation: bubbleFloat4 9s ease-in-out infinite; }
 
+/* ── Print Styles for Tax Invoice ────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* When the invoice modal is open, completely hide the rest of the application so it occupies 0 height */
+  body.invoice-modal-open > *:not(#invoice-modal-root) {
+    display: none !important;
+  }
+
+  #invoice-modal-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #invoice-modal-root .fixed {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #invoice-modal-root #invoice-printable-card {
+    position: relative !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
 
 

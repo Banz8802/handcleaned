@@ -14,6 +14,7 @@ import {
 } from '@/lib/data/pricingConfig';
 
 import type { PricingRatesConfig } from '@/lib/data/pricingConfig';
+import { InvoiceModal } from './InvoiceModal';
 
 interface BookingDetailModalProps {
   booking: AdminBooking | null;
@@ -39,6 +40,7 @@ export function BookingDetailModal({
   const [editedBathrooms, setEditedBathrooms] = useState<number>(booking?.bathrooms || 1);
   const [editedPrice, setEditedPrice] = useState<number>(booking?.price || 0);
   const [editedNotes, setEditedNotes] = useState<string>(booking?.notes || '');
+  const [showInvoice, setShowInvoice] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Sync if booking changes
@@ -441,13 +443,25 @@ export function BookingDetailModal({
 
         {/* Footer Actions */}
         <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
-          >
-            Close
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowInvoice(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#00AEEF] hover:text-[#17739C] hover:bg-sky-50 border border-[#00AEEF]/40 transition-colors cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Generate Invoice
+            </button>
+          </div>
           <button
             type="button"
             onClick={handleSaveChanges}
@@ -468,6 +482,12 @@ export function BookingDetailModal({
           </button>
         </div>
       </div>
+
+      {/* Tax Invoice Modal */}
+      <InvoiceModal
+        booking={showInvoice ? booking : null}
+        onClose={() => setShowInvoice(false)}
+      />
     </div>
   );
 }

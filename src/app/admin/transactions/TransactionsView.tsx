@@ -6,6 +6,7 @@ import { StatusBadge } from '@/components/admin/StatusBadge';
 import { BookingDetailModal } from '@/components/admin/BookingDetailModal';
 import { EmptyState } from '@/components/admin/EmptyState';
 import { KpiCard } from '@/components/admin/KpiCard';
+import { InvoiceModal } from '@/components/admin/InvoiceModal';
 
 interface TransactionsViewProps {
   initialBookings: AdminBooking[];
@@ -15,6 +16,7 @@ interface TransactionsViewProps {
 export function TransactionsView({ initialBookings, dbError }: TransactionsViewProps) {
   const [bookings, setBookings] = useState<AdminBooking[]>(initialBookings);
   const [selectedBooking, setSelectedBooking] = useState<AdminBooking | null>(null);
+  const [selectedInvoiceBooking, setSelectedInvoiceBooking] = useState<AdminBooking | null>(null);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,7 +27,7 @@ export function TransactionsView({ initialBookings, dbError }: TransactionsViewP
 
   // Summary Metrics calculation
   const summaryMetrics = useMemo(() => {
-    let totalTransactions = bookings.length;
+    const totalTransactions = bookings.length;
     let successfulCount = 0;
     let successfulAmount = 0;
     let pendingCount = 0;
@@ -329,17 +331,33 @@ export function TransactionsView({ initialBookings, dbError }: TransactionsViewP
                           minute: '2-digit',
                         })}
                       </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedBooking(b);
-                          }}
-                          className="px-2.5 py-1 rounded-lg text-xs font-semibold text-[#17739C] hover:bg-[#2CBAE8]/10 transition-colors"
-                        >
-                          View
-                        </button>
+                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedInvoiceBooking(b);
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-[#00AEEF] hover:text-[#17739C] hover:bg-[#2CBAE8]/10 border border-[#00AEEF]/30 transition-colors shadow-2xs cursor-pointer"
+                            title="Generate & View Tax Invoice"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Invoice
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedBooking(b);
+                            }}
+                            className="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                          >
+                            View
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -378,7 +396,22 @@ export function TransactionsView({ initialBookings, dbError }: TransactionsViewP
 
                   <div className="flex items-center justify-between pt-1">
                     <StatusBadge type="payment" status={b.payment_status} />
-                    <span className="text-xs font-bold text-[#00AEEF]">View Details →</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedInvoiceBooking(b);
+                        }}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-[#00AEEF] bg-[#2CBAE8]/10 hover:bg-[#2CBAE8]/20 transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Invoice
+                      </button>
+                      <span className="text-xs font-bold text-slate-600 hover:text-slate-900">View Details →</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -392,6 +425,12 @@ export function TransactionsView({ initialBookings, dbError }: TransactionsViewP
         booking={selectedBooking}
         onClose={() => setSelectedBooking(null)}
         onUpdated={() => setBookings([...bookings])}
+      />
+
+      {/* Tax Invoice Modal */}
+      <InvoiceModal
+        booking={selectedInvoiceBooking}
+        onClose={() => setSelectedInvoiceBooking(null)}
       />
     </div>
   );
