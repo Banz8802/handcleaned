@@ -190,4 +190,54 @@ export async function saveSiteContentAction(
   return { success: true, data: result.data };
 }
 
+/**
+ * Save / Update Pricelist configuration, category cards, custom prices, and branding.
+ */
+export async function savePricelistAction(
+  config: Partial<import('@/lib/data/pricelistConfig').PricelistConfig>
+): Promise<AdminActionResponse<import('@/lib/data/pricelistConfig').PricelistConfig>> {
+  const session = await getAdminSession();
+  if (!session.authenticated) {
+    return { success: false, error: 'Unauthorized. Please log in.' };
+  }
 
+  const { saveAdminPricelistConfig } = await import('@/services/adminPricelistService');
+  const result = await saveAdminPricelistConfig(config, session.user?.email || 'admin@handcleaned.com.au');
+
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to save pricelist.' };
+  }
+
+  revalidatePath('/admin/pricelist');
+  revalidatePath('/pricelist');
+  revalidatePath('/admin/pricing');
+  revalidatePath('/pricing');
+
+  return { success: true, data: result.data };
+}
+
+/**
+ * Reset Pricelist configuration back to standard defaults.
+ */
+export async function resetPricelistAction(): Promise<
+  AdminActionResponse<import('@/lib/data/pricelistConfig').PricelistConfig>
+> {
+  const session = await getAdminSession();
+  if (!session.authenticated) {
+    return { success: false, error: 'Unauthorized. Please log in.' };
+  }
+
+  const { resetAdminPricelistConfig } = await import('@/services/adminPricelistService');
+  const result = await resetAdminPricelistConfig(session.user?.email || 'admin@handcleaned.com.au');
+
+  if (!result.success) {
+    return { success: false, error: result.error || 'Failed to reset pricelist.' };
+  }
+
+  revalidatePath('/admin/pricelist');
+  revalidatePath('/pricelist');
+  revalidatePath('/admin/pricing');
+  revalidatePath('/pricing');
+
+  return { success: true, data: result.data };
+}

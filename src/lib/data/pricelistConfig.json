@@ -1,0 +1,296 @@
+{
+  "customization": {
+    "title": "Commercial & Residential Cleaning Services",
+    "subtitle": "Professional Cleaning, Airbnb Turnover & Linen Hire Rates — Sydney NSW",
+    "edition": "Official 2026 Rate Card",
+    "badgeText": "100% Satisfaction Guaranteed",
+    "companyName": "Handcleaned Sydney",
+    "logoUrl": "/images/hand-cleaning-logo.png",
+    "logoWidth": 300,
+    "headerLayout": "centered",
+    "bgTheme": "slate",
+    "customBgColor": "#F8FAFC",
+    "accentColor": "#008080",
+    "cardStyle": "elevated",
+    "cardColumns": 2,
+    "showItemDescriptions": true,
+    "footer": {
+      "phone": "+61 406 898 997",
+      "email": "contact@handcleaned.com.au",
+      "website": "www.handcleaned.com.au",
+      "serviceArea": "3 Sunbeam Street Campsie",
+      "abn": "ABN: 12 345 678 910",
+      "termsNote": "All prices are in AUD. Professional-grade equipment & eco-friendly cleaning supplies included. Minimum booking durations may apply. Custom commercial contracts available."
+    }
+  },
+  "categories": [
+    {
+      "id": "airbnb-turnover",
+      "icon": "home",
+      "badge": "Most Popular",
+      "items": [
+        {
+          "id": "ab-studio",
+          "name": "Studio Apartment Turnover Clean",
+          "unit": "/ clean",
+          "badge": "Popular",
+          "price": 123,
+          "description": "Full departure turnover, bathroom & kitchenette sanitization"
+        },
+        {
+          "id": "ab-1bed",
+          "name": "1 Bed + 1 to 1.5 Bath Turnover",
+          "unit": "/ clean",
+          "price": 135.54,
+          "description": "Bed making, thorough bathroom clean, kitchen & surface wipe"
+        },
+        {
+          "id": "ab-2bed",
+          "name": "2 Bed + 1 to 2 Bath Turnover",
+          "unit": "/ clean",
+          "price": 161.6,
+          "description": "2 bedrooms linen change, bathrooms scrubbed, floor vacuum & mop",
+          "isHighlighted": true
+        },
+        {
+          "id": "ab-3bed",
+          "name": "3 Bed + 1 to 2 Bath Turnover",
+          "unit": "/ clean",
+          "price": 191.6,
+          "description": "Comprehensive turnover for family apartments & holiday suites"
+        },
+        {
+          "id": "ab-4bed",
+          "name": "4 Bed + 1 to 2 Bath Turnover",
+          "unit": "/ clean",
+          "price": 221.6,
+          "description": "Full turnover for large apartments & multi-level houses"
+        },
+        {
+          "id": "ab-5bed",
+          "name": "5 Bed + 1 to 2 Bath Turnover",
+          "unit": "/ clean",
+          "price": 256,
+          "description": "Complete turnover for luxury estates and large guest homes"
+        },
+        {
+          "id": "ab-midstay",
+          "name": "Midstay Linen Refresh & Light Clean",
+          "unit": "/ clean",
+          "price": 90,
+          "description": "Towel exchange, bed linen swap, quick tidy & rubbish removal"
+        },
+        {
+          "id": "ab-deep",
+          "name": "Deep Seasonal Turnover Clean",
+          "unit": "from",
+          "price": 240,
+          "description": "High-low detailed scrub, baseboards, grout, inside oven & sills"
+        }
+      ],
+      "title": "Airbnb Departure & Turnover Cleaning",
+      "accentColor": "#008080",
+      "description": "Complete guest-ready turnover clean with linen change, sanitation, and restocking."
+    },
+    {
+      "id": "residential-cleaning",
+      "icon": "sparkles",
+      "badge": "Recurring & One-Off",
+      "items": [
+        {
+          "id": "res-regular-1",
+          "name": "Regular Cleaning (1 Solo Cleaner)",
+          "unit": "/ hr",
+          "badge": "Flexible",
+          "price": 60,
+          "description": "Routine dusting, bathroom disinfection, kitchen surfaces & floors"
+        },
+        {
+          "id": "res-regular-2",
+          "name": "Regular Cleaning (2 Cleaners Team)",
+          "unit": "/ hr",
+          "price": 120,
+          "description": "Faster two-cleaner service for double efficiency in half the time",
+          "isHighlighted": true
+        },
+        {
+          "id": "res-deep-1",
+          "name": "Deep Cleaning (1 Solo Cleaner)",
+          "unit": "/ hr",
+          "price": 68,
+          "description": "Stubborn grime, shower screen descaling, tile scrubbing & switches"
+        },
+        {
+          "id": "res-deep-2",
+          "name": "Deep Cleaning (2 Cleaners Team)",
+          "unit": "/ hr",
+          "price": 136,
+          "description": "Intensive team sanitization for seasonal, pre-event, or move-ins"
+        },
+        {
+          "id": "res-bond-small",
+          "name": "End of Lease / Bond Clean (Studio / 1 Bed)",
+          "unit": "from",
+          "price": 280,
+          "description": "Real estate checklist compliant, 100% bond return guarantee"
+        },
+        {
+          "id": "res-bond-large",
+          "name": "End of Lease / Bond Clean (2 - 3 Bed)",
+          "unit": "from",
+          "price": 380,
+          "description": "Full bond clean including wall spot cleaning, cupboards & tracks"
+        }
+      ],
+      "title": "Residential Home Cleaning",
+      "accentColor": "#0F766E",
+      "description": "Regular maintenance cleans, seasonal deep scrubbing, and bond end-of-lease cleans."
+    },
+    {
+      "id": "commercial-cleaning",
+      "icon": "building",
+      "badge": "Workspaces",
+      "items": [
+        {
+          "id": "com-hourly",
+          "name": "Commercial Cleaning Standard Rate",
+          "unit": "/ hr",
+          "price": 65,
+          "description": "Dedicated commercial staff for general office maintenance"
+        },
+        {
+          "id": "com-small-office",
+          "name": "Small Office Clean (Up to 150m²)",
+          "unit": "/ clean",
+          "badge": "Popular",
+          "price": 160,
+          "description": "Desks, breakrooms, bin clearing, entryway, and floor mopping"
+        },
+        {
+          "id": "com-kitchen-restroom",
+          "name": "Breakroom & Restroom Sanitization Clean",
+          "unit": "/ clean",
+          "price": 110,
+          "description": "Complete toilet disinfection, fixture descaling, soap restocking"
+        },
+        {
+          "id": "com-touchpoint",
+          "name": "High-Touch Surface Disinfection",
+          "unit": "/ clean",
+          "price": 75,
+          "description": "Door handles, elevator buttons, keyboards, boardroom conference tables"
+        },
+        {
+          "id": "com-after-hours",
+          "name": "After-Hours Scheduled Maintenance",
+          "unit": "/ hr",
+          "price": 70,
+          "description": "Night or early morning scheduled service with zero staff distraction"
+        }
+      ],
+      "title": "Commercial & Office Cleaning",
+      "accentColor": "#1E3A8A",
+      "description": "Tailored workspace sanitization to keep your team healthy and office presentable."
+    },
+    {
+      "id": "linen-hire",
+      "icon": "towel",
+      "badge": "5-Star Quality",
+      "items": [
+        {
+          "id": "linen-king",
+          "name": "King Linen Kit Pack (7-Day Rental)",
+          "unit": "/ kit",
+          "badge": "Best Value",
+          "price": 36,
+          "description": "3 plain sheets, 4 pillowcases, 2 bath towels, bath mat, hand & tea towels"
+        },
+        {
+          "id": "linen-queen",
+          "name": "Queen / Double Linen Kit Pack",
+          "unit": "/ kit",
+          "price": 33,
+          "description": "3 sheets, 4 pillowcases, 2 bath towels, bath mat, hand & tea towels"
+        },
+        {
+          "id": "linen-single",
+          "name": "Single Linen Kit Pack",
+          "unit": "/ kit",
+          "price": 30,
+          "description": "3 sheets, 2 pillowcases, 1 bath towel, bath mat, hand towel"
+        },
+        {
+          "id": "linen-towel-pack",
+          "name": "Extra Towel & Bath Mat Refresh Set",
+          "unit": "/ set",
+          "price": 18,
+          "description": "2 plush bath towels, 1 thick bath mat, 2 absorbent hand towels"
+        },
+        {
+          "id": "linen-amenity",
+          "name": "Host Amenity & Toiletries Pack",
+          "unit": "/ pack",
+          "price": 15,
+          "description": "Eco body wash, shampoo, conditioner, conditioner bars & hand soap"
+        }
+      ],
+      "title": "Linen & Towel Hire Packages",
+      "accentColor": "#B45309",
+      "description": "Crisp hotel-grade commercial linen hire and laundry rotation for hosts."
+    },
+    {
+      "id": "surcharges-addons",
+      "icon": "tag",
+      "badge": "Extras",
+      "items": [
+        {
+          "id": "add-full-bath",
+          "name": "Extra Full Bathroom Sanitization",
+          "unit": "/ bath",
+          "price": 25,
+          "description": "Fee per bathroom beyond property allowance (shower, bath, toilet)"
+        },
+        {
+          "id": "add-half-bath",
+          "name": "Extra Half Bathroom / Powder Room",
+          "unit": "/ bath",
+          "price": 15,
+          "description": "Fee per powder room beyond property allowance (toilet + sink)"
+        },
+        {
+          "id": "add-2storey",
+          "name": "Two-Storey Property Surcharge",
+          "unit": "flat",
+          "price": 21,
+          "description": "Flat rate surcharge for 2 levels equipment carrying & stairs"
+        },
+        {
+          "id": "add-3storey",
+          "name": "Three-Storey Property Surcharge",
+          "unit": "flat",
+          "price": 42,
+          "description": "Flat rate surcharge for 3 levels equipment carrying & stairs"
+        },
+        {
+          "id": "add-balcony",
+          "name": "Balcony / Terrace Sweep & Wash",
+          "unit": "/ area",
+          "price": 45,
+          "description": "Outdoor sweep, glass railing wipe, and tile surface cleaning"
+        },
+        {
+          "id": "add-oven",
+          "name": "Oven Interior Deep Degreasing",
+          "unit": "/ unit",
+          "price": 85,
+          "description": "Heavy baked-on grease removal, oven racks, and glass door strip"
+        }
+      ],
+      "title": "Property Add-ons & Surcharges",
+      "accentColor": "#4F46E5",
+      "description": "Standard transparent extra fees for multi-level properties and specialty items."
+    }
+  ],
+  "updatedAt": "2026-10-27T06:41:49.311Z",
+  "updatedBy": "admin@handcleaned.com.au"
+}

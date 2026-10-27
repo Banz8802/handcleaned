@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import type { PricingRatesConfig } from '@/lib/data/pricingConfig';
 import { savePricingRatesAction } from '@/app/actions/adminActions';
 import { calculateExtraBathroomFee, getContractedBathrooms } from '@/lib/data/pricingConfig';
@@ -244,7 +245,16 @@ export function PricingView({ initialRates }: PricingViewProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
+        <div className="flex items-center gap-3 w-full md:w-auto shrink-0 flex-wrap">
+          <Link
+            href="/admin/pricelist"
+            className="px-4 py-2.5 rounded-xl bg-teal-50 border border-teal-200 text-xs font-bold text-[#008080] hover:bg-teal-100 transition-colors inline-flex items-center gap-1.5"
+          >
+            <svg className="w-4 h-4 text-[#008080]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Price List & PDF Export →
+          </Link>
           <button
             type="button"
             onClick={handleReset}

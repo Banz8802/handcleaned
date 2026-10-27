@@ -44,6 +44,30 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: 'Reports & Export',
     subtitle: 'Export business transactions to CSV for accounting and analytics',
   },
+  '/admin/pricelist': {
+    title: 'Price List & PDF Export',
+    subtitle: 'Customize rate cards, edit service prices, and export branded PDF rate cards',
+  },
+  '/pricelist': {
+    title: 'Price List & PDF Export',
+    subtitle: 'Customize rate cards, edit service prices, and export branded PDF rate cards',
+  },
+  '/admin/pricing': {
+    title: 'Formula & Rate Settings',
+    subtitle: 'Bathroom rules, bedroom surcharges, and base hourly calculations',
+  },
+  '/pricing': {
+    title: 'Formula & Rate Settings',
+    subtitle: 'Bathroom rules, bedroom surcharges, and base hourly calculations',
+  },
+  '/admin/content': {
+    title: 'Website Content',
+    subtitle: 'Manage landing page copy, images, and public website features',
+  },
+  '/content': {
+    title: 'Website Content',
+    subtitle: 'Manage landing page copy, images, and public website features',
+  },
 };
 
 export function AdminLayoutShell({ children, userEmail, userName }: AdminLayoutShellProps) {

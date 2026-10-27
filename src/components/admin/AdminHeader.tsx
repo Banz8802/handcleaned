@@ -18,7 +18,7 @@ export function AdminHeader({ onToggleMobileMenu, title, subtitle }: AdminHeader
   });
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+    <header className="no-print admin-shell-header sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
       {/* Left: Mobile hamburger & Page Title */}
       <div className="flex items-center gap-3.5">
         <button
