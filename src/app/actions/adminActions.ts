@@ -126,6 +126,7 @@ export async function savePricingRatesAction(
   revalidatePath('/airbnb-cleaning');
   revalidatePath('/residential-cleaning');
   revalidatePath('/commercial-cleaning');
+  revalidatePath('/linen-hire');
   revalidatePath('/');
 
   return { success: true, data: result.data };

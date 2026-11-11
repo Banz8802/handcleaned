@@ -30,6 +30,11 @@ export type PricingRatesFormState = {
     deepCleaningPerHour: number | string;
     commercialCleaningPerHour: number | string;
   };
+  linenHireRates: {
+    kingLinen: { price: number | string; dailyLateFee: number | string };
+    singleLinen: { price: number | string; dailyLateFee: number | string };
+    poolTowel: { price: number | string; dailyLateFee: number | string };
+  };
   updatedAt?: string;
   updatedBy?: string;
 };
@@ -114,6 +119,20 @@ export function PricingView({ initialRates }: PricingViewProps) {
     }));
   };
 
+  const handleLinenHireChange = (
+    packageId: keyof PricingRatesFormState['linenHireRates'],
+    field: 'price' | 'dailyLateFee',
+    val: string
+  ) => {
+    setRates((prev) => ({
+      ...prev,
+      linenHireRates: {
+        ...prev.linenHireRates,
+        [packageId]: { ...prev.linenHireRates[packageId], [field]: val },
+      },
+    }));
+  };
+
   const handleSave = () => {
     setSaveStatus({ type: 'idle' });
     startTransition(async () => {
@@ -139,6 +158,11 @@ export function PricingView({ initialRates }: PricingViewProps) {
           regularCleaningPerHour: toNum(rates.hourlyRates.regularCleaningPerHour, 60),
           deepCleaningPerHour: toNum(rates.hourlyRates.deepCleaningPerHour, 68),
           commercialCleaningPerHour: toNum(rates.hourlyRates.commercialCleaningPerHour, 65),
+        },
+        linenHireRates: {
+          kingLinen: { price: toNum(rates.linenHireRates.kingLinen.price, 36), dailyLateFee: toNum(rates.linenHireRates.kingLinen.dailyLateFee, 3.55) },
+          singleLinen: { price: toNum(rates.linenHireRates.singleLinen.price, 30), dailyLateFee: toNum(rates.linenHireRates.singleLinen.dailyLateFee, 2.84) },
+          poolTowel: { price: toNum(rates.linenHireRates.poolTowel.price, 4.2), dailyLateFee: toNum(rates.linenHireRates.poolTowel.dailyLateFee, 0.42) },
         },
       };
 
@@ -186,6 +210,11 @@ export function PricingView({ initialRates }: PricingViewProps) {
           deepCleaningPerHour: 68.0,
           commercialCleaningPerHour: 65.0,
         },
+        linenHireRates: {
+          kingLinen: { price: 36, dailyLateFee: 3.55 },
+          singleLinen: { price: 30, dailyLateFee: 2.84 },
+          poolTowel: { price: 4.2, dailyLateFee: 0.42 },
+        },
       };
       setRates(defaultReset);
       setSaveStatus({
@@ -218,6 +247,7 @@ export function PricingView({ initialRates }: PricingViewProps) {
       deepCleaningPerHour: toNum(rates.hourlyRates.deepCleaningPerHour, 68),
       commercialCleaningPerHour: toNum(rates.hourlyRates.commercialCleaningPerHour, 65),
     },
+    linenHireRates: rates.linenHireRates,
   };
 
   const simContracted = getContractedBathrooms(simBedrooms, activeRatesForSim);
@@ -710,6 +740,44 @@ export function PricingView({ initialRates }: PricingViewProps) {
               />
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
+        <div className="mb-5 pb-3 border-b border-slate-100">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#00AEEF] block mb-1">Linen Hire Rates</span>
+          <h2 className="text-lg font-bold text-[#1A2E44]">Linen Hire Package Rates</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Set each package price and its daily late fee. Prices apply to the linen hire page and bookings.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {([
+            { id: 'kingLinen', label: 'King Linen Kit Pack' },
+            { id: 'singleLinen', label: 'Single Linen Kit Pack' },
+            { id: 'poolTowel', label: 'Pool Towel' },
+          ] as const).map(({ id, label }) => (
+            <div key={id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+              <h3 className="text-xs font-bold text-slate-700">{label}</h3>
+              {([
+                { field: 'price', title: 'Package Price ($)' },
+                { field: 'dailyLateFee', title: 'Daily Late Fee ($/day)' },
+              ] as const).map(({ field, title }) => (
+                <label key={field} className="block text-[11px] font-semibold text-slate-600">
+                  {title}
+                  <div className="relative mt-1">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center font-bold text-slate-400 text-sm">$</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={rates.linenHireRates[id][field]}
+                      onChange={(e) => handleLinenHireChange(id, field, e.target.value)}
+                      className="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#00AEEF]"
+                    />
+                  </div>
+                </label>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

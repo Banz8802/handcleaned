@@ -1,10 +1,27 @@
 'use client';
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { DEFAULT_LINEN_HIRE_PACKAGES } from "@/lib/data/commercialPricing";
+import { getPricingRates, setPricingRates, type PricingRatesConfig } from "@/lib/data/pricingConfig";
 
 export default function LinenHireSection() {
   const router = useRouter();
+  const [pricingRates, setPricingRatesState] = useState<PricingRatesConfig>(() => getPricingRates());
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/pricing-rates')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: PricingRatesConfig | null) => {
+        if (data && mounted) {
+          setPricingRates(data);
+          setPricingRatesState(data);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch active linen hire rates:', err));
+    return () => { mounted = false; };
+  }, []);
   const handleHireSelect = (packageName?: string) => {
     let pkgId = "";
     if (packageName) {
@@ -55,7 +72,11 @@ export default function LinenHireSection() {
 
         {/* 3 Linen Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-          {DEFAULT_LINEN_HIRE_PACKAGES.map((pkg) => (
+          {DEFAULT_LINEN_HIRE_PACKAGES.map((pkg) => {
+            const rateKey = pkg.id === "king-linen" ? "kingLinen" : pkg.id === "single-linen" ? "singleLinen" : "poolTowel";
+            const price = pricingRates.linenHireRates?.[rateKey]?.price ?? pkg.price;
+            const dailyLateFee = pricingRates.linenHireRates?.[rateKey]?.dailyLateFee ?? pkg.dailyLateFee;
+            return (
             <div
               key={pkg.id}
               className="bg-white rounded-3xl p-7 shadow-lg border border-gray-100 flex flex-col justify-between hover:shadow-xl transition-all duration-300"
@@ -69,14 +90,14 @@ export default function LinenHireSection() {
                   <h3 className="text-xl font-bold text-[#1A2E44] mb-2">{pkg.name}</h3>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-sm font-semibold text-gray-500">$</span>
-                    <span className="text-4xl font-extrabold text-[#1A2E44]">{pkg.price.toFixed(2)}</span>
+                    <span className="text-4xl font-extrabold text-[#1A2E44]">{price.toFixed(2)}</span>
                   </div>
                   <span className="text-[11px] font-semibold text-[#2CBAE8] uppercase tracking-wide block mt-1">
                     {pkg.gstNote}
                   </span>
-                  {pkg.dailyLateFee !== undefined && (
+                  {dailyLateFee !== undefined && (
                     <span className="text-[11px] font-medium text-red-500 block mt-1.5">
-                      Daily Late Fee: ${pkg.dailyLateFee.toFixed(2)}
+                      Daily Late Fee: ${dailyLateFee.toFixed(2)}
                     </span>
                   )}
                 </div>
@@ -109,7 +130,8 @@ export default function LinenHireSection() {
                 </svg>
               </button>
             </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>

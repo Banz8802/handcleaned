@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
 
 function WaveDivider() {
   return (
@@ -85,14 +84,17 @@ export default function AirbnbHeroSection({ content: customContent }: AirbnbHero
       className="relative w-full overflow-hidden bg-[#00AEEF] z-0"
       aria-label="Airbnb Cleaning Hero"
     >
-      {/* Background Image */}
-      <Image
-        key={content.bgImage}
-        src={content.bgImage || "/images/airbnb-cleaning-hero-bg.webp"}
-        alt="Airbnb Cleaning Services"
-        fill
-        priority
-        className="object-cover object-center z-0"
+      {/* Background Video */}
+      <video
+        className="absolute inset-0 h-full w-full object-cover object-center z-0"
+        src="/videos/hero-bg-final.webm"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        tabIndex={-1}
       />
 
       {/* Brand Overlay preserving existing colors and ensuring readability */}

@@ -79,6 +79,13 @@ export async function getAdminPricingRates(): Promise<PricingRatesConfig> {
           ...DEFAULT_PRICING_RATES.hourlyRates,
           ...(remoteConfig.hourlyRates || {}),
         },
+        linenHireRates: {
+          ...DEFAULT_PRICING_RATES.linenHireRates,
+          ...(remoteConfig.linenHireRates || {}),
+          kingLinen: { ...DEFAULT_PRICING_RATES.linenHireRates.kingLinen, ...(remoteConfig.linenHireRates?.kingLinen || {}) },
+          singleLinen: { ...DEFAULT_PRICING_RATES.linenHireRates.singleLinen, ...(remoteConfig.linenHireRates?.singleLinen || {}) },
+          poolTowel: { ...DEFAULT_PRICING_RATES.linenHireRates.poolTowel, ...(remoteConfig.linenHireRates?.poolTowel || {}) },
+        },
       };
       inMemoryPricingCache = merged;
       const { setPricingRates } = await import('@/lib/data/pricingConfig');
@@ -112,6 +119,13 @@ export async function getAdminPricingRates(): Promise<PricingRatesConfig> {
         hourlyRates: {
           ...DEFAULT_PRICING_RATES.hourlyRates,
           ...(parsed.hourlyRates || {}),
+        },
+        linenHireRates: {
+          ...DEFAULT_PRICING_RATES.linenHireRates,
+          ...(parsed.linenHireRates || {}),
+          kingLinen: { ...DEFAULT_PRICING_RATES.linenHireRates.kingLinen, ...(parsed.linenHireRates?.kingLinen || {}) },
+          singleLinen: { ...DEFAULT_PRICING_RATES.linenHireRates.singleLinen, ...(parsed.linenHireRates?.singleLinen || {}) },
+          poolTowel: { ...DEFAULT_PRICING_RATES.linenHireRates.poolTowel, ...(parsed.linenHireRates?.poolTowel || {}) },
         },
       };
       inMemoryPricingCache = merged;
@@ -160,6 +174,20 @@ export async function saveAdminPricingRates(
         regularCleaningPerHour: parsePositiveNum(rates.hourlyRates?.regularCleaningPerHour, current.hourlyRates.regularCleaningPerHour),
         deepCleaningPerHour: parsePositiveNum(rates.hourlyRates?.deepCleaningPerHour, current.hourlyRates.deepCleaningPerHour),
         commercialCleaningPerHour: parsePositiveNum(rates.hourlyRates?.commercialCleaningPerHour, current.hourlyRates.commercialCleaningPerHour),
+      },
+      linenHireRates: {
+        kingLinen: {
+          price: parsePositiveNum(rates.linenHireRates?.kingLinen?.price, current.linenHireRates.kingLinen.price),
+          dailyLateFee: parsePositiveNum(rates.linenHireRates?.kingLinen?.dailyLateFee, current.linenHireRates.kingLinen.dailyLateFee),
+        },
+        singleLinen: {
+          price: parsePositiveNum(rates.linenHireRates?.singleLinen?.price, current.linenHireRates.singleLinen.price),
+          dailyLateFee: parsePositiveNum(rates.linenHireRates?.singleLinen?.dailyLateFee, current.linenHireRates.singleLinen.dailyLateFee),
+        },
+        poolTowel: {
+          price: parsePositiveNum(rates.linenHireRates?.poolTowel?.price, current.linenHireRates.poolTowel.price),
+          dailyLateFee: parsePositiveNum(rates.linenHireRates?.poolTowel?.dailyLateFee, current.linenHireRates.poolTowel.dailyLateFee),
+        },
       },
       updatedAt: new Date().toISOString(),
       updatedBy,

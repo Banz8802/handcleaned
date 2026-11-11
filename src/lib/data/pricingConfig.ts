@@ -23,6 +23,11 @@ export interface PricingRatesConfig {
     deepCleaningPerHour: number;
     commercialCleaningPerHour: number;
   };
+  linenHireRates: {
+    kingLinen: { price: number; dailyLateFee: number };
+    singleLinen: { price: number; dailyLateFee: number };
+    poolTowel: { price: number; dailyLateFee: number };
+  };
   updatedAt?: string;
   updatedBy?: string;
 }
@@ -55,6 +60,13 @@ export function setPricingRates(rates: PricingRatesConfig): void {
     hourlyRates: {
       ...DEFAULT_PRICING_RATES.hourlyRates,
       ...(rates.hourlyRates || {}),
+    },
+    linenHireRates: {
+      ...DEFAULT_PRICING_RATES.linenHireRates,
+      ...(rates.linenHireRates || {}),
+      kingLinen: { ...DEFAULT_PRICING_RATES.linenHireRates.kingLinen, ...(rates.linenHireRates?.kingLinen || {}) },
+      singleLinen: { ...DEFAULT_PRICING_RATES.linenHireRates.singleLinen, ...(rates.linenHireRates?.singleLinen || {}) },
+      poolTowel: { ...DEFAULT_PRICING_RATES.linenHireRates.poolTowel, ...(rates.linenHireRates?.poolTowel || {}) },
     },
   };
 }

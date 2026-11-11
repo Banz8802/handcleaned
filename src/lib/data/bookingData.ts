@@ -127,16 +127,22 @@ export function getPackagesForService(
       ];
 
     case "linen-hire":
-      return DEFAULT_LINEN_HIRE_PACKAGES.map((pkg) => ({
-        id: pkg.id,
-        serviceId: "linen-hire",
-        name: pkg.name,
-        badge: pkg.rentalPeriod || pkg.gstNote,
-        isPopular: pkg.id === "king-linen",
-        shortDescription: `Hotel quality 7-day rental linen set. Daily late fee: $${pkg.dailyLateFee?.toFixed(2) || "0.00"}. All prices ${pkg.gstNote.toLowerCase()}.`,
-        inclusions: pkg.inclusions.map((inc) => `${inc.item} (${inc.count})`),
-        price: pkg.price,
-      }));
+      return DEFAULT_LINEN_HIRE_PACKAGES.map((pkg) => {
+        const rateKey = pkg.id === "king-linen" ? "kingLinen" : pkg.id === "single-linen" ? "singleLinen" : "poolTowel";
+        const linenRate = rates.linenHireRates?.[rateKey];
+        const price = linenRate?.price ?? pkg.price;
+        const dailyLateFee = linenRate?.dailyLateFee ?? pkg.dailyLateFee ?? 0;
+        return {
+          id: pkg.id,
+          serviceId: "linen-hire",
+          name: pkg.name,
+          badge: pkg.rentalPeriod || pkg.gstNote,
+          isPopular: pkg.id === "king-linen",
+          shortDescription: `Hotel quality 7-day rental linen set. Daily late fee: $${dailyLateFee.toFixed(2)}. All prices ${pkg.gstNote.toLowerCase()}.`,
+          inclusions: pkg.inclusions.map((inc) => `${inc.item} (${inc.count})`),
+          price,
+        };
+      });
 
     case "airbnb-cleaning":
     default:

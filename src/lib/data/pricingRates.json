@@ -21,6 +21,20 @@
     "deepCleaningPerHour": 68,
     "commercialCleaningPerHour": 65
   },
-  "updatedAt": "2026-10-19T13:26:04.806Z",
+  "linenHireRates": {
+    "kingLinen": {
+      "price": 36,
+      "dailyLateFee": 4.55
+    },
+    "singleLinen": {
+      "price": 30,
+      "dailyLateFee": 3.84
+    },
+    "poolTowel": {
+      "price": 4.2,
+      "dailyLateFee": 1.42
+    }
+  },
+  "updatedAt": "2026-11-11T12:59:38.971Z",
   "updatedBy": "admin@handcleaned.com.au"
 }

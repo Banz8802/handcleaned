@@ -127,7 +127,7 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
             Airbnb Cleaning Pricing Options
           </h2>
           <p className="text-gray-600 text-sm sm:text-base max-w-[620px] mx-auto leading-relaxed">
-            Select your property size and storey configuration below to calculate exact turnover costs across our 4 tailored cleaning packages.
+            Select your property size and storey configuration below to calculate exact turnover costs across our 3 tailored cleaning packages.
           </p>
           <p className="text-xs font-bold text-[#2CBAE8] uppercase tracking-wider mt-2">
             * All prices are inclusive of GST
@@ -272,8 +272,8 @@ export default function AirbnbPricingSection({ onSelectOption }: AirbnbPricingSe
         </div>
 
         {/* ── 4 Pricing Cards Grid ────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-6 items-stretch">
-          {PRICING_CARDS.map((card) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-6 items-stretch">
+          {PRICING_CARDS.filter((card) => card.id !== "midstay-linen").map((card) => {
             const sizePrices = card.prices[selectedProperty] || {};
             let basePrice = sizePrices[selectedStorey];
 

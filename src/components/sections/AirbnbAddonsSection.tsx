@@ -36,7 +36,7 @@ export default function AirbnbAddonsSection() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 text-xs sm:text-sm text-[#1A2E44]">
-                {MATRIX_DATA.map((row, idx) => (
+                {MATRIX_DATA.filter((row) => !row.type.startsWith("5 Bed")).map((row, idx) => (
                   <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-[#EBF6FB]/30"}>
                     <td className="py-3.5 px-6 font-bold text-[#1A2E44]">{row.type}</td>
                     <td className="py-3.5 px-6 font-medium">{row.departure}</td>
