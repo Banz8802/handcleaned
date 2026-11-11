@@ -247,7 +247,20 @@ export function PricingView({ initialRates }: PricingViewProps) {
       deepCleaningPerHour: toNum(rates.hourlyRates.deepCleaningPerHour, 68),
       commercialCleaningPerHour: toNum(rates.hourlyRates.commercialCleaningPerHour, 65),
     },
-    linenHireRates: rates.linenHireRates,
+    linenHireRates: {
+      kingLinen: {
+        price: toNum(rates.linenHireRates.kingLinen.price, 36),
+        dailyLateFee: toNum(rates.linenHireRates.kingLinen.dailyLateFee, 3.55),
+      },
+      singleLinen: {
+        price: toNum(rates.linenHireRates.singleLinen.price, 30),
+        dailyLateFee: toNum(rates.linenHireRates.singleLinen.dailyLateFee, 2.84),
+      },
+      poolTowel: {
+        price: toNum(rates.linenHireRates.poolTowel.price, 4.2),
+        dailyLateFee: toNum(rates.linenHireRates.poolTowel.dailyLateFee, 0.42),
+      },
+    },
   };
 
   const simContracted = getContractedBathrooms(simBedrooms, activeRatesForSim);
